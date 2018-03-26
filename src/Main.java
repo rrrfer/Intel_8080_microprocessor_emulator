@@ -18,15 +18,10 @@ public class Main {
         System.out.println();
 
         if (commands != null) {
-            for (String cmd : commands) {
-                System.out.println(cmd);
-            }
-            System.out.println();
-
-            for (String cmd : commands) {
-                int code[] = translator.getCode(cmd);
+            for (String lex : commands) {
+                int code[] = translator.getCode(lex);
                 if (code[0] >= 0) {
-                    System.out.print(code[0] + ": " + code[1] + " bytes - ");
+                    System.out.print("Address = " + code[0] + "; " + " Bytes = " + code[1] + "; ");
                     for (int i = 2; i < code.length; ++i) {
                         if (code[i] >= 0) {
                             System.out.print(code[i] + " ");
@@ -75,9 +70,9 @@ public class Main {
     }
 }
 
-// Читаем из файла листинг программы
-// Парсим из файла все лексемы
-// Переводим символьные метки в физические адреса
-// Переводим список лексем в hex код
-// Загружаем каждую команду по соответствующему адресу
-// По hex коду строим нужный объект команды (отображаем/выполняем)
+// + Читаем из файла листинг программы
+// + Парсим из файла все лексемы
+// + Переводим символьные метки в физические адреса
+// + Переводим список лексем в hex код
+// - Загружаем каждую команду по соответствующему адресу
+// - По hex коду строим нужный объект команды (отображаем/выполняем)

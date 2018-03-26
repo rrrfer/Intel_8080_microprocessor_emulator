@@ -66,7 +66,8 @@ public class Intel8080Translator implements ITranslator {
 
                     hasErrors = true;
                     statusString.append("Ошибка в строке № " + (i + 1) + ". " +
-                            "Неизвестная или ошибочная директива: " + dividedProgramLines[i]);
+                            "Неизвестная или ошибочная директива: " + dividedProgramLines[i] +
+                            System.lineSeparator());
 
                 }
 
@@ -78,7 +79,8 @@ public class Intel8080Translator implements ITranslator {
                     } else {
                         hasErrors = true;
                         statusString.append("Ошибка в строке №" + (i + 1) + ". " +
-                                "Повторное использование метки: " + dividedProgramLines[i]);
+                                "Повторное использование метки: " + dividedProgramLines[i]+
+                                System.lineSeparator());
                     }
                 }
 
@@ -97,6 +99,12 @@ public class Intel8080Translator implements ITranslator {
                     int newAddress = isAddressSet(dividedProgramLines[i]);
                     if (newAddress >= 0) {
                         currentAddress = newAddress;
+                        continue;
+                    }
+
+                    int data = isDataSet(dividedProgramLines[i]);
+                    if (data >= 0) {
+                        currentAddress += 1;
                         continue;
                     }
                 }
@@ -375,8 +383,8 @@ public class Intel8080Translator implements ITranslator {
 
     private void translateCommands(String lex, int lineNumber) {
         String cmdName;
+        isCorrect = false;
         if ((cmdName = isCommand(lex.split(" ")[0])) != null) {
-            isCorrect = false;
             switch (typeCMD(cmdName)) {
                 case 0: {
                     if (lex.split(" ").length == 1) {
@@ -528,11 +536,12 @@ public class Intel8080Translator implements ITranslator {
                     break;
                 }
             }
+        }
 
-            if (!isCorrect) {
-                statusString.append("Ошибка в строке № " + (lineNumber + 1) + ". " +
-                        "Неверная команда или несуществующая метка: " + lex);
-            }
+        if (!isCorrect) {
+            statusString.append("Ошибка в строке № " + (lineNumber + 1) + ". " +
+                    "Неверная команда или несуществующая метка: " + lex +
+                    System.lineSeparator());
         }
     }
 
