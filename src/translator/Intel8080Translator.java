@@ -10,6 +10,8 @@ public class Intel8080Translator implements ITranslator {
     private ArrayList<String> commands;
     private HashMap<String, Integer> label2AddressMap;
     private ArrayList<String> commandsTemplateArray;
+    private HashMap<String, Integer> commandsCodes;
+
     private int currentAddress;
 
     private boolean isCorrect;
@@ -18,9 +20,13 @@ public class Intel8080Translator implements ITranslator {
     public Intel8080Translator() {
         commands = new ArrayList<>();
         label2AddressMap = new HashMap<>();
+        statusString = new StringBuilder();
+
         commandsTemplateArray = new ArrayList<>();
         initCmdTemplateArray(commandsTemplateArray);
-        statusString = new StringBuilder();
+
+        commandsCodes = new HashMap<>();
+        initCommandsCodes(commandsCodes);
     }
 
     @Override
@@ -53,7 +59,7 @@ public class Intel8080Translator implements ITranslator {
                     int data = isDataSet(dividedProgramLines[i]);
                     if (data >= 0) {
                         commands.add(Integer.toHexString(currentAddress) +
-                                ":" + Integer.toHexString(data));
+                                ":set." + Integer.toHexString(data));
                         currentAddress += 1;
                         continue;
                     }
@@ -130,6 +136,56 @@ public class Intel8080Translator implements ITranslator {
     @Override
     public String getStatusString() {
         return statusString.toString();
+    }
+
+    @Override
+    public int[] getCode(String lex) {
+
+        int[] cmdArr = new int[4];
+        cmdArr[0] = Integer.valueOf(lex.split(":")[0], 16);
+        cmdArr[2] = -1;
+        cmdArr[3] = -1;
+
+        lex = lex.split(":")[1];
+
+        if (lex.contains("set.")) {
+            cmdArr[2] = CommandsCodes.SET;
+            cmdArr[1] = 1;
+            cmdArr[3] = Integer.parseInt(lex.substring(4), 16);
+            return cmdArr;
+        }
+
+        if (commandsCodes.containsKey(lex.toUpperCase())) {
+            cmdArr[2] = commandsCodes.get(lex.toUpperCase());
+            cmdArr[1] = CommandsCodes.countByteInCommand(cmdArr[2]);
+            return cmdArr;
+        }
+
+        if (lex.contains(",")) {
+            String arrCmd[] = lex.split(",");
+            if (commandsCodes.containsKey(arrCmd[0].toUpperCase())) {
+                cmdArr[2] = commandsCodes.get(arrCmd[0].toUpperCase());
+                cmdArr[1] = CommandsCodes.countByteInCommand(cmdArr[2]);
+                try {
+                    cmdArr[3] = Integer.parseInt(arrCmd[1], 16);
+                } catch (NumberFormatException e) {
+                    cmdArr[0] = -1;
+                    return cmdArr;
+                }
+                return cmdArr;
+            }
+        }
+
+        String arrCmd[] = lex.split(" ");
+        if (commandsCodes.containsKey(arrCmd[0].toUpperCase())) {
+            cmdArr[2] = commandsCodes.get(arrCmd[0].toUpperCase());
+            cmdArr[3] = Integer.parseInt(arrCmd[1], 16);
+            cmdArr[1] = CommandsCodes.countByteInCommand(cmdArr[2]);
+            return cmdArr;
+        }
+
+        cmdArr[0] = -1;
+        return cmdArr;
     }
 
     private String cutComment(String lex) {
@@ -557,5 +613,294 @@ public class Intel8080Translator implements ITranslator {
         arrayList.add("xchg");
         arrayList.add("xra");
         arrayList.add("xhtl");
+    }
+
+    private void initCommandsCodes(HashMap<String, Integer> hashMap) {
+
+        hashMap.put("NOP", CommandsCodes.NOP);
+
+        hashMap.put("MVI A", CommandsCodes.MVI_A);
+        hashMap.put("MVI B", CommandsCodes.MVI_B);
+        hashMap.put("MVI C", CommandsCodes.MVI_C);
+        hashMap.put("MVI D", CommandsCodes.MVI_D);
+        hashMap.put("MVI E", CommandsCodes.MVI_E);
+        hashMap.put("MVI H", CommandsCodes.MVI_H);
+        hashMap.put("MVI L", CommandsCodes.MVI_L);
+        hashMap.put("MVI M", CommandsCodes.MVI_M);
+
+        hashMap.put("LXI B", CommandsCodes.LXI_B_data);
+        hashMap.put("LXI D", CommandsCodes.LXI_D_data);
+        hashMap.put("LXI H", CommandsCodes.LXI_H_data);
+        hashMap.put("LXI PWS", CommandsCodes.LXI_PSW_data);
+
+        hashMap.put("MOV A,A", CommandsCodes.MOV_A_A);
+        hashMap.put("MOV A,B", CommandsCodes.MOV_A_B);
+        hashMap.put("MOV A,C", CommandsCodes.MOV_A_C);
+        hashMap.put("MOV A,D", CommandsCodes.MOV_A_D);
+        hashMap.put("MOV A,E", CommandsCodes.MOV_A_E);
+        hashMap.put("MOV A,H", CommandsCodes.MOV_A_H);
+        hashMap.put("MOV A,L", CommandsCodes.MOV_A_L);
+        hashMap.put("MOV A,M", CommandsCodes.MOV_A_M);
+
+        hashMap.put("MOV B,A", CommandsCodes.MOV_B_A);
+        hashMap.put("MOV B,B", CommandsCodes.MOV_B_B);
+        hashMap.put("MOV B,C", CommandsCodes.MOV_B_C);
+        hashMap.put("MOV B,D", CommandsCodes.MOV_B_D);
+        hashMap.put("MOV B,E", CommandsCodes.MOV_B_E);
+        hashMap.put("MOV B,H", CommandsCodes.MOV_B_H);
+        hashMap.put("MOV B,L", CommandsCodes.MOV_B_L);
+        hashMap.put("MOV B,M", CommandsCodes.MOV_B_M);
+
+        hashMap.put("MOV C,A", CommandsCodes.MOV_C_A);
+        hashMap.put("MOV C,B", CommandsCodes.MOV_C_B);
+        hashMap.put("MOV C,C", CommandsCodes.MOV_C_C);
+        hashMap.put("MOV C,D", CommandsCodes.MOV_C_D);
+        hashMap.put("MOV C,E", CommandsCodes.MOV_C_E);
+        hashMap.put("MOV C,H", CommandsCodes.MOV_C_H);
+        hashMap.put("MOV C,L", CommandsCodes.MOV_C_L);
+        hashMap.put("MOV C,M", CommandsCodes.MOV_C_M);
+
+        hashMap.put("MOV D,A", CommandsCodes.MOV_D_A);
+        hashMap.put("MOV D,B", CommandsCodes.MOV_D_B);
+        hashMap.put("MOV D,C", CommandsCodes.MOV_D_C);
+        hashMap.put("MOV D,D", CommandsCodes.MOV_D_D);
+        hashMap.put("MOV D,E", CommandsCodes.MOV_D_E);
+        hashMap.put("MOV D,H", CommandsCodes.MOV_D_H);
+        hashMap.put("MOV D,L", CommandsCodes.MOV_D_L);
+        hashMap.put("MOV D,M", CommandsCodes.MOV_D_M);
+
+        hashMap.put("MOV E,A", CommandsCodes.MOV_E_A);
+        hashMap.put("MOV E,B", CommandsCodes.MOV_E_B);
+        hashMap.put("MOV E,C", CommandsCodes.MOV_E_C);
+        hashMap.put("MOV E,D", CommandsCodes.MOV_E_D);
+        hashMap.put("MOV E,E", CommandsCodes.MOV_E_E);
+        hashMap.put("MOV E,H", CommandsCodes.MOV_E_H);
+        hashMap.put("MOV E,L", CommandsCodes.MOV_E_L);
+        hashMap.put("MOV E,M", CommandsCodes.MOV_E_M);
+
+        hashMap.put("MOV H,A", CommandsCodes.MOV_H_A);
+        hashMap.put("MOV H,B", CommandsCodes.MOV_H_B);
+        hashMap.put("MOV H,C", CommandsCodes.MOV_H_C);
+        hashMap.put("MOV H,D", CommandsCodes.MOV_H_D);
+        hashMap.put("MOV H,E", CommandsCodes.MOV_H_E);
+        hashMap.put("MOV H,H", CommandsCodes.MOV_H_H);
+        hashMap.put("MOV H,L", CommandsCodes.MOV_H_L);
+        hashMap.put("MOV H,M", CommandsCodes.MOV_H_M);
+
+        hashMap.put("MOV L,A", CommandsCodes.MOV_L_A);
+        hashMap.put("MOV L,B", CommandsCodes.MOV_L_B);
+        hashMap.put("MOV L,C", CommandsCodes.MOV_L_C);
+        hashMap.put("MOV L,D", CommandsCodes.MOV_L_D);
+        hashMap.put("MOV L,E", CommandsCodes.MOV_L_E);
+        hashMap.put("MOV L,H", CommandsCodes.MOV_L_H);
+        hashMap.put("MOV L,L", CommandsCodes.MOV_L_L);
+        hashMap.put("MOV L,M", CommandsCodes.MOV_L_M);
+
+        hashMap.put("MOV M,A", CommandsCodes.MOV_M_A);
+        hashMap.put("MOV M,B", CommandsCodes.MOV_M_B);
+        hashMap.put("MOV M,C", CommandsCodes.MOV_M_C);
+        hashMap.put("MOV M,D", CommandsCodes.MOV_M_D);
+        hashMap.put("MOV M,E", CommandsCodes.MOV_M_E);
+        hashMap.put("MOV M,H", CommandsCodes.MOV_M_H);
+        hashMap.put("MOV M,L", CommandsCodes.MOV_M_L);
+        hashMap.put("MOV M,M", CommandsCodes.MOV_M_M);
+
+        hashMap.put("ADD A", CommandsCodes.ADD_A);
+        hashMap.put("ADD B", CommandsCodes.ADD_B);
+        hashMap.put("ADD C", CommandsCodes.ADD_C);
+        hashMap.put("ADD D", CommandsCodes.ADD_D);
+        hashMap.put("ADD E", CommandsCodes.ADD_E);
+        hashMap.put("ADD H", CommandsCodes.ADD_H);
+        hashMap.put("ADD L", CommandsCodes.ADD_L);
+        hashMap.put("ADD M", CommandsCodes.ADD_M);
+
+        hashMap.put("ADI", CommandsCodes.ADI);
+
+        hashMap.put("ADC A", CommandsCodes.ADC_A);
+        hashMap.put("ADC B", CommandsCodes.ADC_B);
+        hashMap.put("ADC C", CommandsCodes.ADC_C);
+        hashMap.put("ADC D", CommandsCodes.ADC_D);
+        hashMap.put("ADC E", CommandsCodes.ADC_E);
+        hashMap.put("ADC H", CommandsCodes.ADC_H);
+        hashMap.put("ADC L", CommandsCodes.ADC_L);
+        hashMap.put("ADC M", CommandsCodes.ADC_M);
+
+        hashMap.put("ACI", CommandsCodes.ACI);
+
+        hashMap.put("SUB A", CommandsCodes.SUB_A);
+        hashMap.put("SUB B", CommandsCodes.SUB_B);
+        hashMap.put("SUB C", CommandsCodes.SUB_C);
+        hashMap.put("SUB D", CommandsCodes.SUB_D);
+        hashMap.put("SUB E", CommandsCodes.SUB_E);
+        hashMap.put("SUB H", CommandsCodes.SUB_H);
+        hashMap.put("SUB L", CommandsCodes.SUB_L);
+        hashMap.put("SUB M", CommandsCodes.SUB_M);
+
+        hashMap.put("SUI", CommandsCodes.SUI);
+
+        hashMap.put("SBB A", CommandsCodes.SBB_A);
+        hashMap.put("SBB B", CommandsCodes.SBB_B);
+        hashMap.put("SBB C", CommandsCodes.SBB_C);
+        hashMap.put("SBB D", CommandsCodes.SBB_D);
+        hashMap.put("SBB E", CommandsCodes.SBB_E);
+        hashMap.put("SBB H", CommandsCodes.SBB_H);
+        hashMap.put("SBB L", CommandsCodes.SBB_L);
+        hashMap.put("SBB M", CommandsCodes.SBB_M);
+
+        hashMap.put("SBI", CommandsCodes.SBI);
+
+        hashMap.put("INR A", CommandsCodes.INR_A);
+        hashMap.put("INR B", CommandsCodes.INR_B);
+        hashMap.put("INR C", CommandsCodes.INR_C);
+        hashMap.put("INR D", CommandsCodes.INR_D);
+        hashMap.put("INR E", CommandsCodes.INR_E);
+        hashMap.put("INR H", CommandsCodes.INR_H);
+        hashMap.put("INR L", CommandsCodes.INR_L);
+        hashMap.put("INR M", CommandsCodes.INR_M);
+
+        hashMap.put("INX B", CommandsCodes.INX_B);
+        hashMap.put("INX D", CommandsCodes.INX_D);
+        hashMap.put("INX H", CommandsCodes.INX_H);
+        hashMap.put("INX PSW", CommandsCodes.INX_PSW);
+
+        hashMap.put("DCR A", CommandsCodes.DCR_A);
+        hashMap.put("DCR B", CommandsCodes.DCR_B);
+        hashMap.put("DCR C", CommandsCodes.DCR_C);
+        hashMap.put("DCR D", CommandsCodes.DCR_D);
+        hashMap.put("DCR E", CommandsCodes.DCR_E);
+        hashMap.put("DCR H", CommandsCodes.DCR_H);
+        hashMap.put("DCR L", CommandsCodes.DCR_L);
+        hashMap.put("DCR M", CommandsCodes.DCR_M);
+
+        hashMap.put("DCX B", CommandsCodes.DCX_B);
+        hashMap.put("DCX D", CommandsCodes.DCX_D);
+        hashMap.put("DCX H", CommandsCodes.DCX_H);
+        hashMap.put("DCX PSW", CommandsCodes.DCX_PSW);
+
+        hashMap.put("HLT", CommandsCodes.HLT);
+
+        hashMap.put("JNZ", CommandsCodes.JNZ);
+        hashMap.put("JZ", CommandsCodes.JZ);
+        hashMap.put("JNC", CommandsCodes.JNC);
+        hashMap.put("JC", CommandsCodes.JC);
+        hashMap.put("JP", CommandsCodes.JP);
+        hashMap.put("JM", CommandsCodes.JM);
+        hashMap.put("JMP", CommandsCodes.JMP);
+        hashMap.put("JPO", CommandsCodes.JPO);
+        hashMap.put("JPE", CommandsCodes.JPE);
+
+        hashMap.put("LDA", CommandsCodes.LDA);
+
+        hashMap.put("STA", CommandsCodes.STA);
+
+        hashMap.put("LHLD", CommandsCodes.LHLD);
+
+        hashMap.put("SHLD", CommandsCodes.SHLD);
+
+        hashMap.put("LDAX B", CommandsCodes.LDAX_B);
+        hashMap.put("LDAX D", CommandsCodes.LDAX_D);
+
+        hashMap.put("STAX B", CommandsCodes.STAX_B);
+        hashMap.put("STAX D", CommandsCodes.STAX_D);
+
+        hashMap.put("XCHG", CommandsCodes.XCHG);
+
+        hashMap.put("RLC", CommandsCodes.RLC);
+        hashMap.put("RRC", CommandsCodes.RRC);
+
+        hashMap.put("RAL", CommandsCodes.RAL);
+        hashMap.put("RAR", CommandsCodes.RAR);
+
+        hashMap.put("DAD B", CommandsCodes.DAD_B);
+        hashMap.put("DAD D", CommandsCodes.DAD_D);
+        hashMap.put("DAD H", CommandsCodes.DAD_H);
+        hashMap.put("DAD PSW", CommandsCodes.DAD_PSW);
+
+        hashMap.put("ANA A", CommandsCodes.ANA_A);
+        hashMap.put("ANA B", CommandsCodes.ANA_B);
+        hashMap.put("ANA C", CommandsCodes.ANA_C);
+        hashMap.put("ANA D", CommandsCodes.ANA_D);
+        hashMap.put("ANA E", CommandsCodes.ANA_E);
+        hashMap.put("ANA H", CommandsCodes.ANA_H);
+        hashMap.put("ANA L", CommandsCodes.ANA_L);
+        hashMap.put("ANA M", CommandsCodes.ANA_M);
+
+        hashMap.put("ANI", CommandsCodes.ANI);
+
+        hashMap.put("ORA A", CommandsCodes.ORA_A);
+        hashMap.put("ORA B", CommandsCodes.ORA_B);
+        hashMap.put("ORA C", CommandsCodes.ORA_C);
+        hashMap.put("ORA D", CommandsCodes.ORA_D);
+        hashMap.put("ORA E", CommandsCodes.ORA_E);
+        hashMap.put("ORA H", CommandsCodes.ORA_H);
+        hashMap.put("ORA L", CommandsCodes.ORA_L);
+        hashMap.put("ORA M", CommandsCodes.ORA_M);
+
+        hashMap.put("ORI", CommandsCodes.ORI);
+
+        hashMap.put("XRA A", CommandsCodes.XRA_A);
+        hashMap.put("XRA B", CommandsCodes.XRA_B);
+        hashMap.put("XRA C", CommandsCodes.XRA_C);
+        hashMap.put("XRA D", CommandsCodes.XRA_D);
+        hashMap.put("XRA E", CommandsCodes.XRA_E);
+        hashMap.put("XRA H", CommandsCodes.XRA_H);
+        hashMap.put("XRA L", CommandsCodes.XRA_L);
+        hashMap.put("XRA M", CommandsCodes.XRA_M);
+
+        hashMap.put("XRI", CommandsCodes.XRI);
+
+        hashMap.put("CMP A", CommandsCodes.CMP_A);
+        hashMap.put("CMP B", CommandsCodes.CMP_B);
+        hashMap.put("CMP C", CommandsCodes.CMP_C);
+        hashMap.put("CMP D", CommandsCodes.CMP_D);
+        hashMap.put("CMP E", CommandsCodes.CMP_E);
+        hashMap.put("CMP H", CommandsCodes.CMP_H);
+        hashMap.put("CMP L", CommandsCodes.CMP_L);
+        hashMap.put("CMP M", CommandsCodes.CMP_M);
+
+        hashMap.put("CPI", CommandsCodes.CPI);
+
+        hashMap.put("IN", CommandsCodes.IN);
+        hashMap.put("OUT", CommandsCodes.OUT);
+
+        hashMap.put("STC", CommandsCodes.STC);
+        hashMap.put("CMC", CommandsCodes.CMC);
+        hashMap.put("CMA", CommandsCodes.CMA);
+
+        hashMap.put("PCHL", CommandsCodes.PCHL);
+        hashMap.put("SPHL", CommandsCodes.SPHL);
+
+        hashMap.put("CALL", CommandsCodes.CALL);
+        hashMap.put("RET", CommandsCodes.RET);
+
+        hashMap.put("CNZ", CommandsCodes.CNZ);
+        hashMap.put("CZ", CommandsCodes.CZ);
+        hashMap.put("CNC", CommandsCodes.CNC);
+        hashMap.put("CC", CommandsCodes.CC);
+        hashMap.put("CPO", CommandsCodes.CPO);
+        hashMap.put("CPE", CommandsCodes.CPE);
+        hashMap.put("CP", CommandsCodes.CP);
+        hashMap.put("CM", CommandsCodes.CM);
+
+        hashMap.put("RNZ", CommandsCodes.RNZ);
+        hashMap.put("RZ", CommandsCodes.RZ);
+        hashMap.put("RNC", CommandsCodes.RNC);
+        hashMap.put("RC", CommandsCodes.RC);
+        hashMap.put("RPO", CommandsCodes.RPO);
+        hashMap.put("RPE", CommandsCodes.RPE);
+        hashMap.put("RP", CommandsCodes.RP);
+        hashMap.put("RM", CommandsCodes.RM);
+
+        hashMap.put("PUSH B", CommandsCodes.PUSH_B);
+        hashMap.put("PUSH D", CommandsCodes.PUSH_D);
+        hashMap.put("PUSH H", CommandsCodes.PUSH_H);
+        hashMap.put("PUSH PSW", CommandsCodes.PUSH_PSW);
+
+        hashMap.put("POP B", CommandsCodes.POP_B);
+        hashMap.put("POP D", CommandsCodes.POP_D);
+        hashMap.put("POP H", CommandsCodes.POP_H);
+        hashMap.put("POP PSW", CommandsCodes.POP_PSW);
+
+        hashMap.put("XTHL", CommandsCodes.XTHL);
     }
 }

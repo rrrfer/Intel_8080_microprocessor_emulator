@@ -21,6 +21,20 @@ public class Main {
             for (String cmd : commands) {
                 System.out.println(cmd);
             }
+            System.out.println();
+
+            for (String cmd : commands) {
+                int code[] = translator.getCode(cmd);
+                if (code[0] >= 0) {
+                    System.out.print(code[0] + ": " + code[1] + " bytes - ");
+                    for (int i = 2; i < code.length; ++i) {
+                        if (code[i] >= 0) {
+                            System.out.print(code[i] + " ");
+                        }
+                    }
+                    System.out.println();
+                }
+            }
         }
     }
 
