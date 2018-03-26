@@ -17,8 +17,10 @@ public class Main {
         System.out.println("Result: " + translator.getStatusString());
         System.out.println();
 
-        for (String cmd : commands) {
-            System.out.println(cmd);
+        if (commands != null) {
+            for (String cmd : commands) {
+                System.out.println(cmd);
+            }
         }
     }
 

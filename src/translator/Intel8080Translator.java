@@ -48,11 +48,20 @@ public class Intel8080Translator implements ITranslator {
                     if (newAddress >= 0) {
                         currentAddress = newAddress;
                         continue;
-                    } else {
-                        hasErrors = true;
-                        statusString.append("Ошибка в строке № " + (i + 1) + ". " +
-                                "Неизвестная директива: " + dividedProgramLines[i]);
                     }
+
+                    int data = isDataSet(dividedProgramLines[i]);
+                    if (data >= 0) {
+                        commands.add(Integer.toHexString(currentAddress) +
+                                ":" + Integer.toHexString(data));
+                        currentAddress += 1;
+                        continue;
+                    }
+
+                    hasErrors = true;
+                    statusString.append("Ошибка в строке № " + (i + 1) + ". " +
+                            "Неизвестная или ошибочная директива: " + dividedProgramLines[i]);
+
                 }
 
                 String labelName;
@@ -100,15 +109,17 @@ public class Intel8080Translator implements ITranslator {
             }
         }
 
-        if (!hasErrors) {
-            statusString.append("OK");
-        }
-
         String[] outputCommands = new String[commands.size()];
         for (int i = 0; i < outputCommands.length; ++i) {
             outputCommands[i] = commands.get(i);
         }
-        return outputCommands;
+
+        if (!hasErrors) {
+            statusString.append("OK");
+            return outputCommands;
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -159,6 +170,18 @@ public class Intel8080Translator implements ITranslator {
                 int address = otherRadix2Dec(lex.split(":")[1]);
                 if (address >= 0 && address <= 65535) {
                     return address;
+                }
+            }
+        }
+        return -1;
+    }
+
+    private int isDataSet(String lex) {
+        if (lex.split(":").length == 2) {
+            if (lex.split(":")[0].equals(".set")) {
+                int data = otherRadix2Dec(lex.split(":")[1]);
+                if (data >= 0 && data < 256) {
+                    return data;
                 }
             }
         }
