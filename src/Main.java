@@ -1,6 +1,6 @@
+import emulator.EmulatorIntel8080;
+import emulator.IEmulator;
 import kernel.*;
-import translator.ITranslator;
-import translator.Intel8080Translator;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -9,28 +9,8 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        ITranslator translator = new Intel8080Translator();
-        String[] commands
-                = translator.getLexemes(loadProgramTextFromFile("test.i8080"));
-
-        System.out.println("Has errors: " + translator.getStatusFlag());
-        System.out.println("Result: " + translator.getStatusString());
-        System.out.println();
-
-        if (commands != null) {
-            for (String lex : commands) {
-                int code[] = translator.getCode(lex);
-                if (code[0] >= 0) {
-                    System.out.print("Address = " + code[0] + "; " + " Bytes = " + code[1] + "; ");
-                    for (int i = 2; i < code.length; ++i) {
-                        if (code[i] >= 0) {
-                            System.out.print(code[i] + " ");
-                        }
-                    }
-                    System.out.println();
-                }
-            }
-        }
+        IEmulator emulator = new EmulatorIntel8080();
+        emulator.loadProgram(loadProgramTextFromFile("test.i8080"));
     }
 
     private static String loadProgramTextFromFile(String path) {
@@ -70,9 +50,3 @@ public class Main {
     }
 }
 
-// + Читаем из файла листинг программы
-// + Парсим из файла все лексемы
-// + Переводим символьные метки в физические адреса
-// + Переводим список лексем в hex код
-// - Загружаем каждую команду по соответствующему адресу
-// - По hex коду строим нужный объект команды (отображаем/выполняем)

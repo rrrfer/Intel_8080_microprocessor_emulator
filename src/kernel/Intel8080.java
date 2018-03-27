@@ -98,4 +98,20 @@ public class Intel8080 implements IMicroprocessor {
     public int getRoundedValue(int value) {
         return value % 255;
     }
+
+    @Override
+    public void resetRegisters() {
+        for (int i = 0; i < registers.length; ++i) {
+            registers[i] = 0;
+        }
+
+        for (int i = 0; i < flags.length; ++i) {
+            flags[i] = 0;
+        }
+    }
+
+    @Override
+    public void resetMemory() {
+        memory.reset();
+    }
 }

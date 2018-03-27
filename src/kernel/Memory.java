@@ -27,4 +27,11 @@ public class Memory implements IMemory {
     public int getSize() {
         return memory.length;
     }
+
+    @Override
+    public void reset() {
+        for (int i = 0; i < memory.length; ++i) {
+            memory[i] = 0;
+        }
+    }
 }
