@@ -2,10 +2,12 @@ package emulator;
 
 import kernel.IViewMicroprocessor;
 
-interface IEmulator {
-    IViewMicroprocessor run();
-    IViewMicroprocessor step();
+public interface IEmulator {
+    void run();
+    void step();
     void loadProgram(String program);
-    boolean hasErrors();
-    String getTranslationsResult();
+    boolean hasTranslationErrors();
+    String getTranslationResult();
+    String[] getCommandsList();
+    IViewMicroprocessor getViewInterface();
 }

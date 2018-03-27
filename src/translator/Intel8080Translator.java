@@ -92,6 +92,8 @@ public class Intel8080Translator implements ITranslator {
 
         }
 
+        currentAddress = 0;
+
         // Разбор и трансляция команд
         for (int i = 0; i < dividedProgramLines.length; ++i) {
             if (!dividedProgramLines[i].isEmpty()) {

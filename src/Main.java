@@ -11,6 +11,10 @@ public class Main {
     public static void main(String[] args) throws Exception {
         IEmulator emulator = new EmulatorIntel8080();
         emulator.loadProgram(loadProgramTextFromFile("test.i8080"));
+        String[] commands = emulator.getCommandsList();
+        for (int i = 0; i < 10; ++i) {
+            System.out.println(commands[i]);
+        }
     }
 
     private static String loadProgramTextFromFile(String path) {
@@ -50,3 +54,4 @@ public class Main {
     }
 }
 
+// Полностью реализовать систему команд
