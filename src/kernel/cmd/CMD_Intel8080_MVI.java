@@ -15,7 +15,12 @@ public class CMD_Intel8080_MVI implements ICommand {
     @Override
     public void execute(IMicroprocessor microprocessor) {
         int value = Integer.valueOf(secondArg, 16);
-        microprocessor.setValueByRegisterName(firstArg, value);
+        if (firstArg.equals("M")) {
+            int address = microprocessor.getValueByRegisterPairName("HL");
+            microprocessor.getMemory().setValueByIndex(address, value);
+        } else {
+            microprocessor.setValueByRegisterName(firstArg, value);
+        }
     }
 
     @Override

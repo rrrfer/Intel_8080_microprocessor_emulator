@@ -4,7 +4,7 @@ import kernel.IViewMicroprocessor;
 
 public interface IEmulator {
     void run();
-    void step();
+    boolean step();
     void loadProgram(String program);
     boolean hasTranslationErrors();
     String getTranslationResult();

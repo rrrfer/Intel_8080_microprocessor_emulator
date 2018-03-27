@@ -14,8 +14,21 @@ public class CMD_Intel8080_MOV implements ICommand {
 
     @Override
     public void execute(IMicroprocessor microprocessor) {
-        int value = microprocessor.getValueByRegisterName(secondArg);
-        microprocessor.setValueByRegisterName(firstArg, value);
+        int value;
+
+        if (secondArg.equals("M")) {
+            int address = microprocessor.getValueByRegisterPairName("HL");
+            value = microprocessor.getMemory().getValueByIndex(address);
+        } else {
+            value = microprocessor.getValueByRegisterName(secondArg);
+        }
+
+        if (firstArg.equals("M")) {
+           int address = microprocessor.getValueByRegisterPairName("HL");
+           microprocessor.getMemory().setValueByIndex(address, value);
+        } else {
+            microprocessor.setValueByRegisterName(firstArg, value);
+        }
     }
 
     @Override

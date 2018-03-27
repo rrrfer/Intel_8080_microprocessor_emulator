@@ -413,7 +413,7 @@ public class Intel8080Translator implements ITranslator {
                                 }
                             }
                             if (a == 'a' || a == 'b' || a == 'c' || a == 'd' ||
-                                    a == 'e' || a == 'h' || a == 'l') {
+                                    a == 'e' || a == 'h' || a == 'l' || a == 'm') {
                                 commands.add(Integer.toHexString(currentAddress) + ":" + cmdName + " " + a);
                                 currentAddress += 1;
                                 isCorrect = true;
@@ -481,10 +481,16 @@ public class Intel8080Translator implements ITranslator {
                         if (argument[0].length() == 1 && argument[1].length() == 1) {
                             char a = argument[0].charAt(0);
                             if (a == 'a' || a == 'b' || a == 'c' || a == 'd' || a == 'e' ||
-                                    a == 'h' || a == 'l') {
+                                    a == 'h' || a == 'l' || a == 'm') {
                                 a = argument[1].charAt(0);
                                 if (a == 'a' || a == 'b' || a == 'c' || a == 'd' || a == 'e' ||
-                                        a == 'h' || a == 'l') {
+                                        a == 'h' || a == 'l' || a == 'm') {
+
+                                    if (argument[0].charAt(0) == 'm') {
+                                        if (argument[1].charAt(0) == 'm') {
+                                            break;
+                                        }
+                                    }
 
                                     commands.add(Integer.toHexString(currentAddress) + ":" + cmdName + " " + argument[0] + "," + argument[1]);
                                     currentAddress += 1;
@@ -714,7 +720,6 @@ public class Intel8080Translator implements ITranslator {
         hashMap.put("MOV M,E", CommandsCodes.MOV_M_E);
         hashMap.put("MOV M,H", CommandsCodes.MOV_M_H);
         hashMap.put("MOV M,L", CommandsCodes.MOV_M_L);
-        hashMap.put("MOV M,M", CommandsCodes.MOV_M_M);
 
         hashMap.put("ADD A", CommandsCodes.ADD_A);
         hashMap.put("ADD B", CommandsCodes.ADD_B);

@@ -13,7 +13,14 @@ public class CMD_Intel8080_ADD implements ICommand {
     @Override
     public void execute(IMicroprocessor microprocessor) {
         int value = microprocessor.getValueByRegisterName("A");
-        value = value + microprocessor.getValueByRegisterName(arg);
+        int secondValue;
+        if (arg.equals("M")) {
+            int address = microprocessor.getValueByRegisterPairName("HL");
+            secondValue = microprocessor.getMemory().getValueByIndex(address);
+        } else {
+            secondValue = microprocessor.getValueByRegisterName(arg);
+        }
+        value = value + secondValue;
         microprocessor.checkValueForSetFlags(value);
         value = microprocessor.getRoundedValue(value);
         microprocessor.setValueByRegisterName("A", value);

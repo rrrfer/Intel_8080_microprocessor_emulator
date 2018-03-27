@@ -73,7 +73,6 @@ public class CommandsCodes {
     public static final int MOV_M_E = 0b0111_0011;
     public static final int MOV_M_H = 0b0111_0100;
     public static final int MOV_M_L = 0b0111_0101;
-    public static final int MOV_M_M = 0b0111_0110;
     public static final int MOV_M_A = 0b0111_0111;
 
     public static final int MOV_A_B = 0b0111_1000;

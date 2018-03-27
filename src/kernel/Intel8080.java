@@ -114,4 +114,48 @@ public class Intel8080 implements IMicroprocessor {
     public void resetMemory() {
         memory.reset();
     }
+
+    @Override
+    public int getValueByRegisterPairName(String registerPairName) {
+        int value = 0;
+        switch (registerPairName) {
+            case "BC": {
+                value = registers[registerByName.get("B")] * 256;
+                value += registers[registerByName.get("C")];
+                break;
+            }
+            case "DE": {
+                value = registers[registerByName.get("D")] * 256;
+                value += registers[registerByName.get("E")];
+                break;
+            }
+            case "HL": {
+                value = registers[registerByName.get("H")] * 256;
+                value += registers[registerByName.get("L")];
+                break;
+            }
+        }
+        return value;
+    }
+
+    @Override
+    public void setValueByRegisterPairName(String registerPairName, int value) {
+        switch (registerPairName) {
+            case "BC": {
+                registers[registerByName.get("B")] = value / 256;
+                registers[registerByName.get("C")] = value % 256;
+                break;
+            }
+            case "DE": {
+                registers[registerByName.get("D")] = value / 256;
+                registers[registerByName.get("E")] = value % 256;
+                break;
+            }
+            case "HL": {
+                registers[registerByName.get("H")] = value / 256;
+                registers[registerByName.get("L")] = value % 256;
+                break;
+            }
+        }
+    }
 }

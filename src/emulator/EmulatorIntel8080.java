@@ -25,8 +25,14 @@ public class EmulatorIntel8080 implements IEmulator {
     }
 
     @Override
-    public void step() {
-
+    public boolean step() {
+        int address = microprocessor.getValueByRegisterName("PC");
+        ICommand command = CommandsBuilder.getCommand(microprocessor.getMemory(), address);
+        if (!command.getName().equals("HLT")) {
+            microprocessor.executeCommand(command);
+            return true;
+        }
+        return false;
     }
 
     @Override

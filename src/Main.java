@@ -12,12 +12,23 @@ public class Main {
         IEmulator emulator = new EmulatorIntel8080();
         emulator.loadProgram(loadProgramTextFromFile("test.i8080"));
         String[] commands = emulator.getCommandsList();
-        for (int i = 0; i < 10; ++i) {
-            System.out.println(commands[i]);
+        if (!emulator.hasTranslationErrors()) {
+            for (int i = 0; i < 20; ++i) {
+                System.out.println(commands[i]);
+            }
+        } else {
+            System.out.println(emulator.getTranslationResult());
+        }
+
+        System.out.println();
+        System.out.println();
+
+        while (emulator.step()) {
+            viewIntel8080State(emulator.getViewInterface());
         }
     }
 
-    private static String loadProgramTextFromFile(String path) {
+    public static String loadProgramTextFromFile(String path) {
         try {
             BufferedReader bufferedReader
                     = new BufferedReader(new FileReader(new File(path)));
@@ -33,7 +44,7 @@ public class Main {
         }
     }
 
-    private static void viewIntel8080State(IMicroprocessor microprocessor) {
+    public static void viewIntel8080State(IViewMicroprocessor microprocessor) {
         System.out.println("= = = State intel8080 = = =");
         System.out.println("*GPR*");
         System.out.println("A: " + microprocessor.getValueByRegisterName("A"));

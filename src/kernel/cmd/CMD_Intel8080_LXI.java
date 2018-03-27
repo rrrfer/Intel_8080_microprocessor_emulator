@@ -15,7 +15,9 @@ public class CMD_Intel8080_LXI implements ICommand {
     @Override
     public void execute(IMicroprocessor microprocessor) {
         int value = Integer.valueOf(secondArg, 16);
-        microprocessor.setValueByRegisterName(firstArg, value / 256);
+        if (!firstArg.equals("SP")) {
+            microprocessor.setValueByRegisterName(firstArg, value / 256);
+        }
         switch (firstArg) {
             case "B": {
                 microprocessor.setValueByRegisterName("C", value % 256);
@@ -28,6 +30,9 @@ public class CMD_Intel8080_LXI implements ICommand {
             case "H": {
                 microprocessor.setValueByRegisterName("L", value % 256);
                 break;
+            }
+            case "SP": {
+                microprocessor.setValueByRegisterName("SP", value);
             }
         }
     }
