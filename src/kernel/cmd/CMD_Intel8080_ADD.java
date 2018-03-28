@@ -15,7 +15,7 @@ public class CMD_Intel8080_ADD implements ICommand {
         int value = microprocessor.getValueByRegisterName("A");
         int secondValue;
         if (arg.equals("M")) {
-            int address = microprocessor.getValueByRegisterPairName("HL");
+            int address = microprocessor.getValueByRegisterPairName("H");
             secondValue = microprocessor.getMemory().getValueByIndex(address);
         } else {
             secondValue = microprocessor.getValueByRegisterName(arg);

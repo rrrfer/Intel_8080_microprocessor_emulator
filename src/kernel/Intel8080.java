@@ -119,17 +119,17 @@ public class Intel8080 implements IMicroprocessor {
     public int getValueByRegisterPairName(String registerPairName) {
         int value = 0;
         switch (registerPairName) {
-            case "BC": {
+            case "B": {
                 value = registers[registerByName.get("B")] * 256;
                 value += registers[registerByName.get("C")];
                 break;
             }
-            case "DE": {
+            case "D": {
                 value = registers[registerByName.get("D")] * 256;
                 value += registers[registerByName.get("E")];
                 break;
             }
-            case "HL": {
+            case "H": {
                 value = registers[registerByName.get("H")] * 256;
                 value += registers[registerByName.get("L")];
                 break;
@@ -141,17 +141,17 @@ public class Intel8080 implements IMicroprocessor {
     @Override
     public void setValueByRegisterPairName(String registerPairName, int value) {
         switch (registerPairName) {
-            case "BC": {
+            case "B": {
                 registers[registerByName.get("B")] = value / 256;
                 registers[registerByName.get("C")] = value % 256;
                 break;
             }
-            case "DE": {
+            case "D": {
                 registers[registerByName.get("D")] = value / 256;
                 registers[registerByName.get("E")] = value % 256;
                 break;
             }
-            case "HL": {
+            case "H": {
                 registers[registerByName.get("H")] = value / 256;
                 registers[registerByName.get("L")] = value % 256;
                 break;

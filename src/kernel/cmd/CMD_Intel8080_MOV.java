@@ -17,14 +17,14 @@ public class CMD_Intel8080_MOV implements ICommand {
         int value;
 
         if (secondArg.equals("M")) {
-            int address = microprocessor.getValueByRegisterPairName("HL");
+            int address = microprocessor.getValueByRegisterPairName("H");
             value = microprocessor.getMemory().getValueByIndex(address);
         } else {
             value = microprocessor.getValueByRegisterName(secondArg);
         }
 
         if (firstArg.equals("M")) {
-           int address = microprocessor.getValueByRegisterPairName("HL");
+           int address = microprocessor.getValueByRegisterPairName("H");
            microprocessor.getMemory().setValueByIndex(address, value);
         } else {
             microprocessor.setValueByRegisterName(firstArg, value);

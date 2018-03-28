@@ -23,8 +23,10 @@ public class Main {
         System.out.println();
         System.out.println();
 
-        while (emulator.step()) {
-            viewIntel8080State(emulator.getViewInterface());
+        if (!emulator.hasTranslationErrors()) {
+            while (emulator.step()) {
+                viewIntel8080State(emulator.getViewInterface());
+            }
         }
     }
 

@@ -10,12 +10,12 @@ public class Memory implements IMemory {
 
     @Override
     public int getValueByIndex(int index) {
-        return memory[index];
+        return memory[index % getSize()];
     }
 
     @Override
     public void setValueByIndex(int index, int value) {
-        memory[index] = value;
+        memory[index % getSize()] = value;
     }
 
     @Override

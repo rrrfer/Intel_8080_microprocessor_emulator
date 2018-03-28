@@ -256,21 +256,15 @@ public class CommandsBuilder {
             //================================================================================
 
             case CommandsCodes.LXI_B_data: {
-                int value = memory.getValueByIndex(address + 1) * 256;
-                value += memory.getValueByIndex(address + 2);
-                String arg = Integer.toString(value, 16);
+                String arg = getValueFromNext2Bytes(memory, address);
                 return new CMD_Intel8080_LXI("B", arg);
             }
             case CommandsCodes.LXI_D_data: {
-                int value = memory.getValueByIndex(address + 1) * 256;
-                value += memory.getValueByIndex(address + 2);
-                String arg = Integer.toString(value, 16);
+                String arg = getValueFromNext2Bytes(memory, address);
                 return new CMD_Intel8080_LXI("D", arg);
             }
             case CommandsCodes.LXI_H_data: {
-                int value = memory.getValueByIndex(address + 1) * 256;
-                value += memory.getValueByIndex(address + 2);
-                String arg = Integer.toString(value, 16);
+                String arg = getValueFromNext2Bytes(memory, address);
                 return new CMD_Intel8080_LXI("H", arg);
             }
             //case CommandsCodes.LXI_PSW_data: {
@@ -279,6 +273,65 @@ public class CommandsBuilder {
             //    String arg = Integer.toString(value, 16);
             //    return new CMD_Intel8080_LXI("B", arg);
             //}
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.LDA: {
+                String arg = getValueFromNext2Bytes(memory, address);
+                return new CMD_Intel8080_LDA(arg);
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.LHLD: {
+                String arg = getValueFromNext2Bytes(memory, address);
+                return new CMD_Intel8080_LHLD(arg);
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.STA: {
+                String arg = getValueFromNext2Bytes(memory, address);
+                return new CMD_Intel8080_STA(arg);
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.SHLD: {
+                String arg = getValueFromNext2Bytes(memory, address);
+                return new CMD_Intel8080_SHLD(arg);
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.LDAX_B: {
+                return new CMD_Intel8080_LDAX("B");
+            }
+            case CommandsCodes.LDAX_D: {
+                return new CMD_Intel8080_LDAX("D");
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.STAX_B: {
+                return new CMD_Intel8080_STAX("B");
+            }
+            case CommandsCodes.STAX_D: {
+                return new CMD_Intel8080_STAX("D");
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.XCHG: {
+                return new CMD_Intel8080_XCHG();
+            }
 
             //================================================================================
             //================================================================================
@@ -372,5 +425,11 @@ public class CommandsBuilder {
             //}
         }
         return null;
+    }
+
+    private static String getValueFromNext2Bytes(IMemory memory, int address) {
+        int value = memory.getValueByIndex(address + 1) * 256;
+        value += memory.getValueByIndex(address + 2);
+        return Integer.toString(value, 16);
     }
 }
