@@ -12,7 +12,7 @@ public class CMD_Intel8080_ADD implements ICommand {
 
     @Override
     public void execute(IMicroprocessor microprocessor) {
-        int value = microprocessor.getValueByRegisterName("A");
+        int firstValue = microprocessor.getValueByRegisterName("A");
         int secondValue;
         if (arg.equals("M")) {
             int address = microprocessor.getValueByRegisterPairName("H");
@@ -20,10 +20,10 @@ public class CMD_Intel8080_ADD implements ICommand {
         } else {
             secondValue = microprocessor.getValueByRegisterName(arg);
         }
-        value = value + secondValue;
-        microprocessor.checkValueForSetFlags(value);
-        value = microprocessor.getRoundedValue(value);
-        microprocessor.setValueByRegisterName("A", value);
+        firstValue = firstValue + secondValue;
+        microprocessor.checkValueForSetFlags(firstValue);
+        firstValue = microprocessor.getRoundedValue(firstValue);
+        microprocessor.setValueByRegisterName("A", firstValue);
     }
 
     @Override

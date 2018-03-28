@@ -220,35 +220,35 @@ public class CommandsBuilder {
             //================================================================================
 
             case CommandsCodes.MVI_A: {
-                String arg = Integer.toString(memory.getValueByIndex(address + 1), 16);
+                String arg = getValueFromNextByte(memory, address);
                 return new CMD_Intel8080_MVI("A", arg);
             }
             case CommandsCodes.MVI_B: {
-                String arg = Integer.toString(memory.getValueByIndex(address + 1), 16);
+                String arg = getValueFromNextByte(memory, address);
                 return new CMD_Intel8080_MVI("B", arg);
             }
             case CommandsCodes.MVI_C: {
-                String arg = Integer.toString(memory.getValueByIndex(address + 1), 16);
+                String arg = getValueFromNextByte(memory, address);
                 return new CMD_Intel8080_MVI("C", arg);
             }
             case CommandsCodes.MVI_D: {
-                String arg = Integer.toString(memory.getValueByIndex(address + 1), 16);
+                String arg = getValueFromNextByte(memory, address);
                 return new CMD_Intel8080_MVI("D", arg);
             }
             case CommandsCodes.MVI_E: {
-                String arg = Integer.toString(memory.getValueByIndex(address + 1), 16);
+                String arg = getValueFromNextByte(memory, address);
                 return new CMD_Intel8080_MVI("E", arg);
             }
             case CommandsCodes.MVI_H: {
-                String arg = Integer.toString(memory.getValueByIndex(address + 1), 16);
+                String arg = getValueFromNextByte(memory, address);
                 return new CMD_Intel8080_MVI("H", arg);
             }
             case CommandsCodes.MVI_L: {
-                String arg = Integer.toString(memory.getValueByIndex(address + 1), 16);
+                String arg = getValueFromNextByte(memory, address);
                 return new CMD_Intel8080_MVI("L", arg);
             }
             case CommandsCodes.MVI_M: {
-                String arg = Integer.toString(memory.getValueByIndex(address + 1), 16);
+                String arg = getValueFromNextByte(memory, address);
                 return new CMD_Intel8080_MVI("M", arg);
             }
 
@@ -364,6 +364,14 @@ public class CommandsBuilder {
             //================================================================================
             //================================================================================
 
+            case CommandsCodes.ADI: {
+                String arg = getValueFromNextByte(memory, address);
+                return new CMD_Intel8080_ADI(arg);
+            }
+
+            //================================================================================
+            //================================================================================
+
             case CommandsCodes.SUB_A: {
                 return new CMD_Intel8080_SUB("A");
             }
@@ -431,5 +439,9 @@ public class CommandsBuilder {
         int value = memory.getValueByIndex(address + 1) * 256;
         value += memory.getValueByIndex(address + 2);
         return Integer.toString(value, 16);
+    }
+
+    private static String getValueFromNextByte(IMemory memory, int address) {
+        return Integer.toString(memory.getValueByIndex(address + 1), 16);
     }
 }
