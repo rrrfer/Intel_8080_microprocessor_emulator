@@ -2,11 +2,11 @@ package kernel.cmd;
 
 import kernel.IMicroprocessor;
 
-public class CMD_Intel8080_ADI implements ICommand {
+public class CMD_Intel8080_ACI implements ICommand {
 
     private String arg;
 
-    public CMD_Intel8080_ADI(String arg) {
+    public CMD_Intel8080_ACI(String arg) {
         this.arg = arg.toUpperCase();
     }
 
@@ -14,7 +14,7 @@ public class CMD_Intel8080_ADI implements ICommand {
     public void execute(IMicroprocessor microprocessor) {
         int firstValue = Integer.valueOf(arg, 16);
         int secondValue = microprocessor.getValueByRegisterName("A");
-        firstValue += secondValue;
+        firstValue += secondValue + microprocessor.getValueByFlagName("C");
         microprocessor.checkByteForSetFlags(firstValue);
         firstValue = microprocessor.getRoundedByte(firstValue);
         microprocessor.setValueByRegisterName("A", firstValue);
@@ -27,6 +27,6 @@ public class CMD_Intel8080_ADI implements ICommand {
 
     @Override
     public String getName() {
-        return "ADI " + arg;
+        return "ACI " + arg;
     }
 }

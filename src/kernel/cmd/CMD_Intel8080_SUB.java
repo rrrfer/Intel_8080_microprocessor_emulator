@@ -15,14 +15,14 @@ public class CMD_Intel8080_SUB implements ICommand {
         int firstValue = microprocessor.getValueByRegisterName("A");
         int secondValue;
         if (arg.equals("M")) {
-            int address = microprocessor.getValueByRegisterPairName("HL");
+            int address = microprocessor.getValueByRegisterPairName("H");
             secondValue = microprocessor.getMemory().getValueByIndex(address);
         } else {
             secondValue = microprocessor.getValueByRegisterName(arg);
         }
         firstValue = firstValue - secondValue;
-        microprocessor.checkValueForSetFlags(firstValue);
-        firstValue = microprocessor.getRoundedValue(firstValue);
+        microprocessor.checkByteForSetFlags(firstValue);
+        firstValue = microprocessor.getRoundedByte(firstValue);
         microprocessor.setValueByRegisterName("A", firstValue);
     }
 

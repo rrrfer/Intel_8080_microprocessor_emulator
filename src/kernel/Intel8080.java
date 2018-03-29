@@ -72,8 +72,8 @@ public class Intel8080 implements IMicroprocessor {
     }
 
     @Override
-    public void checkValueForSetFlags(int value) {
-        if (value == 0) {
+    public void checkByteForSetFlags(int value) {
+        if (value % 256 == 0) {
             setValueByFlagName("Z", 1);
         } else {
             setValueByFlagName("Z", 0);
@@ -95,8 +95,34 @@ public class Intel8080 implements IMicroprocessor {
     }
 
     @Override
-    public int getRoundedValue(int value) {
-        return value % 255;
+    public void checkWordForSetFlags(int value) {
+        if (value % 65536 == 0) {
+            setValueByFlagName("Z", 1);
+        } else {
+            setValueByFlagName("Z", 0);
+        }
+
+        if (value < 0) {
+            setValueByFlagName("S", 1);
+        } else {
+            setValueByFlagName("S", 0);
+        }
+
+        if (value > 65535 || value < 0) {
+            setValueByFlagName("C", 1);
+        } else {
+            setValueByFlagName("C", 0);
+        }
+    }
+
+    @Override
+    public int getRoundedByte(int value) {
+        return (value + 256) % 256;
+    }
+
+    @Override
+    public int getRoundedWord(int value) {
+        return (value + 65536) % 65536;
     }
 
     @Override

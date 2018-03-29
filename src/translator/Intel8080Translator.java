@@ -399,7 +399,7 @@ public class Intel8080Translator implements ITranslator {
                 case 1: {
                     if (lex.split(" ").length == 2) {
                         String argument = lex.split(" ")[1];
-                        if (argument.length() == 1) {
+                        if (argument.length() == 1 || argument.equals("sp")) {
                             char a = argument.charAt(0);
                             if (cmdName.equals("ldax") || cmdName.equals("stax")) {
                                 if (a != 'b' && a != 'd') {
@@ -408,13 +408,13 @@ public class Intel8080Translator implements ITranslator {
                             }
                             if (cmdName.equals("push") || cmdName.equals("pop") || cmdName.equals("dad") ||
                                     cmdName.equals("inx") || cmdName.equals("dcx")) {
-                                if (a != 'b' && a != 'd' && a != 'h') {
+                                if (a != 'b' && a != 'd' && a != 'h' && !argument.equals("sp")) {
                                     break;
                                 }
                             }
                             if (a == 'a' || a == 'b' || a == 'c' || a == 'd' ||
-                                    a == 'e' || a == 'h' || a == 'l' || a == 'm') {
-                                commands.add(Integer.toHexString(currentAddress) + ":" + cmdName + " " + a);
+                                    a == 'e' || a == 'h' || a == 'l' || a == 'm' || argument.equals("sp")) {
+                                commands.add(Integer.toHexString(currentAddress) + ":" + cmdName + " " + argument);
                                 currentAddress += 1;
                                 isCorrect = true;
                             }
@@ -453,14 +453,14 @@ public class Intel8080Translator implements ITranslator {
                         String argument[] = lex.split(" ", 2)[1].replace(" ", "")
                                 .split(",");
                         if (argument.length == 2) {
-                            if (argument[0].length() == 1) {
+                            if (argument[0].length() == 1 || argument[0].equals("sp")) {
                                 char a = argument[0].charAt(0);
-                                if (a == 'b' || a == 'd' || a == 'h') {
+                                if (a == 'b' || a == 'd' || a == 'h' || argument[0].equals("sp")) {
                                     try {
                                         int numberArg = otherRadix2Dec(argument[1]);
                                         if (numberArg >= 0 && numberArg <= 65535) {
 
-                                            commands.add(Integer.toHexString(currentAddress) + ":" + cmdName + " " + a + "," + Integer.toHexString(numberArg));
+                                            commands.add(Integer.toHexString(currentAddress) + ":" + cmdName + " " + argument[0] + "," + Integer.toHexString(numberArg));
                                             currentAddress += 3;
                                             isCorrect = true;
                                         }
@@ -648,7 +648,7 @@ public class Intel8080Translator implements ITranslator {
         hashMap.put("LXI B", CommandsCodes.LXI_B_data);
         hashMap.put("LXI D", CommandsCodes.LXI_D_data);
         hashMap.put("LXI H", CommandsCodes.LXI_H_data);
-        hashMap.put("LXI PWS", CommandsCodes.LXI_PSW_data);
+        hashMap.put("LXI SP", CommandsCodes.LXI_SP_data);
 
         hashMap.put("MOV A,A", CommandsCodes.MOV_A_A);
         hashMap.put("MOV A,B", CommandsCodes.MOV_A_B);
@@ -777,7 +777,7 @@ public class Intel8080Translator implements ITranslator {
         hashMap.put("INX B", CommandsCodes.INX_B);
         hashMap.put("INX D", CommandsCodes.INX_D);
         hashMap.put("INX H", CommandsCodes.INX_H);
-        hashMap.put("INX PSW", CommandsCodes.INX_PSW);
+        hashMap.put("INX SP", CommandsCodes.INX_SP);
 
         hashMap.put("DCR A", CommandsCodes.DCR_A);
         hashMap.put("DCR B", CommandsCodes.DCR_B);
@@ -791,7 +791,7 @@ public class Intel8080Translator implements ITranslator {
         hashMap.put("DCX B", CommandsCodes.DCX_B);
         hashMap.put("DCX D", CommandsCodes.DCX_D);
         hashMap.put("DCX H", CommandsCodes.DCX_H);
-        hashMap.put("DCX PSW", CommandsCodes.DCX_PSW);
+        hashMap.put("DCX SP", CommandsCodes.DCX_SP);
 
         hashMap.put("HLT", CommandsCodes.HLT);
 
@@ -830,7 +830,7 @@ public class Intel8080Translator implements ITranslator {
         hashMap.put("DAD B", CommandsCodes.DAD_B);
         hashMap.put("DAD D", CommandsCodes.DAD_D);
         hashMap.put("DAD H", CommandsCodes.DAD_H);
-        hashMap.put("DAD PSW", CommandsCodes.DAD_PSW);
+        hashMap.put("DAD SP", CommandsCodes.DAD_SP);
 
         hashMap.put("ANA A", CommandsCodes.ANA_A);
         hashMap.put("ANA B", CommandsCodes.ANA_B);

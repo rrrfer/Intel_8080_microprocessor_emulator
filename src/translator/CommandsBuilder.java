@@ -256,29 +256,27 @@ public class CommandsBuilder {
             //================================================================================
 
             case CommandsCodes.LXI_B_data: {
-                String arg = getValueFromNext2Bytes(memory, address);
+                String arg = getValueFromNextWord(memory, address);
                 return new CMD_Intel8080_LXI("B", arg);
             }
             case CommandsCodes.LXI_D_data: {
-                String arg = getValueFromNext2Bytes(memory, address);
+                String arg = getValueFromNextWord(memory, address);
                 return new CMD_Intel8080_LXI("D", arg);
             }
             case CommandsCodes.LXI_H_data: {
-                String arg = getValueFromNext2Bytes(memory, address);
+                String arg = getValueFromNextWord(memory, address);
                 return new CMD_Intel8080_LXI("H", arg);
             }
-            //case CommandsCodes.LXI_PSW_data: {
-            //    int value = memory.getValueByIndex(address + 1) * 256;
-            //    value += memory.getValueByIndex(address + 2);
-            //    String arg = Integer.toString(value, 16);
-            //    return new CMD_Intel8080_LXI("B", arg);
-            //}
+            case CommandsCodes.LXI_SP_data: {
+                String arg = getValueFromNextWord(memory, address);
+                return new CMD_Intel8080_LXI("SP", arg);
+            }
 
             //================================================================================
             //================================================================================
 
             case CommandsCodes.LDA: {
-                String arg = getValueFromNext2Bytes(memory, address);
+                String arg = getValueFromNextWord(memory, address);
                 return new CMD_Intel8080_LDA(arg);
             }
 
@@ -286,7 +284,7 @@ public class CommandsBuilder {
             //================================================================================
 
             case CommandsCodes.LHLD: {
-                String arg = getValueFromNext2Bytes(memory, address);
+                String arg = getValueFromNextWord(memory, address);
                 return new CMD_Intel8080_LHLD(arg);
             }
 
@@ -294,7 +292,7 @@ public class CommandsBuilder {
             //================================================================================
 
             case CommandsCodes.STA: {
-                String arg = getValueFromNext2Bytes(memory, address);
+                String arg = getValueFromNextWord(memory, address);
                 return new CMD_Intel8080_STA(arg);
             }
 
@@ -302,7 +300,7 @@ public class CommandsBuilder {
             //================================================================================
 
             case CommandsCodes.SHLD: {
-                String arg = getValueFromNext2Bytes(memory, address);
+                String arg = getValueFromNextWord(memory, address);
                 return new CMD_Intel8080_SHLD(arg);
             }
 
@@ -372,6 +370,42 @@ public class CommandsBuilder {
             //================================================================================
             //================================================================================
 
+            case CommandsCodes.ADC_A: {
+                return new CMD_Intel8080_ADC("A");
+            }
+            case CommandsCodes.ADC_B: {
+                return new CMD_Intel8080_ADC("B");
+            }
+            case CommandsCodes.ADC_C: {
+                return new CMD_Intel8080_ADC("C");
+            }
+            case CommandsCodes.ADC_D: {
+                return new CMD_Intel8080_ADC("D");
+            }
+            case CommandsCodes.ADC_E: {
+                return new CMD_Intel8080_ADC("E");
+            }
+            case CommandsCodes.ADC_H: {
+                return new CMD_Intel8080_ADC("H");
+            }
+            case CommandsCodes.ADC_L: {
+                return new CMD_Intel8080_ADC("L");
+            }
+            case CommandsCodes.ADC_M: {
+                return new CMD_Intel8080_ADC("M");
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.ACI: {
+                String arg = getValueFromNextByte(memory, address);
+                return new CMD_Intel8080_ACI(arg);
+            }
+
+            //================================================================================
+            //================================================================================
+
             case CommandsCodes.SUB_A: {
                 return new CMD_Intel8080_SUB("A");
             }
@@ -399,6 +433,344 @@ public class CommandsBuilder {
 
             //================================================================================
             //================================================================================
+
+            case CommandsCodes.SUI: {
+                String arg = getValueFromNextByte(memory, address);
+                return new CMD_Intel8080_SUI(arg);
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.SBB_A: {
+                return new CMD_Intel8080_SBB("A");
+            }
+            case CommandsCodes.SBB_B: {
+                return new CMD_Intel8080_SBB("B");
+            }
+            case CommandsCodes.SBB_C: {
+                return new CMD_Intel8080_SBB("C");
+            }
+            case CommandsCodes.SBB_D: {
+                return new CMD_Intel8080_SBB("D");
+            }
+            case CommandsCodes.SBB_E: {
+                return new CMD_Intel8080_SBB("E");
+            }
+            case CommandsCodes.SBB_H: {
+                return new CMD_Intel8080_SBB("H");
+            }
+            case CommandsCodes.SBB_L: {
+                return new CMD_Intel8080_SBB("L");
+            }
+            case CommandsCodes.SBB_M: {
+                return new CMD_Intel8080_SBB("M");
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.SBI: {
+                String arg = getValueFromNextByte(memory, address);
+                return new CMD_Intel8080_SBI(arg);
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.INR_A: {
+                return new CMD_Intel8080_INR("A");
+            }
+            case CommandsCodes.INR_B: {
+                return new CMD_Intel8080_INR("B");
+            }
+            case CommandsCodes.INR_C: {
+                return new CMD_Intel8080_INR("C");
+            }
+            case CommandsCodes.INR_D: {
+                return new CMD_Intel8080_INR("D");
+            }
+            case CommandsCodes.INR_E: {
+                return new CMD_Intel8080_INR("E");
+            }
+            case CommandsCodes.INR_H: {
+                return new CMD_Intel8080_INR("H");
+            }
+            case CommandsCodes.INR_L: {
+                return new CMD_Intel8080_INR("L");
+            }
+            case CommandsCodes.INR_M: {
+                return new CMD_Intel8080_INR("M");
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.INX_B: {
+                return new CMD_Intel8080_INX("B");
+            }
+            case CommandsCodes.INX_D: {
+                return new CMD_Intel8080_INX("D");
+            }
+            case CommandsCodes.INX_H: {
+                return new CMD_Intel8080_INX("H");
+            }
+            case CommandsCodes.INX_SP: {
+                return new CMD_Intel8080_INX("SP");
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.DCR_A: {
+                return new CMD_Intel8080_DCR("A");
+            }
+            case CommandsCodes.DCR_B: {
+                return new CMD_Intel8080_DCR("B");
+            }
+            case CommandsCodes.DCR_C: {
+                return new CMD_Intel8080_DCR("C");
+            }
+            case CommandsCodes.DCR_D: {
+                return new CMD_Intel8080_DCR("D");
+            }
+            case CommandsCodes.DCR_E: {
+                return new CMD_Intel8080_DCR("E");
+            }
+            case CommandsCodes.DCR_H: {
+                return new CMD_Intel8080_DCR("H");
+            }
+            case CommandsCodes.DCR_L: {
+                return new CMD_Intel8080_DCR("L");
+            }
+            case CommandsCodes.DCR_M: {
+                return new CMD_Intel8080_DCR("M");
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.DCX_B: {
+                return new CMD_Intel8080_DCX("B");
+            }
+            case CommandsCodes.DCX_D: {
+                return new CMD_Intel8080_DCX("D");
+            }
+            case CommandsCodes.DCX_H: {
+                return new CMD_Intel8080_DCX("H");
+            }
+            case CommandsCodes.DCX_SP: {
+                return new CMD_Intel8080_DCX("SP");
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.DAD_B: {
+                return new CMD_Intel8080_DAD("B");
+            }
+            case CommandsCodes.DAD_D: {
+                return new CMD_Intel8080_DAD("D");
+            }
+            case CommandsCodes.DAD_H: {
+                return new CMD_Intel8080_DAD("H");
+            }
+            case CommandsCodes.DAD_SP: {
+                return new CMD_Intel8080_DAD("SP");
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.ANA_A: {
+                return new CMD_Intel8080_ANA("A");
+            }
+            case CommandsCodes.ANA_B: {
+                return new CMD_Intel8080_ANA("B");
+            }
+            case CommandsCodes.ANA_C: {
+                return new CMD_Intel8080_ANA("C");
+            }
+            case CommandsCodes.ANA_D: {
+                return new CMD_Intel8080_ANA("D");
+            }
+            case CommandsCodes.ANA_E: {
+                return new CMD_Intel8080_ANA("E");
+            }
+            case CommandsCodes.ANA_H: {
+                return new CMD_Intel8080_ANA("H");
+            }
+            case CommandsCodes.ANA_L: {
+                return new CMD_Intel8080_ANA("L");
+            }
+            case CommandsCodes.ANA_M: {
+                return new CMD_Intel8080_ANA("M");
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.ANI: {
+                String arg = getValueFromNextByte(memory, address);
+                return new CMD_Intel8080_ANI(arg);
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.ORA_A: {
+                return new CMD_Intel8080_ORA("A");
+            }
+            case CommandsCodes.ORA_B: {
+                return new CMD_Intel8080_ORA("B");
+            }
+            case CommandsCodes.ORA_C: {
+                return new CMD_Intel8080_ORA("C");
+            }
+            case CommandsCodes.ORA_D: {
+                return new CMD_Intel8080_ORA("D");
+            }
+            case CommandsCodes.ORA_E: {
+                return new CMD_Intel8080_ORA("E");
+            }
+            case CommandsCodes.ORA_H: {
+                return new CMD_Intel8080_ORA("H");
+            }
+            case CommandsCodes.ORA_L: {
+                return new CMD_Intel8080_ORA("L");
+            }
+            case CommandsCodes.ORA_M: {
+                return new CMD_Intel8080_ORA("M");
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.ORI: {
+                String arg = getValueFromNextByte(memory, address);
+                return new CMD_Intel8080_ORI(arg);
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.XRA_A: {
+                return new CMD_Intel8080_XRA("A");
+            }
+            case CommandsCodes.XRA_B: {
+                return new CMD_Intel8080_XRA("B");
+            }
+            case CommandsCodes.XRA_C: {
+                return new CMD_Intel8080_XRA("C");
+            }
+            case CommandsCodes.XRA_D: {
+                return new CMD_Intel8080_XRA("D");
+            }
+            case CommandsCodes.XRA_E: {
+                return new CMD_Intel8080_XRA("E");
+            }
+            case CommandsCodes.XRA_H: {
+                return new CMD_Intel8080_XRA("H");
+            }
+            case CommandsCodes.XRA_L: {
+                return new CMD_Intel8080_XRA("L");
+            }
+            case CommandsCodes.XRA_M: {
+                return new CMD_Intel8080_XRA("M");
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.XRI: {
+                String arg = getValueFromNextByte(memory, address);
+                return new CMD_Intel8080_XRI(arg);
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.CMP_A: {
+                return new CMD_Intel8080_CMP("A");
+            }
+            case CommandsCodes.CMP_B: {
+                return new CMD_Intel8080_CMP("B");
+            }
+            case CommandsCodes.CMP_C: {
+                return new CMD_Intel8080_CMP("C");
+            }
+            case CommandsCodes.CMP_D: {
+                return new CMD_Intel8080_CMP("D");
+            }
+            case CommandsCodes.CMP_E: {
+                return new CMD_Intel8080_CMP("E");
+            }
+            case CommandsCodes.CMP_H: {
+                return new CMD_Intel8080_CMP("H");
+            }
+            case CommandsCodes.CMP_L: {
+                return new CMD_Intel8080_CMP("L");
+            }
+            case CommandsCodes.CMP_M: {
+                return new CMD_Intel8080_CMP("M");
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.CPI: {
+                String arg = getValueFromNextByte(memory, address);
+                return new CMD_Intel8080_CPI(arg);
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.CMA: {
+                return new CMD_Intel8080_CMA();
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.STC: {
+                return new CMD_Intel8080_STC();
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.CMC: {
+                return new CMD_Intel8080_CMC();
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.RLC: {
+                return new CMD_Intel8080_RLC();
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.RRC: {
+                return new CMD_Intel8080_RRC();
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.RAL: {
+                return new CMD_Intel8080_RAL();
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.RAR: {
+                return new CMD_Intel8080_RAR();
+            }
 
             //================================================================================
             //================================================================================
@@ -435,7 +807,7 @@ public class CommandsBuilder {
         return null;
     }
 
-    private static String getValueFromNext2Bytes(IMemory memory, int address) {
+    private static String getValueFromNextWord(IMemory memory, int address) {
         int value = memory.getValueByIndex(address + 1) * 256;
         value += memory.getValueByIndex(address + 2);
         return Integer.toString(value, 16);

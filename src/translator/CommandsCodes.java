@@ -87,7 +87,7 @@ public class CommandsCodes {
     public static final int LXI_B_data = 0b0000_0001;
     public static final int LXI_D_data = 0b0001_0001;
     public static final int LXI_H_data = 0b0010_0001;
-    public static final int LXI_PSW_data = 0b0011_0001;
+    public static final int LXI_SP_data = 0b0011_0001;
 
     public static final int ADD_B = 0b1000_0000;
     public static final int ADD_C = 0b1000_0001;
@@ -145,7 +145,7 @@ public class CommandsCodes {
     public static final int INX_B = 0b0000_0011;
     public static final int INX_D = 0b0001_0011;
     public static final int INX_H = 0b0010_0011;
-    public static final int INX_PSW = 0b0011_0011;
+    public static final int INX_SP = 0b0011_0011;
 
     public static final int DCR_B = 0b0000_0101;
     public static final int DCR_C = 0b0000_1101;
@@ -159,7 +159,7 @@ public class CommandsCodes {
     public static final int DCX_B = 0b0000_1011;
     public static final int DCX_D = 0b0001_1011;
     public static final int DCX_H = 0b0010_1011;
-    public static final int DCX_PSW = 0b0011_1011;
+    public static final int DCX_SP = 0b0011_1011;
 
     public static final int HLT = 0b0111_0110;
 
@@ -198,7 +198,7 @@ public class CommandsCodes {
     public static final int DAD_B = 0b00001001;
     public static final int DAD_D = 0b00011001;
     public static final int DAD_H = 0b00101001;
-    public static final int DAD_PSW = 0b00111001;
+    public static final int DAD_SP = 0b00111001;
 
     public static final int ANI = 0b11100110;
 
@@ -295,16 +295,16 @@ public class CommandsCodes {
         if (cmd == JNZ || cmd == JZ || cmd == JNC || cmd == JC ||
                 cmd == JP || cmd == JM || cmd == JMP || cmd == JPO || cmd == JPE ||
                 cmd == LDA || cmd == STA ||  cmd == LXI_B_data ||
-                cmd == LXI_D_data || cmd == LXI_H_data || cmd == LXI_PSW_data ||
+                cmd == LXI_D_data || cmd == LXI_H_data || cmd == LXI_SP_data ||
                 cmd == CALL || cmd == CNZ || cmd == CZ || cmd == CNC || cmd == CC ||
                 cmd == CPO || cmd == CPE || cmd == CP || cmd == CM ||
-                cmd == IN || cmd == OUT || cmd == SBI ||
-                cmd == LHLD || cmd == SHLD) {
+                cmd == IN || cmd == OUT || cmd == LHLD || cmd == SHLD) {
             return 3;
         } else if (cmd == MVI_A || cmd == MVI_B || cmd == MVI_C ||
                 cmd == MVI_D || cmd == MVI_E || cmd == MVI_H ||
                 cmd == MVI_L || cmd == MVI_M || cmd == ANI || cmd == ORI ||
-                cmd == CPI || cmd == ADI || cmd == SUI || cmd == XRI) {
+                cmd == CPI || cmd == ADI || cmd == SUI || cmd == XRI
+                || cmd == ACI || cmd == SBI) {
             return 2;
         } else  {
             return 1;

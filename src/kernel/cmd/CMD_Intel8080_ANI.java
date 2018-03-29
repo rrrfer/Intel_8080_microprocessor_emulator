@@ -2,21 +2,20 @@ package kernel.cmd;
 
 import kernel.IMicroprocessor;
 
-public class CMD_Intel8080_ADI implements ICommand {
+public class CMD_Intel8080_ANI implements ICommand {
 
     private String arg;
 
-    public CMD_Intel8080_ADI(String arg) {
+    public CMD_Intel8080_ANI(String arg) {
         this.arg = arg.toUpperCase();
     }
 
     @Override
     public void execute(IMicroprocessor microprocessor) {
-        int firstValue = Integer.valueOf(arg, 16);
-        int secondValue = microprocessor.getValueByRegisterName("A");
-        firstValue += secondValue;
+        int firstValue = microprocessor.getValueByRegisterName("A");
+        int secondValue = Integer.valueOf(arg, 16);
+        firstValue = firstValue & secondValue;
         microprocessor.checkByteForSetFlags(firstValue);
-        firstValue = microprocessor.getRoundedByte(firstValue);
         microprocessor.setValueByRegisterName("A", firstValue);
     }
 
@@ -27,6 +26,6 @@ public class CMD_Intel8080_ADI implements ICommand {
 
     @Override
     public String getName() {
-        return "ADI " + arg;
+        return "ANI " + arg;
     }
 }
