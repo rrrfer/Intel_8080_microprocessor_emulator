@@ -406,12 +406,18 @@ public class Intel8080Translator implements ITranslator {
                                     break;
                                 }
                             }
-                            if (cmdName.equals("push") || cmdName.equals("pop") || cmdName.equals("dad") ||
-                                    cmdName.equals("inx") || cmdName.equals("dcx")) {
+                            if (cmdName.equals("dad") || cmdName.equals("inx") || cmdName.equals("dcx")) {
                                 if (a != 'b' && a != 'd' && a != 'h' && !argument.equals("sp")) {
                                     break;
                                 }
                             }
+
+                            if (cmdName.equals("push") || cmdName.equals("pop")) {
+                                if (a != 'b' && a != 'd' && a != 'h' && !argument.equals("psw")) {
+                                    break;
+                                }
+                            }
+
                             if (a == 'a' || a == 'b' || a == 'c' || a == 'd' ||
                                     a == 'e' || a == 'h' || a == 'l' || a == 'm' || argument.equals("sp")) {
                                 commands.add(Integer.toHexString(currentAddress) + ":" + cmdName + " " + argument);
@@ -424,13 +430,12 @@ public class Intel8080Translator implements ITranslator {
                 }
                 case 2: {
                     if (lex.split(" ", 2).length == 2) {
-                        String argument[] = lex.split(" ", 2)[1].replace(" ", "")
-                                .split(",");
+                        String argument[] = lex.split(" ", 2)[1].split(",");
                         if (argument.length == 2) {
                             if (argument[0].length() == 1) {
                                 char a = argument[0].charAt(0);
                                 if (a == 'a' || a == 'b' || a == 'c' || a == 'd' || a == 'e' ||
-                                        a == 'h' || a == 'l') {
+                                        a == 'h' || a == 'l' || a == 'm') {
                                     try {
                                         int numberArg = otherRadix2Dec(argument[1]);
                                         if (numberArg >= 0 && numberArg <= 255) {
@@ -450,8 +455,7 @@ public class Intel8080Translator implements ITranslator {
                 }
                 case 3: {
                     if (lex.split(" ", 2).length == 2) {
-                        String argument[] = lex.split(" ", 2)[1].replace(" ", "")
-                                .split(",");
+                        String argument[] = lex.split(" ", 2)[1].split(",");
                         if (argument.length == 2) {
                             if (argument[0].length() == 1 || argument[0].equals("sp")) {
                                 char a = argument[0].charAt(0);
@@ -474,9 +478,10 @@ public class Intel8080Translator implements ITranslator {
                     break;
                 }
                 case 4: {
-                    String argument[] = lex.split(" ", 2)[1]
-                            .replace(" ", "")
-                            .split(",");
+                    String argument[] = lex.split(" ", 2);
+                    if (argument.length == 2) {
+                        argument = argument[1].split(",");
+                    }
                     if (argument.length == 2) {
                         if (argument[0].length() == 1 && argument[1].length() == 1) {
                             char a = argument[0].charAt(0);
@@ -548,7 +553,7 @@ public class Intel8080Translator implements ITranslator {
 
         if (!isCorrect) {
             statusString.append("Ошибка в строке № " + (lineNumber + 1) + ". " +
-                    "Неверная команда или несуществующая метка: " + lex +
+                    "Неверная команда, аргумент или несуществующая метка: " + lex +
                     System.lineSeparator());
         }
     }
