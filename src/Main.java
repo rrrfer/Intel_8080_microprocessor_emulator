@@ -1,6 +1,6 @@
-import emulator.EmulatorIntel8080;
-import emulator.IEmulator;
 import kernel.*;
+import presenter.MainPresenter;
+import view.MainWindow;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        IEmulator emulator = new EmulatorIntel8080();
+        /*IEmulator emulator = new EmulatorIntel8080();
         if (emulator.loadProgram(loadProgramTextFromFile("test.i8080"))) {
             String[] commands = emulator.getCommandsList();
             for (int i = 0; i < 20; ++i) {
@@ -24,10 +24,11 @@ public class Main {
             }
         } else {
             System.out.println(emulator.getTranslationResult());
-        }
+        }*/
+        new MainPresenter();
     }
 
-    private static String loadProgramTextFromFile(String path) {
+    public static String loadProgramTextFromFile(String path) {
         try {
             BufferedReader bufferedReader
                     = new BufferedReader(new FileReader(new File(path)));
@@ -43,7 +44,7 @@ public class Main {
         }
     }
 
-    private static void viewIntel8080State(IReadOnlyMicroprocessor microprocessor) {
+    public static void viewIntel8080State(IReadOnlyMicroprocessor microprocessor) {
         System.out.println("= = = State intel8080 = = =");
         System.out.println("*GPR*");
         System.out.println("A: " + microprocessor.getValueByRegisterName("A"));
