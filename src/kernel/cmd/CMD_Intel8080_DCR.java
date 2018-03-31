@@ -15,7 +15,7 @@ public class CMD_Intel8080_DCR implements ICommand {
         int value;
         if (arg.equals("M")) {
             int address = microprocessor.getValueByRegisterPairName("H");
-            value = microprocessor.getMemory().getValueByIndex(address);
+            value = microprocessor.getReadOnlyMemory().getValueByIndex(address);
         } else {
             value = microprocessor.getValueByRegisterName(arg);
         }

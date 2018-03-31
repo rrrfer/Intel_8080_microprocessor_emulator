@@ -1,9 +1,7 @@
 package kernel;
 
-public interface IMemory {
-    int getValueByIndex(int index);
+public interface IMemory extends IReadOnlyMemory {
     void setValueByIndex(int index, int value);
     int[] getAllMemory();
     void reset();
-    int getSize();
 }

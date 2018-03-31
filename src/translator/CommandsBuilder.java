@@ -1,20 +1,12 @@
 package translator;
 
-import kernel.IMemory;
+import kernel.IReadOnlyMemory;
 import kernel.cmd.*;
 
 public class CommandsBuilder {
-    public static ICommand getCommand(IMemory memory, int address) {
+    public static ICommand getCommand(IReadOnlyMemory memory, int address) {
         int code = memory.getValueByIndex(address);
         switch (code) {
-
-            case CommandsCodes.NOP: {
-                return new CMD_Intel8080_NOP();
-            }
-
-            case CommandsCodes.HLT: {
-                return new CMD_Intel8080_HLT();
-            }
 
             //================================================================================
             //================================================================================
@@ -775,6 +767,227 @@ public class CommandsBuilder {
             //================================================================================
             //================================================================================
 
+            case CommandsCodes.PCHL: {
+                return new CMD_Intel8080_PCHL();
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.SPHL: {
+                return new CMD_Intel8080_SPHL();
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.CALL: {
+                String arg = getValueFromNextWord(memory, address);
+                return new CMD_Intel8080_CALL(arg);
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.CNZ: {
+                String arg = getValueFromNextWord(memory, address);
+                return new CMD_Intel8080_CNZ(arg);
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.CZ: {
+                String arg = getValueFromNextWord(memory, address);
+                return new CMD_Intel8080_CZ(arg);
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.CNC: {
+                String arg = getValueFromNextWord(memory, address);
+                return new CMD_Intel8080_CNC(arg);
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.CC: {
+                String arg = getValueFromNextWord(memory, address);
+                return new CMD_Intel8080_CC(arg);
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.CPO: {
+                String arg = getValueFromNextWord(memory, address);
+                return new CMD_Intel8080_CPO(arg);
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.CPE: {
+                String arg = getValueFromNextWord(memory, address);
+                return new CMD_Intel8080_CPE(arg);
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.CP: {
+                String arg = getValueFromNextWord(memory, address);
+                return new CMD_Intel8080_CP(arg);
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.CM: {
+                String arg = getValueFromNextWord(memory, address);
+                return new CMD_Intel8080_CM(arg);
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.RET: {
+                return new CMD_Intel8080_RET();
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.RNZ: {
+                return new CMD_Intel8080_RNZ();
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.RZ: {
+                return new CMD_Intel8080_RZ();
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.RNC: {
+                return new CMD_Intel8080_RNZ();
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.RC: {
+                return new CMD_Intel8080_RC();
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.RPO: {
+                return new CMD_Intel8080_RPO();
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.RPE: {
+                return new CMD_Intel8080_RPE();
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.RP: {
+                return new CMD_Intel8080_RP();
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.RM: {
+                return new CMD_Intel8080_RM();
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.JMP: {
+                String arg = getValueFromNextWord(memory, address);
+                return new CMD_Intel8080_JMP(arg);
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.JZ: {
+                String arg = getValueFromNextWord(memory, address);
+                return new CMD_Intel8080_JZ(arg);
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.JNZ: {
+                String arg = getValueFromNextWord(memory, address);
+                return new CMD_Intel8080_JNZ(arg);
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.JC: {
+                String arg = getValueFromNextWord(memory, address);
+                return new CMD_Intel8080_JC(arg);
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.JNC: {
+                String arg = getValueFromNextWord(memory, address);
+                return new CMD_Intel8080_JNC(arg);
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.JP: {
+                String arg = getValueFromNextWord(memory, address);
+                return new CMD_Intel8080_JP(arg);
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.JM: {
+                String arg = getValueFromNextWord(memory, address);
+                return new CMD_Intel8080_JM(arg);
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.JPO: {
+                String arg = getValueFromNextWord(memory, address);
+                return new CMD_Intel8080_JPO(arg);
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.JPE: {
+                String arg = getValueFromNextWord(memory, address);
+                return new CMD_Intel8080_JPE(arg);
+            }
+
+            //================================================================================
+            //================================================================================
+
             case CommandsCodes.PUSH_B: {
                 return new CMD_Intel8080_PUSH("B");
             }
@@ -784,6 +997,7 @@ public class CommandsBuilder {
             case CommandsCodes.PUSH_H: {
                 return new CMD_Intel8080_PUSH("H");
             }
+            // FIXME: 31.03.18
             //case CommandsCodes.PUSH_PSW: {
             //    return new CMD_Intel8080_PUSH("B");
             //}
@@ -800,20 +1014,57 @@ public class CommandsBuilder {
             case CommandsCodes.POP_H: {
                 return new CMD_Intel8080_POP("H");
             }
+            // FIXME: 31.03.18
             //case CommandsCodes.POP_PSW: {
             //    return new CMD_Intel8080_POP("B");
             //}
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.XTHL: {
+                return new CMD_Intel8080_XTHL();
+            }
+
+            //================================================================================
+            //================================================================================
+
+            // FIXME: 31.03.18 Input
+
+            //================================================================================
+            //================================================================================
+
+            // FIXME: 31.03.18 Output
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.NOP: {
+                return new CMD_Intel8080_NOP();
+            }
+
+            //================================================================================
+            //================================================================================
+
+            case CommandsCodes.HLT: {
+                return new CMD_Intel8080_HLT();
+            }
+
+            //================================================================================
+            //================================================================================
+
         }
+
         return null;
     }
 
-    private static String getValueFromNextWord(IMemory memory, int address) {
+    private static String getValueFromNextWord(IReadOnlyMemory memory, int address) {
         int value = memory.getValueByIndex(address + 1) * 256;
         value += memory.getValueByIndex(address + 2);
         return Integer.toString(value, 16);
     }
 
-    private static String getValueFromNextByte(IMemory memory, int address) {
+    private static String getValueFromNextByte(IReadOnlyMemory memory, int address) {
         return Integer.toString(memory.getValueByIndex(address + 1), 16);
     }
 }

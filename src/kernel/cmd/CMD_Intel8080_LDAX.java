@@ -13,7 +13,7 @@ public class CMD_Intel8080_LDAX implements ICommand {
     @Override
     public void execute(IMicroprocessor microprocessor) {
         int address = microprocessor.getValueByRegisterPairName(arg);
-        int value = microprocessor.getMemory().getValueByIndex(address);
+        int value = microprocessor.getReadOnlyMemory().getValueByIndex(address);
         microprocessor.setValueByRegisterName("A", value);
     }
 

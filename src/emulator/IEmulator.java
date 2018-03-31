@@ -1,13 +1,14 @@
 package emulator;
 
-import kernel.IViewMicroprocessor;
+import kernel.IReadOnlyMicroprocessor;
 
 public interface IEmulator {
-    void run();
-    boolean step();
-    void loadProgram(String program);
-    boolean hasTranslationErrors();
+    boolean loadProgram(String program);
     String getTranslationResult();
     String[] getCommandsList();
-    IViewMicroprocessor getViewInterface();
+    IReadOnlyMicroprocessor getViewInterface();
+    void run();
+    boolean step();
+    void resetRegisters();
+    void resetMemory();
 }

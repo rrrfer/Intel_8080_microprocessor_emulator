@@ -16,7 +16,7 @@ public class CMD_Intel8080_ADC implements ICommand {
         int secondValue;
         if (arg.equals("M")) {
             int address = microprocessor.getValueByRegisterPairName("H");
-            secondValue = microprocessor.getMemory().getValueByIndex(address);
+            secondValue = microprocessor.getReadOnlyMemory().getValueByIndex(address);
         } else {
             secondValue = microprocessor.getValueByRegisterName(arg);
         }

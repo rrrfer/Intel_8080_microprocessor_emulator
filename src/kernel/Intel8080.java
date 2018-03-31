@@ -8,7 +8,7 @@ public class Intel8080 implements IMicroprocessor {
 
     // Внутренние состояние микропроцессора
     private int[] registers;
-    private int[] flags;
+    private int[] flags; // FIXME: 31.03.18 Изменить представление флагов на int для реаизации регистра PSW
     private IMemory memory;
 
     // Вспомогательные переменные
@@ -36,6 +36,11 @@ public class Intel8080 implements IMicroprocessor {
         flagByName.put("C", 1);
         flagByName.put("S", 2);
         flagByName.put("P", 3);
+    }
+
+    @Override
+    public IReadOnlyMemory getReadOnlyMemory() {
+        return memory;
     }
 
     @Override
@@ -91,7 +96,13 @@ public class Intel8080 implements IMicroprocessor {
             setValueByFlagName("C", 0);
         }
 
-        // TODO Чётность единиц в результате
+        int counter = 0;
+        for (int i = 0; i < 8; ++i) {
+            counter += value % 2;
+            value = value >> 1;
+        }
+
+        setValueByFlagName("P", (counter + 1) % 2);
     }
 
     @Override
@@ -113,6 +124,14 @@ public class Intel8080 implements IMicroprocessor {
         } else {
             setValueByFlagName("C", 0);
         }
+
+        int counter = 0;
+        for (int i = 0; i < 16; ++i) {
+            counter += value % 2;
+            value = value >> 1;
+        }
+
+        setValueByFlagName("P", (counter + 1) % 2);
     }
 
     @Override
@@ -183,5 +202,26 @@ public class Intel8080 implements IMicroprocessor {
                 break;
             }
         }
+    }
+
+    @Override
+    public void push(int value) {
+        int address = getValueByRegisterName("SP");
+        memory.setValueByIndex(address, value % 256);
+        address = getRoundedWord(address - 1);
+        memory.setValueByIndex(address, value / 256);
+        address = getRoundedWord(address - 1);
+        setValueByRegisterName("SP", address);
+    }
+
+    @Override
+    public int pop() {
+        int address = getValueByRegisterName("SP");
+        address = getRoundedWord(address + 1);
+        int value = memory.getValueByIndex(address) * 256;
+        address = getRoundedWord(address + 1);
+        value += memory.getValueByIndex(address);
+        setValueByRegisterName("SP", address);
+        return value;
     }
 }

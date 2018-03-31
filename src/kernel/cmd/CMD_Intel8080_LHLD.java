@@ -13,9 +13,9 @@ public class CMD_Intel8080_LHLD implements ICommand {
     @Override
     public void execute(IMicroprocessor microprocessor) {
         int address = Integer.valueOf(arg, 16);
-        int value = microprocessor.getMemory().getValueByIndex(address);
+        int value = microprocessor.getReadOnlyMemory().getValueByIndex(address);
         microprocessor.setValueByRegisterName("L", value);
-        value = microprocessor.getMemory().getValueByIndex(address + 1);
+        value = microprocessor.getReadOnlyMemory().getValueByIndex(address + 1);
         microprocessor.setValueByRegisterName("H", value);
     }
 

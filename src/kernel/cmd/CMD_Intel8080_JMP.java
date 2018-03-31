@@ -2,19 +2,18 @@ package kernel.cmd;
 
 import kernel.IMicroprocessor;
 
-public class CMD_Intel8080_LDA implements ICommand {
+public class CMD_Intel8080_JMP implements ICommand {
 
-    private String arg;
+    protected String arg;
 
-    public CMD_Intel8080_LDA(String arg) {
+    public CMD_Intel8080_JMP(String arg) {
         this.arg = arg.toUpperCase();
     }
 
     @Override
     public void execute(IMicroprocessor microprocessor) {
         int address = Integer.valueOf(arg, 16);
-        int value = microprocessor.getReadOnlyMemory().getValueByIndex(address);
-        microprocessor.setValueByRegisterName("A", value);
+        microprocessor.setValueByRegisterName("PC", address);
     }
 
     @Override
@@ -24,6 +23,6 @@ public class CMD_Intel8080_LDA implements ICommand {
 
     @Override
     public String getName() {
-        return "LDA " + arg;
+        return "JMP " + arg;
     }
 }

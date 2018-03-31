@@ -10,27 +10,24 @@ import java.io.IOException;
 public class Main {
     public static void main(String[] args) throws Exception {
         IEmulator emulator = new EmulatorIntel8080();
-        emulator.loadProgram(loadProgramTextFromFile("test.i8080"));
-        String[] commands = emulator.getCommandsList();
-        if (!emulator.hasTranslationErrors()) {
+        if (emulator.loadProgram(loadProgramTextFromFile("test.i8080"))) {
+            String[] commands = emulator.getCommandsList();
             for (int i = 0; i < 20; ++i) {
                 System.out.println(commands[i]);
+            }
+
+            System.out.println();
+            System.out.println();
+
+            while (emulator.step()) {
+                viewIntel8080State(emulator.getViewInterface());
             }
         } else {
             System.out.println(emulator.getTranslationResult());
         }
-
-        System.out.println();
-        System.out.println();
-
-        if (!emulator.hasTranslationErrors()) {
-            while (emulator.step()) {
-                viewIntel8080State(emulator.getViewInterface());
-            }
-        }
     }
 
-    public static String loadProgramTextFromFile(String path) {
+    private static String loadProgramTextFromFile(String path) {
         try {
             BufferedReader bufferedReader
                     = new BufferedReader(new FileReader(new File(path)));
@@ -46,7 +43,7 @@ public class Main {
         }
     }
 
-    public static void viewIntel8080State(IViewMicroprocessor microprocessor) {
+    private static void viewIntel8080State(IReadOnlyMicroprocessor microprocessor) {
         System.out.println("= = = State intel8080 = = =");
         System.out.println("*GPR*");
         System.out.println("A: " + microprocessor.getValueByRegisterName("A"));
@@ -66,5 +63,3 @@ public class Main {
         System.out.println();
     }
 }
-
-// Полностью реализовать систему команд

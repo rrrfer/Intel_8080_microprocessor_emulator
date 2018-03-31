@@ -27,7 +27,7 @@ public class EmulatorIntel8080 implements IEmulator {
     @Override
     public boolean step() {
         int address = microprocessor.getValueByRegisterName("PC");
-        ICommand command = CommandsBuilder.getCommand(microprocessor.getMemory(), address);
+        ICommand command = CommandsBuilder.getCommand(microprocessor.getReadOnlyMemory(), address);
         if (!command.getName().equals("HLT")) {
             microprocessor.executeCommand(command);
             return true;
@@ -36,7 +36,7 @@ public class EmulatorIntel8080 implements IEmulator {
     }
 
     @Override
-    public void loadProgram(String program) {
+    public boolean loadProgram(String program) {
         IMemory memory = microprocessor.getMemory();
         String[] lexemes = translator.getLexemes(program);
         if (lexemes != null) {
@@ -55,12 +55,9 @@ public class EmulatorIntel8080 implements IEmulator {
                     }
                 }
             }
+            return true;
         }
-    }
-
-    @Override
-    public boolean hasTranslationErrors() {
-        return translator.getStatusFlag();
+        return false;
     }
 
     @Override
@@ -90,7 +87,17 @@ public class EmulatorIntel8080 implements IEmulator {
     }
 
     @Override
-    public IViewMicroprocessor getViewInterface() {
+    public IReadOnlyMicroprocessor getViewInterface() {
         return microprocessor;
+    }
+
+    @Override
+    public void resetRegisters() {
+        microprocessor.resetRegisters();
+    }
+
+    @Override
+    public void resetMemory() {
+        microprocessor.resetMemory();
     }
 }

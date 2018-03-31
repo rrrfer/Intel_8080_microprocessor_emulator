@@ -12,27 +12,22 @@ public class CMD_Intel8080_POP implements ICommand {
 
     @Override
     public void execute(IMicroprocessor microprocessor) {
-        int SP = microprocessor.getValueByRegisterName("SP");
-        SP = (SP + 1) % microprocessor.getMemory().getSize();
-        int value = microprocessor.getMemory().getValueByIndex(SP);
+        int value = microprocessor.pop();
+        microprocessor.setValueByRegisterName(arg, value / 256);
         switch (arg) {
             case "B": {
-                microprocessor.setValueByRegisterName("C", value);
+                microprocessor.setValueByRegisterName("C", value % 256);
                 break;
             }
             case "D": {
-                microprocessor.setValueByRegisterName("E", value);
+                microprocessor.setValueByRegisterName("E", value % 256);
                 break;
             }
             case "H": {
-                microprocessor.setValueByRegisterName("L", value);
+                microprocessor.setValueByRegisterName("L", value % 256);
                 break;
             }
         }
-        SP = (SP + 1) % microprocessor.getMemory().getSize();
-        value = microprocessor.getMemory().getValueByIndex(SP);
-        microprocessor.setValueByRegisterName(arg, value);
-        microprocessor.setValueByRegisterName("SP", SP);
     }
 
     @Override

@@ -18,7 +18,7 @@ public class CMD_Intel8080_MOV implements ICommand {
 
         if (secondArg.equals("M")) {
             int address = microprocessor.getValueByRegisterPairName("H");
-            value = microprocessor.getMemory().getValueByIndex(address);
+            value = microprocessor.getReadOnlyMemory().getValueByIndex(address);
         } else {
             value = microprocessor.getValueByRegisterName(secondArg);
         }
