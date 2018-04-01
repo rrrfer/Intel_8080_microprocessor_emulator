@@ -24,7 +24,7 @@ public class MainPresenter implements IMainPresenter {
         dataSourceForRegistersAndFlagsTable = getDataSourceForRegistersAndFlagsTable(emulator);
 
         mainView = new MainWindow(MainPresenter.this);
-        mainView.updateMemoryTable(dataSourceForMemoryTable, 0);
+        mainView.updateMemoryTable(dataSourceForMemoryTable, 0, true);
         mainView.updateRegistersAndFlagsTable(dataSourceForRegistersAndFlagsTable);
         mainView.create();
     }
@@ -39,7 +39,7 @@ public class MainPresenter implements IMainPresenter {
         dataSourceForMemoryTable = getDataSourceForMemoryTable(emulator);
         dataSourceForRegistersAndFlagsTable = getDataSourceForRegistersAndFlagsTable(emulator);
 
-        mainView.updateMemoryTable(dataSourceForMemoryTable, 0);
+        mainView.updateMemoryTable(dataSourceForMemoryTable, 0, true);
         mainView.updateRegistersAndFlagsTable(dataSourceForRegistersAndFlagsTable);
         mainView.updateCodeEditor(emulator.getTranslationResult(), hasErrors);
     }
@@ -56,7 +56,7 @@ public class MainPresenter implements IMainPresenter {
                     mainView.updateRegistersAndFlagsTable(dataSourceForRegistersAndFlagsTable);
                     dataSourceForMemoryTable = getDataSourceForMemoryTable(emulator);
                     int PC = emulator.getViewInterface().getValueByRegisterName("PC");
-                    mainView.updateMemoryTable(dataSourceForMemoryTable, PC);
+                    mainView.updateMemoryTable(dataSourceForMemoryTable, PC, true);
                     mainView.setRunningMode(false);
                 }
             });
@@ -72,7 +72,7 @@ public class MainPresenter implements IMainPresenter {
         mainView.updateRegistersAndFlagsTable(dataSourceForRegistersAndFlagsTable);
         int PC = emulator.getViewInterface().getValueByRegisterName("PC");
         dataSourceForMemoryTable = getDataSourceForMemoryTable(emulator);
-        mainView.updateMemoryTable(dataSourceForMemoryTable, PC);
+        mainView.updateMemoryTable(dataSourceForMemoryTable, PC, true);
     }
 
     @Override
@@ -94,7 +94,7 @@ public class MainPresenter implements IMainPresenter {
     public void resetMemory() {
         emulator.resetMemory();
         dataSourceForMemoryTable = getDataSourceForMemoryTable(emulator);
-        mainView.updateMemoryTable(dataSourceForMemoryTable, 0);
+        mainView.updateMemoryTable(dataSourceForMemoryTable, 0, true);
     }
 
     @Override
@@ -105,8 +105,8 @@ public class MainPresenter implements IMainPresenter {
     @Override
     public void setBreakpoint(int address) {
         emulator.setBreakpoint(address);
-        int PC = emulator.getViewInterface().getValueByRegisterName("PC");
-        mainView.updateMemoryTable(dataSourceForMemoryTable, PC);
+        //int PC = emulator.getViewInterface().getValueByRegisterName("PC");
+        mainView.updateMemoryTable(dataSourceForMemoryTable, address, false);
     }
 
     @Override

@@ -110,7 +110,7 @@ public class MainWindow extends JFrame implements IMainView {
                     case KeyEvent.VK_ESCAPE: {
                         if (resetRegisterItem.isEnabled()) {
                             resetRegisters();
-                            updateMemoryTable(dataSourceForMemoryTable, 0);
+                            updateMemoryTable(dataSourceForMemoryTable, 0, true);
                             updateRegistersAndFlagsTable(dataSourceForRegistersAndFlagsTable);
                         }
                     }
@@ -313,9 +313,10 @@ public class MainWindow extends JFrame implements IMainView {
                 if (e.getButton() == MouseEvent.BUTTON1) {
                     presenter.setProgramCounter(memoryTable.getSelectedRow());
                 } else if (e.getButton() == MouseEvent.BUTTON3) {
-                    int column = memoryTable.columnAtPoint(e.getPoint());
+
+                    int oldRowSelection = memoryTable.getSelectedRow();
+
                     int row = memoryTable.rowAtPoint(e.getPoint());
-                    memoryTable.setColumnSelectionInterval(column, column);
                     memoryTable.setRowSelectionInterval(row, row);
 
                     if (breakpoints.contains(memoryTable.getSelectedRow())) {
@@ -323,8 +324,8 @@ public class MainWindow extends JFrame implements IMainView {
                     } else {
                         breakpoints.add(memoryTable.getSelectedRow());
                     }
-
                     presenter.setBreakpoint(memoryTable.getSelectedRow());
+                    memoryTable.setRowSelectionInterval(oldRowSelection, oldRowSelection);
                 }
             }
         });
@@ -426,7 +427,7 @@ public class MainWindow extends JFrame implements IMainView {
 
     // IMainView
     @Override
-    public void updateMemoryTable(String[][] dataSource, int PC) {
+    public void updateMemoryTable(String[][] dataSource, int PC, boolean scroll) {
         for (int i = 0; i < dataSourceForMemoryTable.length; ++i) {
             for (int j = 0; j < dataSourceForMemoryTable[i].length; ++j) {
                 dataSourceForMemoryTable[i][j] = dataSource[i][j];
@@ -437,7 +438,9 @@ public class MainWindow extends JFrame implements IMainView {
             memoryTable.setRowSelectionInterval(PC, PC);
         }
 
-        updateScrollPane();
+        if (scroll) {
+            updateScrollPane();
+        }
     }
 
     private void updateScrollPane() {
