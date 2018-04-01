@@ -297,14 +297,13 @@ public class CommandsCodes {
                 cmd == LDA || cmd == STA ||  cmd == LXI_B_data ||
                 cmd == LXI_D_data || cmd == LXI_H_data || cmd == LXI_SP_data ||
                 cmd == CALL || cmd == CNZ || cmd == CZ || cmd == CNC || cmd == CC ||
-                cmd == CPO || cmd == CPE || cmd == CP || cmd == CM ||
-                cmd == IN || cmd == OUT || cmd == LHLD || cmd == SHLD) {
+                cmd == CPO || cmd == CPE || cmd == CP || cmd == CM || cmd == LHLD || cmd == SHLD) {
             return 3;
         } else if (cmd == MVI_A || cmd == MVI_B || cmd == MVI_C ||
                 cmd == MVI_D || cmd == MVI_E || cmd == MVI_H ||
                 cmd == MVI_L || cmd == MVI_M || cmd == ANI || cmd == ORI ||
                 cmd == CPI || cmd == ADI || cmd == SUI || cmd == XRI
-                || cmd == ACI || cmd == SBI) {
+                || cmd == ACI || cmd == SBI || cmd == IN || cmd == OUT) {
             return 2;
         } else  {
             return 1;

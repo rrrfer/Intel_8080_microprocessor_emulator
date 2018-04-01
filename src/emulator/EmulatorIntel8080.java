@@ -16,8 +16,9 @@ public class EmulatorIntel8080 implements IEmulator {
 
     private ArrayList<Integer> breakpoints;
 
-    public EmulatorIntel8080() {
+    public EmulatorIntel8080(IIOSystem ioSystem) {
         this.microprocessor = new Intel8080(new Memory(65536));
+        this.microprocessor.setIOSystem(ioSystem);
         this.translator = new Intel8080Translator();
         this.breakpoints = new ArrayList<>();
     }
@@ -35,11 +36,9 @@ public class EmulatorIntel8080 implements IEmulator {
     public boolean step() {
         int address = microprocessor.getValueByRegisterName("PC");
         ICommand command = CommandsBuilder.getCommand(microprocessor.getReadOnlyMemory(), address);
-        if (command != null) {
-            if (!command.getName().equals("HLT")) {
-                microprocessor.executeCommand(command);
-                return true;
-            }
+        if (!command.getName().equals("HLT")) {
+            microprocessor.executeCommand(command);
+            return true;
         }
         return false;
     }

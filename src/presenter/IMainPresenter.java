@@ -10,4 +10,6 @@ public interface IMainPresenter {
     void clearScreens();
     void setBreakpoint(int address);
     void setProgramCounter(int address);
+    void consoleOut(int value);
+    int consoleIn();
 }

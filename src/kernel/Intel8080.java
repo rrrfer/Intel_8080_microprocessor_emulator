@@ -1,5 +1,6 @@
 package kernel;
 
+import emulator.IIOSystem;
 import kernel.cmd.ICommand;
 
 import java.util.HashMap;
@@ -10,6 +11,8 @@ public class Intel8080 implements IMicroprocessor {
     private int[] registers;
     private int[] flags; // FIXME: 31.03.18 Изменить представление флагов на int для реаизации регистра PSW
     private IMemory memory;
+
+    private IIOSystem ioSystem;
 
     // Вспомогательные переменные
     private HashMap<String, Integer> registerByName;
@@ -95,6 +98,8 @@ public class Intel8080 implements IMicroprocessor {
             setValueByFlagName("C", 0);
         }
 
+        if (value < 0) value += 256;
+
         int counter = 0;
         for (int i = 0; i < 8; ++i) {
             counter += value % 2;
@@ -123,6 +128,8 @@ public class Intel8080 implements IMicroprocessor {
         } else {
             setValueByFlagName("C", 0);
         }
+
+        if (value < 0) value += 65536;
 
         int counter = 0;
         for (int i = 0; i < 16; ++i) {
@@ -222,5 +229,15 @@ public class Intel8080 implements IMicroprocessor {
         value += memory.getValueByIndex(address);
         setValueByRegisterName("SP", address);
         return value;
+    }
+
+    @Override
+    public void setIOSystem(IIOSystem ioSystem) {
+        this.ioSystem = ioSystem;
+    }
+
+    @Override
+    public IIOSystem getIOSystem() {
+        return ioSystem;
     }
 }

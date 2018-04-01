@@ -2,6 +2,7 @@ package presenter;
 
 import emulator.EmulatorIntel8080;
 import emulator.IEmulator;
+import emulator.IOSystem;
 import kernel.IReadOnlyMicroprocessor;
 import view.IMainView;
 import view.MainWindow;
@@ -18,7 +19,7 @@ public class MainPresenter implements IMainPresenter {
 
     public MainPresenter() {
 
-        emulator = new EmulatorIntel8080();
+        emulator = new EmulatorIntel8080(new IOSystem(this));
 
         dataSourceForMemoryTable = getDataSourceForMemoryTable(emulator);
         dataSourceForRegistersAndFlagsTable = getDataSourceForRegistersAndFlagsTable(emulator);
@@ -67,12 +68,17 @@ public class MainPresenter implements IMainPresenter {
 
     @Override
     public void step() {
-        emulator.step();
-        dataSourceForRegistersAndFlagsTable = getDataSourceForRegistersAndFlagsTable(emulator);
-        mainView.updateRegistersAndFlagsTable(dataSourceForRegistersAndFlagsTable);
-        int PC = emulator.getViewInterface().getValueByRegisterName("PC");
-        dataSourceForMemoryTable = getDataSourceForMemoryTable(emulator);
-        mainView.updateMemoryTable(dataSourceForMemoryTable, PC, true);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                emulator.step();
+                dataSourceForRegistersAndFlagsTable = getDataSourceForRegistersAndFlagsTable(emulator);
+                mainView.updateRegistersAndFlagsTable(dataSourceForRegistersAndFlagsTable);
+                int PC = emulator.getViewInterface().getValueByRegisterName("PC");
+                dataSourceForMemoryTable = getDataSourceForMemoryTable(emulator);
+                mainView.updateMemoryTable(dataSourceForMemoryTable, PC, true);
+            }
+        }).start();
     }
 
     @Override
@@ -105,7 +111,6 @@ public class MainPresenter implements IMainPresenter {
     @Override
     public void setBreakpoint(int address) {
         emulator.setBreakpoint(address);
-        //int PC = emulator.getViewInterface().getValueByRegisterName("PC");
         mainView.updateMemoryTable(dataSourceForMemoryTable, address, false);
     }
 
@@ -114,6 +119,16 @@ public class MainPresenter implements IMainPresenter {
         emulator.setProgramCounter(address);
         dataSourceForRegistersAndFlagsTable = getDataSourceForRegistersAndFlagsTable(emulator);
         mainView.updateRegistersAndFlagsTable(dataSourceForRegistersAndFlagsTable);
+    }
+
+    @Override
+    public void consoleOut(int value) {
+        mainView.consoleOut(value);
+    }
+
+    @Override
+    public int consoleIn() {
+        return mainView.consoleIn();
     }
 
     private String[][] getDataSourceForMemoryTable(IEmulator emulator) {

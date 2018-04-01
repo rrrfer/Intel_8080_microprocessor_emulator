@@ -11,12 +11,12 @@ class MemoryTableCellRenderer extends DefaultTableCellRenderer {
         super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
         setFont(MainWindow.mainFont);
 
-        if (MainWindow.breakpoints.contains(row)) {
+        if (isSelected) {
+            setBackground(MainWindow.selectedColor);
+        } else if (MainWindow.breakpoints.contains(row)) {
             setBackground(Color.ORANGE);
-        } else if (!isSelected) {
-            setBackground(Color.WHITE);
         } else {
-            setBackground(new Color(44, 192, 8));
+            setBackground(Color.WHITE);
         }
 
         if (column == 1) {
