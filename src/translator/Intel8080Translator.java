@@ -32,6 +32,7 @@ public class Intel8080Translator implements ITranslator {
     @Override
     public String[] getLexemes(String programText) {
 
+        commands.clear();
         currentAddress = 0;
         hasErrors = false;
         label2AddressMap.clear();

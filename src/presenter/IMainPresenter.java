@@ -1,8 +1,7 @@
 package presenter;
 
 public interface IMainPresenter {
-    void open(String path);
-    void save(String path);
+    void loadProgram(String program);
     void run();
     void step();
     void stop();

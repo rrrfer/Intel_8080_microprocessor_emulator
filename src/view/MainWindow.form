@@ -1,99 +1,174 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="view.MainWindow">
-  <grid id="27dc6" binding="rootPanel" layout-manager="GridLayoutManager" row-count="4" column-count="6" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+  <grid id="27dc6" binding="rootPanel" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
-      <xy x="20" y="20" width="500" height="400"/>
+      <xy x="127" y="119" width="786" height="435"/>
     </constraints>
     <properties/>
     <border type="none"/>
     <children>
-      <scrollpane id="9cf91">
+      <tabbedpane id="79486" binding="emulatorTabbedPanel">
         <constraints>
-          <grid row="1" column="1" row-span="2" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false">
-            <preferred-size width="250" height="300"/>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false">
+            <preferred-size width="600" height="450"/>
           </grid>
         </constraints>
         <properties/>
-        <border type="none" title="Memory"/>
+        <border type="none"/>
         <children>
-          <component id="f6ab7" class="javax.swing.JTable" binding="memoryTable">
-            <constraints/>
-            <properties>
-              <preferredScrollableViewportSize width="250" height="300"/>
-            </properties>
-          </component>
-        </children>
-      </scrollpane>
-      <scrollpane id="91a80">
-        <constraints>
-          <grid row="2" column="3" row-span="1" col-span="2" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false">
-            <preferred-size width="300" height="250"/>
-          </grid>
-        </constraints>
-        <properties/>
-        <border type="none" title="Registers &amp; Flags"/>
-        <children>
-          <component id="50c40" class="javax.swing.JTable" binding="registersAndFlagsTable">
-            <constraints/>
+          <grid id="dbd93" layout-manager="GridLayoutManager" row-count="5" column-count="5" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="0"/>
+            <constraints>
+              <tabbedpane title="Intel 8080"/>
+            </constraints>
             <properties/>
-          </component>
+            <border type="none"/>
+            <children>
+              <scrollpane id="9cf91" binding="memoryTableScrollPanel">
+                <constraints>
+                  <grid row="1" column="1" row-span="3" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                    <preferred-size width="250" height="250"/>
+                  </grid>
+                </constraints>
+                <properties/>
+                <border type="none" title="Memory"/>
+                <children>
+                  <component id="f6ab7" class="javax.swing.JTable" binding="memoryTable">
+                    <constraints/>
+                    <properties>
+                      <preferredScrollableViewportSize width="250" height="250"/>
+                      <selectionBackground color="-13844472"/>
+                    </properties>
+                  </component>
+                </children>
+              </scrollpane>
+              <scrollpane id="91a80">
+                <constraints>
+                  <grid row="2" column="2" row-span="1" col-span="2" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                    <preferred-size width="300" height="250"/>
+                    <maximum-size width="-1" height="250"/>
+                  </grid>
+                </constraints>
+                <properties/>
+                <border type="none" title="Registers &amp; Flags"/>
+                <children>
+                  <component id="50c40" class="javax.swing.JTable" binding="registersAndFlagsTable">
+                    <constraints/>
+                    <properties>
+                      <preferredScrollableViewportSize width="300" height="275"/>
+                    </properties>
+                  </component>
+                </children>
+              </scrollpane>
+              <hspacer id="4953">
+                <constraints>
+                  <grid row="2" column="4" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false">
+                    <minimum-size width="-1" height="2"/>
+                    <maximum-size width="-1" height="2"/>
+                  </grid>
+                </constraints>
+              </hspacer>
+              <hspacer id="2794a">
+                <constraints>
+                  <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false">
+                    <minimum-size width="-1" height="2"/>
+                    <maximum-size width="-1" height="2"/>
+                  </grid>
+                </constraints>
+              </hspacer>
+              <scrollpane id="cc0a8">
+                <constraints>
+                  <grid row="3" column="2" row-span="1" col-span="2" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties/>
+                <border type="none" title="Output"/>
+                <children>
+                  <component id="b71fe" class="javax.swing.JEditorPane" binding="outputPortEditorPanel">
+                    <constraints/>
+                    <properties>
+                      <editable value="false"/>
+                    </properties>
+                  </component>
+                </children>
+              </scrollpane>
+              <vspacer id="fe282">
+                <constraints>
+                  <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+                </constraints>
+              </vspacer>
+              <vspacer id="e45c">
+                <constraints>
+                  <grid row="4" column="3" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+                </constraints>
+              </vspacer>
+              <scrollpane id="e60c1">
+                <constraints>
+                  <grid row="1" column="2" row-span="1" col-span="2" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <horizontalScrollBarPolicy value="31"/>
+                  <verticalScrollBarPolicy value="21"/>
+                </properties>
+                <border type="none" title="Input"/>
+                <children>
+                  <component id="e18d5" class="javax.swing.JEditorPane" binding="inputPortEditorPanel">
+                    <constraints/>
+                    <properties/>
+                  </component>
+                </children>
+              </scrollpane>
+            </children>
+          </grid>
+          <grid id="6447c" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="1" vgap="1">
+            <margin top="0" left="0" bottom="0" right="0"/>
+            <constraints>
+              <tabbedpane title="Code editor"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <scrollpane id="da3ce">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="1" fill="0" indent="0" use-parent-layout="false">
+                    <minimum-size width="600" height="300"/>
+                    <preferred-size width="600" height="300"/>
+                    <maximum-size width="600" height="300"/>
+                  </grid>
+                </constraints>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="98a01" class="javax.swing.JEditorPane" binding="codeEditorPanel">
+                    <constraints/>
+                    <properties/>
+                  </component>
+                </children>
+              </scrollpane>
+              <scrollpane id="d8de6">
+                <constraints>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="1" fill="0" indent="0" use-parent-layout="false">
+                    <minimum-size width="600" height="100"/>
+                    <preferred-size width="600" height="100"/>
+                    <maximum-size width="600" height="100"/>
+                  </grid>
+                </constraints>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="b4c41" class="javax.swing.JEditorPane" binding="transteResultTextPanel">
+                    <constraints/>
+                    <properties>
+                      <editable value="false"/>
+                      <text value=""/>
+                    </properties>
+                  </component>
+                </children>
+              </scrollpane>
+            </children>
+          </grid>
         </children>
-      </scrollpane>
-      <hspacer id="4f2c1">
-        <constraints>
-          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false">
-            <minimum-size width="10" height="-1"/>
-            <preferred-size width="10" height="-1"/>
-          </grid>
-        </constraints>
-      </hspacer>
-      <hspacer id="60444">
-        <constraints>
-          <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false">
-            <minimum-size width="0" height="-1"/>
-            <preferred-size width="5" height="-1"/>
-          </grid>
-        </constraints>
-      </hspacer>
-      <vspacer id="e2119">
-        <constraints>
-          <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false">
-            <preferred-size width="0" height="10"/>
-          </grid>
-        </constraints>
-      </vspacer>
-      <vspacer id="dc5d1">
-        <constraints>
-          <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false">
-            <preferred-size width="0" height="10"/>
-          </grid>
-        </constraints>
-      </vspacer>
-      <hspacer id="ca905">
-        <constraints>
-          <grid row="2" column="5" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false">
-            <minimum-size width="0" height="-1"/>
-            <preferred-size width="5" height="-1"/>
-          </grid>
-        </constraints>
-      </hspacer>
-      <component id="359ed" class="javax.swing.JTextField" binding="cmdLoadTextField" default-binding="true">
-        <constraints>
-          <grid row="1" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-            <preferred-size width="100" height="-1"/>
-          </grid>
-        </constraints>
-        <properties/>
-      </component>
-      <component id="eaa03" class="javax.swing.JLabel" binding="inputFromPortLabel">
-        <constraints>
-          <grid row="1" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="Input from port:"/>
-        </properties>
-      </component>
+      </tabbedpane>
     </children>
   </grid>
 </form>

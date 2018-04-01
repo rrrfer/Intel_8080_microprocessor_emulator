@@ -21,7 +21,11 @@ public class EmulatorIntel8080 implements IEmulator {
 
     @Override
     public void run() {
-
+        while (step()) {
+            if (Thread.interrupted()) {
+                break;
+            }
+        }
     }
 
     @Override
@@ -53,6 +57,8 @@ public class EmulatorIntel8080 implements IEmulator {
                             memory.setValueByIndex(address + 2, code[3] % 256);
                         }
                     }
+                } else {
+                    memory.setValueByIndex(address, code[3]);
                 }
             }
             return true;

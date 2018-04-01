@@ -6,16 +6,12 @@ import kernel.IReadOnlyMicroprocessor;
 import view.IMainView;
 import view.MainWindow;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-
 public class MainPresenter implements IMainPresenter {
 
     private IMainView mainView;
-
     private IEmulator emulator;
+
+    private Thread runThread;
 
     private String[][] dataSourceForMemoryTable;
     private String[][] dataSourceForRegistersAndFlagsTable;
@@ -28,26 +24,39 @@ public class MainPresenter implements IMainPresenter {
         dataSourceForRegistersAndFlagsTable = getDataSourceForRegistersAndFlagsTable(emulator);
 
         mainView = new MainWindow(MainPresenter.this);
-        mainView.updateMemoryTable(dataSourceForMemoryTable);
+        mainView.updateMemoryTable(dataSourceForMemoryTable, 0);
         mainView.updateRegistersAndFlagsTable(dataSourceForRegistersAndFlagsTable);
         mainView.create();
     }
 
     @Override
-    public void open(String path) {
-        emulator.loadProgram(loadProgramTextFromFile(path));
+    public void loadProgram(String program) {
+        resetMemory();
+        resetRegisters();
+        boolean hasErrors = !emulator.loadProgram(program);
         dataSourceForMemoryTable = getDataSourceForMemoryTable(emulator);
-        mainView.updateMemoryTable(dataSourceForMemoryTable);
-    }
-
-    @Override
-    public void save(String path) {
-
+        mainView.updateMemoryTable(dataSourceForMemoryTable, 0);
+        mainView.updateCodeEditor(emulator.getTranslationResult(), hasErrors);
     }
 
     @Override
     public void run() {
-
+        if (runThread == null || !runThread.isAlive()) {
+            runThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    emulator.run();
+                    dataSourceForRegistersAndFlagsTable
+                            = getDataSourceForRegistersAndFlagsTable(emulator);
+                    mainView.updateRegistersAndFlagsTable(dataSourceForRegistersAndFlagsTable);
+                    int PC = emulator.getViewInterface().getValueByRegisterName("PC");
+                    mainView.updateMemoryTable(dataSourceForMemoryTable, PC);
+                    mainView.setRunningMode(false);
+                }
+            });
+            mainView.setRunningMode(true);
+            runThread.start();
+        }
     }
 
     @Override
@@ -55,11 +64,16 @@ public class MainPresenter implements IMainPresenter {
         emulator.step();
         dataSourceForRegistersAndFlagsTable = getDataSourceForRegistersAndFlagsTable(emulator);
         mainView.updateRegistersAndFlagsTable(dataSourceForRegistersAndFlagsTable);
+        int PC = emulator.getViewInterface().getValueByRegisterName("PC");
+        mainView.updateMemoryTable(dataSourceForMemoryTable, PC);
     }
 
     @Override
     public void stop() {
-
+        if (runThread != null && runThread.isAlive()) {
+            runThread.interrupt();
+            mainView.setRunningMode(false);
+        }
     }
 
     @Override
@@ -73,7 +87,7 @@ public class MainPresenter implements IMainPresenter {
     public void resetMemory() {
         emulator.resetMemory();
         dataSourceForMemoryTable = getDataSourceForMemoryTable(emulator);
-        mainView.updateMemoryTable(dataSourceForMemoryTable);
+        mainView.updateMemoryTable(dataSourceForMemoryTable, 0);
     }
 
     @Override
@@ -89,22 +103,6 @@ public class MainPresenter implements IMainPresenter {
     @Override
     public void setProgramCounter(int address) {
 
-    }
-
-    private String loadProgramTextFromFile(String path) {
-        try {
-            BufferedReader bufferedReader
-                    = new BufferedReader(new FileReader(new File(path)));
-            StringBuilder program = new StringBuilder();
-            String line = null;
-            while ((line = bufferedReader.readLine()) != null) {
-                program.append(line).append(System.lineSeparator());
-            }
-            return program.toString();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
     private String[][] getDataSourceForMemoryTable(IEmulator emulator) {

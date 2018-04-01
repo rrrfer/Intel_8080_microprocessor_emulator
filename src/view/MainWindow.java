@@ -3,11 +3,18 @@ package view;
 import presenter.IMainPresenter;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.text.PlainDocument;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
 
 public class MainWindow extends JFrame implements IMainView {
 
@@ -19,8 +26,30 @@ public class MainWindow extends JFrame implements IMainView {
     private JTable memoryTable;
     private JTable registersAndFlagsTable;
     private JTextField addressTextField;
-    private JTextField cmdLoadTextField;
-    private JLabel inputFromPortLabel;
+    private JTabbedPane emulatorTabbedPanel;
+    private JEditorPane codeEditorPanel;
+    private JEditorPane transteResultTextPanel;
+    private JScrollPane memoryTableScrollPanel;
+    private JEditorPane outputPortEditorPanel;
+    private JEditorPane inputPortEditorPanel;
+
+    private JMenu fileMenu;
+    private JMenuItem openItem;
+    private JMenuItem saveItem;
+    private JMenuItem exitItem;
+
+    private JMenu emulatorMenu;
+    private JMenuItem compileProgramItem;
+    private JMenuItem runItem;
+    private JMenuItem stepItem;
+    private JMenuItem stopItem;
+    private JMenuItem resetRegisterItem;
+    private JMenuItem resetMemoryItem;
+    private JMenuItem clearScreensItem;
+
+    private JMenu helpMenu;
+    private JMenuItem helpItem;
+    private JMenuItem aboutItem;
 
     // Helps components
     private MemoryTableModel memoryTableModel;
@@ -45,29 +74,57 @@ public class MainWindow extends JFrame implements IMainView {
     }
 
     private void bindHotkey() {
-        cmdLoadTextField.addKeyListener(new KeyAdapter() {
+        inputPortEditorPanel.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_F1: {
-                        help();
+                        if (helpItem.isEnabled()) {
+                            help();
+                        }
                         break;
                     }
                     case KeyEvent.VK_F2: {
-                        showCodeEditor();
-                        break;
+                        if (compileProgramItem.isEnabled()) {
+                            loadProgram();
+                            break;
+                        }
                     }
                     case KeyEvent.VK_F5: {
-                        run();
+                        if (runItem.isEnabled()) {
+                            run();
+                        }
                         break;
                     }
                     case KeyEvent.VK_F9: {
-                        step();
+                        if (stepItem.isEnabled()) {
+                            step();
+                        }
                         break;
                     }
                     case KeyEvent.VK_F12: {
-                        stop();
+                        if (stopItem.isEnabled()) {
+                            stop();
+                        }
                         break;
+                    }
+                    case KeyEvent.VK_ESCAPE: {
+                        if (resetRegisterItem.isEnabled()) {
+                            resetRegisters();
+                            updateMemoryTable(dataSourceForMemoryTable, 0);
+                            updateRegistersAndFlagsTable(dataSourceForRegistersAndFlagsTable);
+                        }
+                    }
+                }
+            }
+        });
+
+        codeEditorPanel.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_F2) {
+                    if (compileProgramItem.isEnabled()) {
+                        loadProgram();
                     }
                 }
             }
@@ -75,11 +132,11 @@ public class MainWindow extends JFrame implements IMainView {
     }
 
     private void createMenuBar() {
-        JMenuItem openItem = new JMenuItem("Open...");
+        openItem = new JMenuItem("Open...");
         openItem.setFont(menuBarFont);
-        JMenuItem saveItem = new JMenuItem("Save...");
+        saveItem = new JMenuItem("Save...");
         saveItem.setFont(menuBarFont);
-        JMenuItem exitItem = new JMenuItem("Exit");
+        exitItem = new JMenuItem("Exit");
         exitItem.setFont(menuBarFont);
 
         openItem.addActionListener(new ActionListener() {
@@ -103,32 +160,32 @@ public class MainWindow extends JFrame implements IMainView {
             }
         });
 
-        JMenu fileMenu = new JMenu("File");
+        fileMenu = new JMenu("File");
         fileMenu.setFont(menuBarFont);
         fileMenu.add(openItem);
         fileMenu.add(saveItem);
         fileMenu.addSeparator();
         fileMenu.add(exitItem);
 
-        JMenuItem showCodeEditor = new JMenuItem("Show code editor (F2)");
-        showCodeEditor.setFont(menuBarFont);
-        JMenuItem runItem = new JMenuItem("Run              (F5)");
+        compileProgramItem = new JMenuItem("Compile          (F2)");
+        compileProgramItem.setFont(menuBarFont);
+        runItem = new JMenuItem("Run              (F5)");
         runItem.setFont(menuBarFont);
-        JMenuItem stepItem = new JMenuItem("Step             (F9)");
+        stepItem = new JMenuItem("Step             (F9)");
         stepItem.setFont(menuBarFont);
-        JMenuItem stopItem = new JMenuItem("Stop             (F12)");
+        stopItem = new JMenuItem("Stop             (F12)");
         stopItem.setFont(menuBarFont);
-        JMenuItem resetRegisterItem = new JMenuItem("Reset registers");
+        resetRegisterItem = new JMenuItem("Reset registers  (Esc)");
         resetRegisterItem.setFont(menuBarFont);
-        JMenuItem resetMemoryItem = new JMenuItem("Reset memory");
+        resetMemoryItem = new JMenuItem("Reset memory");
         resetMemoryItem.setFont(menuBarFont);
-        JMenuItem clearScreensItem = new JMenuItem("Clear screens");
+        clearScreensItem = new JMenuItem("Clear screens");
         clearScreensItem.setFont(menuBarFont);
 
-        showCodeEditor.addActionListener(new ActionListener() {
+        compileProgramItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                showCodeEditor();
+                loadProgram();
             }
         });
 
@@ -174,9 +231,9 @@ public class MainWindow extends JFrame implements IMainView {
             }
         });
 
-        JMenu emulatorMenu = new JMenu("Emulator");
+        emulatorMenu = new JMenu("Emulator");
         emulatorMenu.setFont(menuBarFont);
-        emulatorMenu.add(showCodeEditor);
+        emulatorMenu.add(compileProgramItem);
         emulatorMenu.addSeparator();
         emulatorMenu.add(runItem);
         emulatorMenu.add(stepItem);
@@ -187,9 +244,9 @@ public class MainWindow extends JFrame implements IMainView {
         emulatorMenu.addSeparator();
         emulatorMenu.add(clearScreensItem);
 
-        JMenuItem helpItem = new JMenuItem("Help (F1)");
+        helpItem = new JMenuItem("Help (F1)");
         helpItem.setFont(menuBarFont);
-        JMenuItem aboutItem = new JMenuItem("About...");
+        aboutItem = new JMenuItem("About...");
         aboutItem.setFont(menuBarFont);
 
         helpItem.addActionListener(new ActionListener() {
@@ -206,7 +263,7 @@ public class MainWindow extends JFrame implements IMainView {
             }
         });
 
-        JMenu helpMenu = new JMenu("Help");
+        helpMenu = new JMenu("Help");
         helpMenu.setFont(menuBarFont);
         helpMenu.add(helpItem);
         helpMenu.add(aboutItem);
@@ -234,7 +291,7 @@ public class MainWindow extends JFrame implements IMainView {
     private void createRegistersAndFlagsTable() {
         registersAndFlagsTable.setModel(registersAndFlagsTableModel);
         registersAndFlagsTable.setFocusable(false);
-        registersAndFlagsTable.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        registersAndFlagsTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         registersAndFlagsTable.setEnabled(false);
         registersAndFlagsTable.getColumnModel().getColumn(0).setPreferredWidth(100);
         registersAndFlagsTable.setDefaultRenderer(registersAndFlagsTable.getColumnClass(1),
@@ -242,26 +299,58 @@ public class MainWindow extends JFrame implements IMainView {
     }
 
     private void settingUI() {
-        cmdLoadTextField.setEditable(false);
+        inputPortEditorPanel.setEditable(false);
+        outputPortEditorPanel.setFocusable(false);
         registersAndFlagsTable.setFocusable(false);
         memoryTable.setFocusable(false);
+        stopItem.setEnabled(false);
+        codeEditorPanel.getDocument().putProperty(PlainDocument.tabSizeAttribute, 2);
+        emulatorTabbedPanel.setFocusable(false);
     }
 
     // Actions
     private void open() {
-        presenter.open("test.i8080");
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileFilter(new FileNameExtensionFilter("i8080", "i8080"));
+        int result = fileChooser.showOpenDialog(MainWindow.this);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            try {
+                codeEditorPanel.setText(loadProgramTextFromFile(fileChooser.getSelectedFile().getPath()));
+                JOptionPane.showMessageDialog(MainWindow.this, "Load successful");
+                emulatorTabbedPanel.setSelectedIndex(1);
+            } catch (Exception e1) {
+                JOptionPane.showMessageDialog(MainWindow.this,
+                        "Opening failed", "Error!", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    private String loadProgramTextFromFile(String path) {
+        try {
+            BufferedReader bufferedReader
+                    = new BufferedReader(new FileReader(new File(path)));
+            StringBuilder program = new StringBuilder();
+            String line = null;
+            while ((line = bufferedReader.readLine()) != null) {
+                program.append(line).append(System.lineSeparator());
+            }
+            return program.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private void loadProgram() {
+        presenter.loadProgram(codeEditorPanel.getText());
     }
 
     private void save() {
-        presenter.save("test.8080");
+
     }
 
     private void exit() {
         System.exit(1);
-    }
-
-    private void showCodeEditor() {
-        System.out.println("Action: show code editor");
     }
 
     private void run() {
@@ -289,20 +378,15 @@ public class MainWindow extends JFrame implements IMainView {
     }
 
     private void help() {
-        System.out.println("Action: help");
+
     }
 
     private void about() {
-        System.out.println("Action: about");
+
     }
 
     @Override
-    public void updateCodeEditor(String programText) {
-        // TODO
-    }
-
-    @Override
-    public void updateMemoryTable(String[][] dataSource) {
+    public void updateMemoryTable(String[][] dataSource, int PC) {
         for (int i = 0; i < dataSourceForMemoryTable.length; ++i) {
             for (int j = 0; j < dataSourceForMemoryTable[i].length; ++j) {
                 dataSourceForMemoryTable[i][j] = dataSource[i][j];
@@ -310,18 +394,44 @@ public class MainWindow extends JFrame implements IMainView {
         }
         if (memoryTableModel != null) {
             memoryTableModel.fireTableDataChanged();
+            memoryTable.setRowSelectionInterval(PC, PC);
+        }
+
+        updateScrollPane();
+    }
+
+    public void updateScrollPane() {
+
+        try {
+            Thread.sleep(10);
+        } catch (InterruptedException ignored) {}
+
+        if (memoryTable.getSelectedRow() > 10) {
+            memoryTableScrollPanel.getViewport().setViewPosition(new Point(0, memoryTable.getSelectedRow() * 16 - 160));
+        } else {
+            memoryTableScrollPanel.getViewport().setViewPosition(new Point(0, 0));
         }
     }
 
     @Override
     public void updateRegistersAndFlagsTable(String[][] dataSource) {
+        ArrayList<Integer> selectedRow = new ArrayList<>();
         for (int i = 0; i < dataSourceForRegistersAndFlagsTable.length; ++i) {
             for (int j = 0; j < dataSourceForRegistersAndFlagsTable[i].length; ++j) {
+                if (dataSourceForRegistersAndFlagsTable[i][j] != null) {
+                    if (!dataSourceForRegistersAndFlagsTable[i][j].equals(dataSource[i][j])) {
+                        selectedRow.add(i);
+                    }
+                }
                 dataSourceForRegistersAndFlagsTable[i][j] = dataSource[i][j];
             }
         }
         if (registersAndFlagsTableModel != null) {
             registersAndFlagsTableModel.fireTableDataChanged();
+        }
+
+        for (int i = 0; i < selectedRow.size(); ++i) {
+            registersAndFlagsTable.addRowSelectionInterval(selectedRow.get(i), selectedRow.get(i));
         }
     }
 
@@ -343,5 +453,26 @@ public class MainWindow extends JFrame implements IMainView {
         bindHotkey();
 
         setVisible(true);
+    }
+
+    @Override
+    public void setRunningMode(boolean isRunningMode) {
+        fileMenu.setEnabled(!isRunningMode);
+        helpMenu.setEnabled(!isRunningMode);
+        compileProgramItem.setEnabled(!isRunningMode);
+        runItem.setEnabled(!isRunningMode);
+        stepItem.setEnabled(!isRunningMode);
+        resetRegisterItem.setEnabled(!isRunningMode);
+        resetMemoryItem.setEnabled(!isRunningMode);
+        clearScreensItem.setEnabled(!isRunningMode);
+        stopItem.setEnabled(isRunningMode);
+    }
+
+    @Override
+    public void updateCodeEditor(String translateResult, boolean hasErrors) {
+        transteResultTextPanel.setText(translateResult);
+        if (!hasErrors) {
+            emulatorTabbedPanel.setSelectedIndex(0);
+        }
     }
 }

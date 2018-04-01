@@ -70,7 +70,6 @@ public class Intel8080 implements IMicroprocessor {
 
     @Override
     public void executeCommand(ICommand command) {
-        System.out.println("Exec: " + command.getName());
         registers[registerByName.get("PC")]
                 = (registers[registerByName.get("PC")] + command.getSize()) % memory.getSize();
         command.execute(this);
