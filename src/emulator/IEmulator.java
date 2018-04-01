@@ -11,4 +11,6 @@ public interface IEmulator {
     boolean step();
     void resetRegisters();
     void resetMemory();
+    void setProgramCounter(int address);
+    void setBreakpoint(int address);
 }

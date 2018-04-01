@@ -14,14 +14,17 @@ public class EmulatorIntel8080 implements IEmulator {
     private IMicroprocessor microprocessor;
     private ITranslator translator;
 
+    private ArrayList<Integer> breakpoints;
+
     public EmulatorIntel8080() {
         this.microprocessor = new Intel8080(new Memory(65536));
         this.translator = new Intel8080Translator();
+        this.breakpoints = new ArrayList<>();
     }
 
     @Override
     public void run() {
-        while (step()) {
+        while (step() && !breakpoints.contains(microprocessor.getValueByRegisterName("PC"))) {
             if (Thread.interrupted()) {
                 break;
             }
@@ -107,5 +110,19 @@ public class EmulatorIntel8080 implements IEmulator {
     @Override
     public void resetMemory() {
         microprocessor.resetMemory();
+    }
+
+    @Override
+    public void setProgramCounter(int address) {
+        microprocessor.setValueByRegisterName("PC", address);
+    }
+
+    @Override
+    public void setBreakpoint(int address) {
+        if (!breakpoints.contains(address)) {
+            breakpoints.add(address);
+        } else {
+            breakpoints.remove((Integer) address);
+        }
     }
 }

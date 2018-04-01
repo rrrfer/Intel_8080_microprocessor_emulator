@@ -10,6 +10,15 @@ class MemoryTableCellRenderer extends DefaultTableCellRenderer {
 
         super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
         setFont(MainWindow.mainFont);
+
+        if (MainWindow.breakpoints.contains(row)) {
+            setBackground(Color.ORANGE);
+        } else if (!isSelected) {
+            setBackground(Color.WHITE);
+        } else {
+            setBackground(new Color(44, 192, 8));
+        }
+
         if (column == 1) {
             setHorizontalAlignment(SwingConstants.LEFT);
         } else {

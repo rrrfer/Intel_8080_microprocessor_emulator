@@ -6,10 +6,7 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.PlainDocument;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 import java.io.*;
 import java.util.ArrayList;
 
@@ -56,6 +53,9 @@ public class MainWindow extends JFrame implements IMainView {
     // Data Source
     private String[][] dataSourceForMemoryTable = new String[65536][3];
     private String[][] dataSourceForRegistersAndFlagsTable = new String[13][4];
+
+    // Breakpoints
+    public static final ArrayList<Integer> breakpoints = new ArrayList<>();
 
     // FONTS
     public static final Font mainFont = new Font(Font.MONOSPACED, Font.PLAIN, 12);
@@ -306,6 +306,28 @@ public class MainWindow extends JFrame implements IMainView {
         codeEditorPane.getDocument().putProperty(PlainDocument.tabSizeAttribute, 2);
         codeEditorPane.setFont(mainFont);
         emulatorTabbedPanel.setFocusable(false);
+
+        memoryTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                    presenter.setProgramCounter(memoryTable.getSelectedRow());
+                } else if (e.getButton() == MouseEvent.BUTTON3) {
+                    int column = memoryTable.columnAtPoint(e.getPoint());
+                    int row = memoryTable.rowAtPoint(e.getPoint());
+                    memoryTable.setColumnSelectionInterval(column, column);
+                    memoryTable.setRowSelectionInterval(row, row);
+
+                    if (breakpoints.contains(memoryTable.getSelectedRow())) {
+                        breakpoints.remove((Integer) memoryTable.getSelectedRow());
+                    } else {
+                        breakpoints.add(memoryTable.getSelectedRow());
+                    }
+
+                    presenter.setBreakpoint(memoryTable.getSelectedRow());
+                }
+            }
+        });
     }
 
     // Actions

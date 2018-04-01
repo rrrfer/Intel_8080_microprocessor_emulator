@@ -104,12 +104,16 @@ public class MainPresenter implements IMainPresenter {
 
     @Override
     public void setBreakpoint(int address) {
-
+        emulator.setBreakpoint(address);
+        int PC = emulator.getViewInterface().getValueByRegisterName("PC");
+        mainView.updateMemoryTable(dataSourceForMemoryTable, PC);
     }
 
     @Override
     public void setProgramCounter(int address) {
-
+        emulator.setProgramCounter(address);
+        dataSourceForRegistersAndFlagsTable = getDataSourceForRegistersAndFlagsTable(emulator);
+        mainView.updateRegistersAndFlagsTable(dataSourceForRegistersAndFlagsTable);
     }
 
     private String[][] getDataSourceForMemoryTable(IEmulator emulator) {
