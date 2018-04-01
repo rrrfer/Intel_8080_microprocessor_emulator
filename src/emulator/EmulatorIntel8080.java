@@ -32,9 +32,11 @@ public class EmulatorIntel8080 implements IEmulator {
     public boolean step() {
         int address = microprocessor.getValueByRegisterName("PC");
         ICommand command = CommandsBuilder.getCommand(microprocessor.getReadOnlyMemory(), address);
-        if (!command.getName().equals("HLT")) {
-            microprocessor.executeCommand(command);
-            return true;
+        if (command != null) {
+            if (!command.getName().equals("HLT")) {
+                microprocessor.executeCommand(command);
+                return true;
+            }
         }
         return false;
     }

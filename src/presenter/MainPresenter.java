@@ -31,11 +31,16 @@ public class MainPresenter implements IMainPresenter {
 
     @Override
     public void loadProgram(String program) {
-        resetMemory();
-        resetRegisters();
+        emulator.resetMemory();
+        emulator.resetRegisters();
+
         boolean hasErrors = !emulator.loadProgram(program);
+
         dataSourceForMemoryTable = getDataSourceForMemoryTable(emulator);
+        dataSourceForRegistersAndFlagsTable = getDataSourceForRegistersAndFlagsTable(emulator);
+
         mainView.updateMemoryTable(dataSourceForMemoryTable, 0);
+        mainView.updateRegistersAndFlagsTable(dataSourceForRegistersAndFlagsTable);
         mainView.updateCodeEditor(emulator.getTranslationResult(), hasErrors);
     }
 
@@ -49,6 +54,7 @@ public class MainPresenter implements IMainPresenter {
                     dataSourceForRegistersAndFlagsTable
                             = getDataSourceForRegistersAndFlagsTable(emulator);
                     mainView.updateRegistersAndFlagsTable(dataSourceForRegistersAndFlagsTable);
+                    dataSourceForMemoryTable = getDataSourceForMemoryTable(emulator);
                     int PC = emulator.getViewInterface().getValueByRegisterName("PC");
                     mainView.updateMemoryTable(dataSourceForMemoryTable, PC);
                     mainView.setRunningMode(false);
@@ -65,6 +71,7 @@ public class MainPresenter implements IMainPresenter {
         dataSourceForRegistersAndFlagsTable = getDataSourceForRegistersAndFlagsTable(emulator);
         mainView.updateRegistersAndFlagsTable(dataSourceForRegistersAndFlagsTable);
         int PC = emulator.getViewInterface().getValueByRegisterName("PC");
+        dataSourceForMemoryTable = getDataSourceForMemoryTable(emulator);
         mainView.updateMemoryTable(dataSourceForMemoryTable, PC);
     }
 

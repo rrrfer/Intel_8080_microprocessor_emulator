@@ -10,10 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 
 public class MainWindow extends JFrame implements IMainView {
@@ -27,12 +24,13 @@ public class MainWindow extends JFrame implements IMainView {
     private JTable registersAndFlagsTable;
     private JTextField addressTextField;
     private JTabbedPane emulatorTabbedPanel;
-    private JEditorPane codeEditorPanel;
+    private JEditorPane codeEditorPane;
     private JEditorPane transteResultTextPanel;
     private JScrollPane memoryTableScrollPanel;
     private JEditorPane outputPortEditorPanel;
     private JEditorPane inputPortEditorPanel;
 
+    // JMenuBar
     private JMenu fileMenu;
     private JMenuItem openItem;
     private JMenuItem saveItem;
@@ -60,12 +58,13 @@ public class MainWindow extends JFrame implements IMainView {
     private String[][] dataSourceForRegistersAndFlagsTable = new String[13][4];
 
     // FONTS
-    public static final Font menuBarFont = new Font(Font.MONOSPACED, Font.PLAIN, 12);
+    public static final Font mainFont = new Font(Font.MONOSPACED, Font.PLAIN, 12);
 
     public MainWindow(IMainPresenter presenter) {
         this.presenter = presenter;
     }
 
+    // Create&Setting GUI
     private void createUI() {
         createMenuBar();
         createMemoryTable();
@@ -86,7 +85,7 @@ public class MainWindow extends JFrame implements IMainView {
                     }
                     case KeyEvent.VK_F2: {
                         if (compileProgramItem.isEnabled()) {
-                            loadProgram();
+                            translateProgram();
                             break;
                         }
                     }
@@ -119,12 +118,12 @@ public class MainWindow extends JFrame implements IMainView {
             }
         });
 
-        codeEditorPanel.addKeyListener(new KeyAdapter() {
+        codeEditorPane.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_F2) {
                     if (compileProgramItem.isEnabled()) {
-                        loadProgram();
+                        translateProgram();
                     }
                 }
             }
@@ -133,11 +132,11 @@ public class MainWindow extends JFrame implements IMainView {
 
     private void createMenuBar() {
         openItem = new JMenuItem("Open...");
-        openItem.setFont(menuBarFont);
+        openItem.setFont(mainFont);
         saveItem = new JMenuItem("Save...");
-        saveItem.setFont(menuBarFont);
+        saveItem.setFont(mainFont);
         exitItem = new JMenuItem("Exit");
-        exitItem.setFont(menuBarFont);
+        exitItem.setFont(mainFont);
 
         openItem.addActionListener(new ActionListener() {
             @Override
@@ -161,31 +160,31 @@ public class MainWindow extends JFrame implements IMainView {
         });
 
         fileMenu = new JMenu("File");
-        fileMenu.setFont(menuBarFont);
+        fileMenu.setFont(mainFont);
         fileMenu.add(openItem);
         fileMenu.add(saveItem);
         fileMenu.addSeparator();
         fileMenu.add(exitItem);
 
         compileProgramItem = new JMenuItem("Compile          (F2)");
-        compileProgramItem.setFont(menuBarFont);
+        compileProgramItem.setFont(mainFont);
         runItem = new JMenuItem("Run              (F5)");
-        runItem.setFont(menuBarFont);
+        runItem.setFont(mainFont);
         stepItem = new JMenuItem("Step             (F9)");
-        stepItem.setFont(menuBarFont);
+        stepItem.setFont(mainFont);
         stopItem = new JMenuItem("Stop             (F12)");
-        stopItem.setFont(menuBarFont);
+        stopItem.setFont(mainFont);
         resetRegisterItem = new JMenuItem("Reset registers  (Esc)");
-        resetRegisterItem.setFont(menuBarFont);
+        resetRegisterItem.setFont(mainFont);
         resetMemoryItem = new JMenuItem("Reset memory");
-        resetMemoryItem.setFont(menuBarFont);
+        resetMemoryItem.setFont(mainFont);
         clearScreensItem = new JMenuItem("Clear screens");
-        clearScreensItem.setFont(menuBarFont);
+        clearScreensItem.setFont(mainFont);
 
         compileProgramItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                loadProgram();
+                translateProgram();
             }
         });
 
@@ -232,7 +231,7 @@ public class MainWindow extends JFrame implements IMainView {
         });
 
         emulatorMenu = new JMenu("Emulator");
-        emulatorMenu.setFont(menuBarFont);
+        emulatorMenu.setFont(mainFont);
         emulatorMenu.add(compileProgramItem);
         emulatorMenu.addSeparator();
         emulatorMenu.add(runItem);
@@ -245,9 +244,9 @@ public class MainWindow extends JFrame implements IMainView {
         emulatorMenu.add(clearScreensItem);
 
         helpItem = new JMenuItem("Help (F1)");
-        helpItem.setFont(menuBarFont);
+        helpItem.setFont(mainFont);
         aboutItem = new JMenuItem("About...");
-        aboutItem.setFont(menuBarFont);
+        aboutItem.setFont(mainFont);
 
         helpItem.addActionListener(new ActionListener() {
             @Override
@@ -264,7 +263,7 @@ public class MainWindow extends JFrame implements IMainView {
         });
 
         helpMenu = new JMenu("Help");
-        helpMenu.setFont(menuBarFont);
+        helpMenu.setFont(mainFont);
         helpMenu.add(helpItem);
         helpMenu.add(aboutItem);
 
@@ -304,7 +303,8 @@ public class MainWindow extends JFrame implements IMainView {
         registersAndFlagsTable.setFocusable(false);
         memoryTable.setFocusable(false);
         stopItem.setEnabled(false);
-        codeEditorPanel.getDocument().putProperty(PlainDocument.tabSizeAttribute, 2);
+        codeEditorPane.getDocument().putProperty(PlainDocument.tabSizeAttribute, 2);
+        codeEditorPane.setFont(mainFont);
         emulatorTabbedPanel.setFocusable(false);
     }
 
@@ -315,7 +315,7 @@ public class MainWindow extends JFrame implements IMainView {
         int result = fileChooser.showOpenDialog(MainWindow.this);
         if (result == JFileChooser.APPROVE_OPTION) {
             try {
-                codeEditorPanel.setText(loadProgramTextFromFile(fileChooser.getSelectedFile().getPath()));
+                codeEditorPane.setText(loadProgramTextFromFile(fileChooser.getSelectedFile().getPath()));
                 JOptionPane.showMessageDialog(MainWindow.this, "Load successful");
                 emulatorTabbedPanel.setSelectedIndex(1);
             } catch (Exception e1) {
@@ -341,12 +341,29 @@ public class MainWindow extends JFrame implements IMainView {
         }
     }
 
-    private void loadProgram() {
-        presenter.loadProgram(codeEditorPanel.getText());
+    private void translateProgram() {
+        presenter.loadProgram(codeEditorPane.getText());
     }
 
     private void save() {
-
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileFilter(new FileNameExtensionFilter("i8080", "i8080"));
+        int result = fileChooser.showOpenDialog(MainWindow.this);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            try {
+                String path = fileChooser.getSelectedFile().getPath();
+                if (!path.endsWith(".i8080")) {
+                    path = path + ".i8080";
+                }
+                FileWriter fileWriter = new FileWriter(path);
+                fileWriter.write(codeEditorPane.getText());
+                fileWriter.close();
+                JOptionPane.showMessageDialog(MainWindow.this, "Save successful");
+            } catch (Exception e1) {
+                JOptionPane.showMessageDialog(MainWindow.this,
+                        "Saving failed", "Error!", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }
 
     private void exit() {
@@ -385,6 +402,7 @@ public class MainWindow extends JFrame implements IMainView {
 
     }
 
+    // IMainView
     @Override
     public void updateMemoryTable(String[][] dataSource, int PC) {
         for (int i = 0; i < dataSourceForMemoryTable.length; ++i) {
@@ -400,7 +418,7 @@ public class MainWindow extends JFrame implements IMainView {
         updateScrollPane();
     }
 
-    public void updateScrollPane() {
+    private void updateScrollPane() {
 
         try {
             Thread.sleep(10);
@@ -465,6 +483,7 @@ public class MainWindow extends JFrame implements IMainView {
         resetRegisterItem.setEnabled(!isRunningMode);
         resetMemoryItem.setEnabled(!isRunningMode);
         clearScreensItem.setEnabled(!isRunningMode);
+        // ==========================================
         stopItem.setEnabled(isRunningMode);
     }
 

@@ -9,7 +9,7 @@ class MemoryTableCellRenderer extends DefaultTableCellRenderer {
                                                    boolean hasFocus, int row, int column) {
 
         super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-        setFont(MainWindow.menuBarFont);
+        setFont(MainWindow.mainFont);
         if (column == 1) {
             setHorizontalAlignment(SwingConstants.LEFT);
         } else {
