@@ -1,7 +1,9 @@
 package presenter;
 
+import java.io.IOException;
+
 public interface IMainPresenter {
-    void loadProgram(String program);
+    void translation(String program);
     void run();
     void step();
     void stop();
@@ -12,4 +14,6 @@ public interface IMainPresenter {
     void setProgramCounter(int address);
     void consoleOut(int value);
     int consoleIn();
+    void loadProgramFromFile(String path) throws IOException;
+    void saveProgramInFile(String path, String programText) throws IOException;
 }

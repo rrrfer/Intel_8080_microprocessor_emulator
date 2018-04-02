@@ -2,8 +2,10 @@ package emulator;
 
 import kernel.IReadOnlyMicroprocessor;
 
+import java.io.IOException;
+
 public interface IEmulator {
-    boolean loadProgram(String program);
+    boolean translation(String program);
     String getTranslationResult();
     String[] getCommandsList();
     IReadOnlyMicroprocessor getViewInterface();
@@ -13,4 +15,6 @@ public interface IEmulator {
     void resetMemory();
     void setProgramCounter(int address);
     void setBreakpoint(int address);
+    String loadProgramFromFile(String path) throws IOException;
+    void saveProgramInFile(String path, String programText) throws IOException;
 }

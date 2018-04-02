@@ -7,42 +7,59 @@ import kernel.IReadOnlyMicroprocessor;
 import view.IMainView;
 import view.MainWindow;
 
+import javax.swing.*;
+import java.io.IOException;
+
 public class MainPresenter implements IMainPresenter {
+
+    public static final int DEFAULT_MODE = 0;
+    public static final int RUN_MODE = 1;
+    public static final int IO_MODE = 2;
+
+    private String dataSourceForCodeEditorPanel;
+    private String dataSourceForTranslateResultPanel;
+    private String dataSourceForConsoleOutputPanel;
+
+    private String[][] dataSourceForMemoryTable;
+    private String[][] dataSourceForRegistersAndFlagsTable;
+
+    private int actionMode;
 
     private IMainView mainView;
     private IEmulator emulator;
 
     private Thread runThread;
 
-    private String[][] dataSourceForMemoryTable;
-    private String[][] dataSourceForRegistersAndFlagsTable;
-
     public MainPresenter() {
-
         emulator = new EmulatorIntel8080(new IOSystem(this));
-
         dataSourceForMemoryTable = getDataSourceForMemoryTable(emulator);
         dataSourceForRegistersAndFlagsTable = getDataSourceForRegistersAndFlagsTable(emulator);
+        dataSourceForConsoleOutputPanel = "";
+        actionMode = DEFAULT_MODE;
 
-        mainView = new MainWindow(MainPresenter.this);
-        mainView.updateMemoryTable(dataSourceForMemoryTable, 0, true);
-        mainView.updateRegistersAndFlagsTable(dataSourceForRegistersAndFlagsTable);
-        mainView.create();
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                mainView = new MainWindow(MainPresenter.this,
+                        dataSourceForMemoryTable, dataSourceForRegistersAndFlagsTable);
+                mainView.setPermissionForAction(MainPresenter.DEFAULT_MODE);
+            }
+        });
     }
 
     @Override
-    public void loadProgram(String program) {
-        emulator.resetMemory();
+    public void translation(String program) {
         emulator.resetRegisters();
-
-        boolean hasErrors = !emulator.loadProgram(program);
+        emulator.resetMemory();
+        emulator.translation(program);
 
         dataSourceForMemoryTable = getDataSourceForMemoryTable(emulator);
         dataSourceForRegistersAndFlagsTable = getDataSourceForRegistersAndFlagsTable(emulator);
+        dataSourceForTranslateResultPanel = emulator.getTranslationResult();
 
-        mainView.updateMemoryTable(dataSourceForMemoryTable, 0, true);
-        mainView.updateRegistersAndFlagsTable(dataSourceForRegistersAndFlagsTable);
-        mainView.updateCodeEditor(emulator.getTranslationResult(), hasErrors);
+        mainView.setMemoryDataTable(dataSourceForMemoryTable);
+        mainView.setRegistersAndFlagsDataTable(dataSourceForRegistersAndFlagsTable);
+        mainView.setTranslationResultText(dataSourceForTranslateResultPanel);
+        mainView.setProgramCounterPosition(0);
     }
 
     @Override
@@ -52,40 +69,65 @@ public class MainPresenter implements IMainPresenter {
                 @Override
                 public void run() {
                     emulator.run();
+
                     dataSourceForRegistersAndFlagsTable
                             = getDataSourceForRegistersAndFlagsTable(emulator);
-                    mainView.updateRegistersAndFlagsTable(dataSourceForRegistersAndFlagsTable);
                     dataSourceForMemoryTable = getDataSourceForMemoryTable(emulator);
                     int PC = emulator.getViewInterface().getValueByRegisterName("PC");
-                    mainView.updateMemoryTable(dataSourceForMemoryTable, PC, true);
-                    mainView.setRunningMode(false);
+
+                    mainView.setMemoryDataTable(dataSourceForMemoryTable);
+                    mainView.setRegistersAndFlagsDataTable(dataSourceForRegistersAndFlagsTable);
+                    mainView.setProgramCounterPosition(PC);
+
+                    mainView.setPermissionForAction(MainPresenter.DEFAULT_MODE);
+                    actionMode = DEFAULT_MODE;
                 }
             });
-            mainView.setRunningMode(true);
+            mainView.setPermissionForAction(MainPresenter.RUN_MODE);
+            actionMode = RUN_MODE;
             runThread.start();
         }
     }
 
     @Override
     public void step() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                emulator.step();
-                dataSourceForRegistersAndFlagsTable = getDataSourceForRegistersAndFlagsTable(emulator);
-                mainView.updateRegistersAndFlagsTable(dataSourceForRegistersAndFlagsTable);
-                int PC = emulator.getViewInterface().getValueByRegisterName("PC");
-                dataSourceForMemoryTable = getDataSourceForMemoryTable(emulator);
-                mainView.updateMemoryTable(dataSourceForMemoryTable, PC, true);
-            }
-        }).start();
+
+        Thread commandRun = new Thread(() -> {
+            emulator.step();
+
+            dataSourceForMemoryTable = getDataSourceForMemoryTable(emulator);
+            dataSourceForRegistersAndFlagsTable = getDataSourceForRegistersAndFlagsTable(emulator);
+            int PC = emulator.getViewInterface().getValueByRegisterName("PC");
+
+            mainView.setMemoryDataTable(dataSourceForMemoryTable);
+            mainView.setRegistersAndFlagsDataTable(dataSourceForRegistersAndFlagsTable);
+            mainView.setProgramCounterPosition(PC);
+        });
+        commandRun.start();
     }
 
     @Override
     public void stop() {
         if (runThread != null && runThread.isAlive()) {
             runThread.interrupt();
-            mainView.setRunningMode(false);
+
+            try {
+                runThread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            dataSourceForRegistersAndFlagsTable
+                    = getDataSourceForRegistersAndFlagsTable(emulator);
+            dataSourceForMemoryTable = getDataSourceForMemoryTable(emulator);
+            int PC = emulator.getViewInterface().getValueByRegisterName("PC");
+
+            mainView.setMemoryDataTable(dataSourceForMemoryTable);
+            mainView.setRegistersAndFlagsDataTable(dataSourceForRegistersAndFlagsTable);
+            mainView.setProgramCounterPosition(PC);
+
+            mainView.setPermissionForAction(MainPresenter.DEFAULT_MODE);
+            actionMode = DEFAULT_MODE;
         }
     }
 
@@ -93,14 +135,18 @@ public class MainPresenter implements IMainPresenter {
     public void resetRegisters() {
         emulator.resetRegisters();
         dataSourceForRegistersAndFlagsTable = getDataSourceForRegistersAndFlagsTable(emulator);
-        mainView.updateRegistersAndFlagsTable(dataSourceForRegistersAndFlagsTable);
+        dataSourceForConsoleOutputPanel = "";
+        mainView.setRegistersAndFlagsDataTable(dataSourceForRegistersAndFlagsTable);
+        mainView.setConsoleOutData(dataSourceForConsoleOutputPanel);
+        mainView.setProgramCounterPosition(0);
     }
 
     @Override
     public void resetMemory() {
         emulator.resetMemory();
         dataSourceForMemoryTable = getDataSourceForMemoryTable(emulator);
-        mainView.updateMemoryTable(dataSourceForMemoryTable, 0, true);
+        mainView.setMemoryDataTable(dataSourceForMemoryTable);
+        mainView.setProgramCounterPosition(0);
     }
 
     @Override
@@ -111,24 +157,43 @@ public class MainPresenter implements IMainPresenter {
     @Override
     public void setBreakpoint(int address) {
         emulator.setBreakpoint(address);
-        mainView.updateMemoryTable(dataSourceForMemoryTable, address, false);
     }
 
     @Override
     public void setProgramCounter(int address) {
         emulator.setProgramCounter(address);
         dataSourceForRegistersAndFlagsTable = getDataSourceForRegistersAndFlagsTable(emulator);
-        mainView.updateRegistersAndFlagsTable(dataSourceForRegistersAndFlagsTable);
+        mainView.setRegistersAndFlagsDataTable(dataSourceForRegistersAndFlagsTable);
     }
 
     @Override
     public void consoleOut(int value) {
-        mainView.consoleOut(value);
+        dataSourceForConsoleOutputPanel
+                = dataSourceForConsoleOutputPanel + " " + String.valueOf(value);
+        mainView.setConsoleOutData(dataSourceForConsoleOutputPanel);
     }
 
     @Override
     public int consoleIn() {
-        return mainView.consoleIn();
+        mainView.setPermissionForAction(MainPresenter.IO_MODE);
+        int value = mainView.consoleIn();
+        mainView.setPermissionForAction(actionMode);
+        mainView.setConsoleInData("");
+        return value;
+    }
+
+    @Override
+    public void loadProgramFromFile(String path) throws IOException {
+        dataSourceForCodeEditorPanel = emulator.loadProgramFromFile(path);
+        mainView.setProgramText(dataSourceForCodeEditorPanel);
+    }
+
+    @Override
+    public void saveProgramInFile(String path, String programText) throws IOException {
+        if (!path.endsWith(".i8080")) {
+            path = path + ".i8080";
+        }
+        emulator.saveProgramInFile(path, programText);
     }
 
     private String[][] getDataSourceForMemoryTable(IEmulator emulator) {

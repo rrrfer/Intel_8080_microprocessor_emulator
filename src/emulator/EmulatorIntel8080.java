@@ -7,7 +7,9 @@ import translator.CommandsCodes;
 import translator.ITranslator;
 import translator.Intel8080Translator;
 
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class EmulatorIntel8080 implements IEmulator {
 
@@ -34,6 +36,7 @@ public class EmulatorIntel8080 implements IEmulator {
 
     @Override
     public boolean step() {
+        // FIXME: 02.04.18 Мы кушаем слишком много памяти под 500 МБ... разберись с нами!!!
         int address = microprocessor.getValueByRegisterName("PC");
         ICommand command = CommandsBuilder.getCommand(microprocessor.getReadOnlyMemory(), address);
         if (!command.getName().equals("HLT")) {
@@ -44,7 +47,7 @@ public class EmulatorIntel8080 implements IEmulator {
     }
 
     @Override
-    public boolean loadProgram(String program) {
+    public boolean translation(String program) {
         IMemory memory = microprocessor.getMemory();
         String[] lexemes = translator.getLexemes(program);
         if (lexemes != null) {
@@ -72,7 +75,9 @@ public class EmulatorIntel8080 implements IEmulator {
 
     @Override
     public String getTranslationResult() {
-        return translator.getStatusString();
+        return new Date().toString()
+                + System.lineSeparator()
+                + translator.getStatusString();
     }
 
     @Override
@@ -123,5 +128,24 @@ public class EmulatorIntel8080 implements IEmulator {
         } else {
             breakpoints.remove((Integer) address);
         }
+    }
+
+    @Override
+    public String loadProgramFromFile(String path) throws IOException {
+        BufferedReader bufferedReader
+                = new BufferedReader(new FileReader(new File(path)));
+        StringBuilder program = new StringBuilder();
+        String line = null;
+        while ((line = bufferedReader.readLine()) != null) {
+            program.append(line).append(System.lineSeparator());
+        }
+        return program.toString();
+    }
+
+    @Override
+    public void saveProgramInFile(String path, String programText) throws IOException {
+        FileWriter fileWriter = new FileWriter(path);
+        fileWriter.write(programText);
+        fileWriter.close();
     }
 }
