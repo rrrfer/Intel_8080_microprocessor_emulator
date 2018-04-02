@@ -252,6 +252,13 @@ public class MainWindow extends JFrame implements IMainView {
             }
         });
 
+        deleteAllBreakpointsItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                deleteAllBreakpoints();
+            }
+        });
+
         helpItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -435,6 +442,15 @@ public class MainWindow extends JFrame implements IMainView {
         presenter.clearScreens();
     }
 
+    private void deleteAllBreakpoints() {
+        while (breakpoints.size() != 0) {
+            presenter.setBreakpoint(breakpoints.remove(0));
+        }
+        int selectedRow = memoryTable.getSelectedRow();
+        memoryTableModel.fireTableDataChanged();
+        this.setProgramCounterPosition(selectedRow);
+    }
+
     private void help() {
         // TODO Написать справку
     }
@@ -547,6 +563,7 @@ public class MainWindow extends JFrame implements IMainView {
         }
     }
 
+    // Helps
     private void setPermissionForAction_DefaultMode() {
 
         consoleInputTextPanel.setEditable(false);
