@@ -9,6 +9,7 @@ import view.MainWindow;
 
 import javax.swing.*;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class MainPresenter implements IMainPresenter {
 
@@ -28,7 +29,8 @@ public class MainPresenter implements IMainPresenter {
     private IMainView mainView;
     private IEmulator emulator;
 
-    private Thread runThread;
+    private Thread commandRunThread;
+    private Thread programRunThread;
 
     public MainPresenter() {
         emulator = new EmulatorIntel8080(new IOSystem(this));
@@ -64,8 +66,8 @@ public class MainPresenter implements IMainPresenter {
 
     @Override
     public void run() {
-        if (runThread == null || !runThread.isAlive()) {
-            runThread = new Thread(new Runnable() {
+        if (programRunThread == null || !programRunThread.isAlive()) {
+            programRunThread = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     emulator.run();
@@ -85,34 +87,39 @@ public class MainPresenter implements IMainPresenter {
             });
             mainView.setPermissionForAction(MainPresenter.RUN_MODE);
             actionMode = RUN_MODE;
-            runThread.start();
+            programRunThread.start();
         }
     }
 
     @Override
     public void step() {
+        if (commandRunThread == null || !commandRunThread.isAlive()) {
+            commandRunThread = new Thread(() -> {
+                emulator.step();
 
-        Thread commandRun = new Thread(() -> {
-            emulator.step();
+                dataSourceForMemoryTable = getDataSourceForMemoryTable(emulator);
+                dataSourceForRegistersAndFlagsTable = getDataSourceForRegistersAndFlagsTable(emulator);
+                int PC = emulator.getViewInterface().getValueByRegisterName("PC");
 
-            dataSourceForMemoryTable = getDataSourceForMemoryTable(emulator);
-            dataSourceForRegistersAndFlagsTable = getDataSourceForRegistersAndFlagsTable(emulator);
-            int PC = emulator.getViewInterface().getValueByRegisterName("PC");
+                mainView.setMemoryDataTable(dataSourceForMemoryTable);
+                mainView.setRegistersAndFlagsDataTable(dataSourceForRegistersAndFlagsTable);
+                mainView.setProgramCounterPosition(PC);
+            });
+            commandRunThread.start();
+        }
 
-            mainView.setMemoryDataTable(dataSourceForMemoryTable);
-            mainView.setRegistersAndFlagsDataTable(dataSourceForRegistersAndFlagsTable);
-            mainView.setProgramCounterPosition(PC);
-        });
-        commandRun.start();
+        try {
+            Thread.sleep(25);
+        } catch (InterruptedException ignored) {}
     }
 
     @Override
     public void stop() {
-        if (runThread != null && runThread.isAlive()) {
-            runThread.interrupt();
+        if (programRunThread != null && programRunThread.isAlive()) {
+            programRunThread.interrupt();
 
             try {
-                runThread.join();
+                programRunThread.join();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -157,6 +164,15 @@ public class MainPresenter implements IMainPresenter {
     @Override
     public void setBreakpoint(int address) {
         emulator.setBreakpoint(address);
+    }
+
+    @Override
+    public void removeAllBreakpoints() {
+        emulator.removeAllBreakpoints();
+        ArrayList<Integer> breakpoints = emulator.getBreakpoints();
+        int PC = emulator.getViewInterface().getValueByRegisterName("PC");
+        mainView.setBreakpointsData(breakpoints);
+        mainView.setProgramCounterPosition(PC);
     }
 
     @Override

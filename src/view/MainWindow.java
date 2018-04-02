@@ -255,7 +255,7 @@ public class MainWindow extends JFrame implements IMainView {
         deleteAllBreakpointsItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                deleteAllBreakpoints();
+                removeAllBreakpoints();
             }
         });
 
@@ -442,13 +442,8 @@ public class MainWindow extends JFrame implements IMainView {
         presenter.clearScreens();
     }
 
-    private void deleteAllBreakpoints() {
-        while (breakpoints.size() != 0) {
-            presenter.setBreakpoint(breakpoints.remove(0));
-        }
-        int selectedRow = memoryTable.getSelectedRow();
-        memoryTableModel.fireTableDataChanged();
-        this.setProgramCounterPosition(selectedRow);
+    private void removeAllBreakpoints() {
+        presenter.removeAllBreakpoints();
     }
 
     private void help() {
@@ -478,7 +473,11 @@ public class MainWindow extends JFrame implements IMainView {
         } else {
             memoryTableScrollPanel.getVerticalScrollBar().setValue(0);
         }
-        memoryTableModel.fireTableRowsUpdated(programCounterPosition - 20, programCounterPosition + 20);
+        if (programCounterPosition < 20) {
+            memoryTableModel.fireTableRowsUpdated(0, programCounterPosition + 20);
+        } else {
+            memoryTableModel.fireTableRowsUpdated(programCounterPosition - 20, programCounterPosition + 20);
+        }
     }
 
     @Override
@@ -498,11 +497,15 @@ public class MainWindow extends JFrame implements IMainView {
             registersAndFlagsTableModel.fireTableDataChanged();
         }
 
-        registersAndFlagsTableModel.fireTableDataChanged();
-
         for (int i = 0; i < selectedRow.size(); ++i) {
             registersAndFlagsTable.addRowSelectionInterval(selectedRow.get(i), selectedRow.get(i));
         }
+    }
+
+    @Override
+    public void setBreakpointsData(ArrayList<Integer> breakpointsData) {
+        breakpoints.clear();
+        breakpoints.addAll(breakpointsData);
     }
 
     @Override

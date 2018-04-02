@@ -29,14 +29,15 @@ public class EmulatorIntel8080 implements IEmulator {
     public void run() {
         while (step() && !breakpoints.contains(microprocessor.getValueByRegisterName("PC"))) {
             if (Thread.interrupted()) {
+                System.gc();
                 break;
             }
         }
+        System.gc();
     }
 
     @Override
     public boolean step() {
-        // FIXME: 02.04.18 Мы кушаем слишком много памяти под 500 МБ... разберись с нами!!!
         int address = microprocessor.getValueByRegisterName("PC");
         ICommand command = CommandsBuilder.getCommand(microprocessor.getReadOnlyMemory(), address);
         if (!command.getName().equals("HLT")) {
@@ -128,6 +129,16 @@ public class EmulatorIntel8080 implements IEmulator {
         } else {
             breakpoints.remove((Integer) address);
         }
+    }
+
+    @Override
+    public ArrayList<Integer> getBreakpoints() {
+        return breakpoints;
+    }
+
+    @Override
+    public void removeAllBreakpoints() {
+        breakpoints.clear();
     }
 
     @Override

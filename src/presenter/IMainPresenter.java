@@ -11,6 +11,7 @@ public interface IMainPresenter {
     void resetMemory();
     void clearScreens();
     void setBreakpoint(int address);
+    void removeAllBreakpoints();
     void setProgramCounter(int address);
     void consoleOut(int value);
     int consoleIn();
