@@ -275,20 +275,20 @@ public class Intel8080 implements IMicroprocessor {
     @Override
     public void push(int value) {
         int address = getValueByRegisterName("SP");
-        memory.setValueByIndex(address, value % 256);
         address = getRoundedWord(address - 1);
         memory.setValueByIndex(address, value / 256);
         address = getRoundedWord(address - 1);
+        memory.setValueByIndex(address, value % 256);
         setValueByRegisterName("SP", address);
     }
 
     @Override
     public int pop() {
         int address = getValueByRegisterName("SP");
+        int value = memory.getValueByIndex(address);
         address = getRoundedWord(address + 1);
-        int value = memory.getValueByIndex(address) * 256;
+        value += memory.getValueByIndex(address) * 256;
         address = getRoundedWord(address + 1);
-        value += memory.getValueByIndex(address);
         setValueByRegisterName("SP", address);
         return value;
     }
