@@ -20,7 +20,6 @@ public class CMD_Intel8080_INX implements ICommand {
         }
 
         value += 1;
-        microprocessor.checkWordForSetFlags(value);
         value = microprocessor.getRoundedWord(value);
 
         if (!arg.equals("SP")) {

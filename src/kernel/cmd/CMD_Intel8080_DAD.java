@@ -22,9 +22,13 @@ public class CMD_Intel8080_DAD implements ICommand {
         int secondValue = microprocessor.getValueByRegisterPairName("H");
 
         secondValue += firstValue;
-        microprocessor.checkWordForSetFlags(secondValue);
-        secondValue = microprocessor.getRoundedWord(secondValue);
+        if (secondValue > 65535 || secondValue < 0) {
+            microprocessor.setValueByFlagName("C", 1);
+        } else {
+           microprocessor.setValueByFlagName("C", 0);
+        }
 
+        secondValue = microprocessor.getRoundedWord(secondValue);
         microprocessor.setValueByRegisterPairName("H", secondValue);
     }
 

@@ -18,7 +18,6 @@ public interface IMicroprocessor extends IReadOnlyMicroprocessor {
     void executeCommand(ICommand command);
 
     void checkByteForSetFlags(int value);
-    void checkWordForSetFlags(int value);
 
     int getRoundedByte(int value);
     int getRoundedWord(int value);
