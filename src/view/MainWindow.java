@@ -289,15 +289,15 @@ public class MainWindow extends JFrame implements IMainView {
         fileMenu.addSeparator();
         fileMenu.add(exitItem);
 
-        translationItem = new JMenuItem("Translation      (F2)");
+        translationItem = new JMenuItem("Translation       (F2)");
         translationItem.setFont(mainFont);
-        runItem = new JMenuItem("Run             (F5)");
+        runItem = new JMenuItem("Run               (F5)");
         runItem.setFont(mainFont);
-        stepItem = new JMenuItem("Step             (F9)");
+        stepItem = new JMenuItem("Step              (F9)");
         stepItem.setFont(mainFont);
-        stopItem =                 new JMenuItem("Stop             (F12)");
+        stopItem =                 new JMenuItem("Stop              (F12)");
         stopItem.setFont(mainFont);
-        resetRegisterItem = new JMenuItem("Reset registers  (Esc)");
+        resetRegisterItem = new JMenuItem("Reset registers   (Esc)");
         resetRegisterItem.setFont(mainFont);
         resetMemoryItem = new JMenuItem("Reset memory");
         resetMemoryItem.setFont(mainFont);
@@ -529,7 +529,7 @@ public class MainWindow extends JFrame implements IMainView {
     }
 
     @Override
-    public void setPermissionForAction(int mode) {
+    public void setPermissionForActions(int mode) {
         switch (mode) {
             case MainPresenter.DEFAULT_MODE: {
                 setPermissionForAction_DefaultMode();
@@ -548,7 +548,7 @@ public class MainWindow extends JFrame implements IMainView {
     }
 
     @Override
-    public int consoleIn() {
+    public int requestOfInput() {
         consoleInputTextPanel.setEditable(true);
         consoleInputTextPanel.requestFocus();
         while (true) {
@@ -678,3 +678,7 @@ public class MainWindow extends JFrame implements IMainView {
         }
     }
 }
+
+// Добавить программируемый таймер
+// Добавить символьный экран
+// Добавить пиксельный экран

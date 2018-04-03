@@ -16,7 +16,7 @@ public class IOSystem implements IIOSystem {
     }
 
     @Override
-    public int consoleIn() {
-        return presenter.consoleIn();
+    public int requestOfInput() {
+        return presenter.requestOfInput();
     }
 }

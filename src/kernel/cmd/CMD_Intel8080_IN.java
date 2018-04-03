@@ -19,7 +19,7 @@ public class CMD_Intel8080_IN implements ICommand {
             case 8: {
                 int value = 0;
                 if (ioSystem != null) {
-                    value = ioSystem.consoleIn();
+                    value = ioSystem.requestOfInput();
                 }
                 microprocessor.setValueByRegisterName("A", value);
                 break;

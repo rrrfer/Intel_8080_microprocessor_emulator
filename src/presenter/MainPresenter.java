@@ -43,7 +43,7 @@ public class MainPresenter implements IMainPresenter {
             public void run() {
                 mainView = new MainWindow(MainPresenter.this,
                         dataSourceForMemoryTable, dataSourceForRegistersAndFlagsTable);
-                mainView.setPermissionForAction(MainPresenter.DEFAULT_MODE);
+                mainView.setPermissionForActions(MainPresenter.DEFAULT_MODE);
             }
         });
     }
@@ -81,11 +81,11 @@ public class MainPresenter implements IMainPresenter {
                     mainView.setRegistersAndFlagsDataTable(dataSourceForRegistersAndFlagsTable);
                     mainView.setProgramCounterPosition(PC);
 
-                    mainView.setPermissionForAction(MainPresenter.DEFAULT_MODE);
+                    mainView.setPermissionForActions(MainPresenter.DEFAULT_MODE);
                     actionMode = DEFAULT_MODE;
                 }
             });
-            mainView.setPermissionForAction(MainPresenter.RUN_MODE);
+            mainView.setPermissionForActions(MainPresenter.RUN_MODE);
             actionMode = RUN_MODE;
             programRunThread.start();
         }
@@ -133,7 +133,7 @@ public class MainPresenter implements IMainPresenter {
             mainView.setRegistersAndFlagsDataTable(dataSourceForRegistersAndFlagsTable);
             mainView.setProgramCounterPosition(PC);
 
-            mainView.setPermissionForAction(MainPresenter.DEFAULT_MODE);
+            mainView.setPermissionForActions(MainPresenter.DEFAULT_MODE);
             actionMode = DEFAULT_MODE;
         }
     }
@@ -190,10 +190,10 @@ public class MainPresenter implements IMainPresenter {
     }
 
     @Override
-    public int consoleIn() {
-        mainView.setPermissionForAction(MainPresenter.IO_MODE);
-        int value = mainView.consoleIn();
-        mainView.setPermissionForAction(actionMode);
+    public int requestOfInput() {
+        mainView.setPermissionForActions(MainPresenter.IO_MODE);
+        int value = mainView.requestOfInput();
+        mainView.setPermissionForActions(actionMode);
         mainView.setConsoleInData("");
         return value;
     }

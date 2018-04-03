@@ -14,7 +14,7 @@ public interface IMainPresenter {
     void removeAllBreakpoints();
     void setProgramCounter(int address);
     void consoleOut(int value);
-    int consoleIn();
+    int requestOfInput();
     void loadProgramFromFile(String path) throws IOException;
     void saveProgramInFile(String path, String programText) throws IOException;
 }

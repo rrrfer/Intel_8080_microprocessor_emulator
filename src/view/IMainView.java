@@ -10,7 +10,7 @@ public interface IMainView {
     void setTranslationResultText(String translationResult);
     void setConsoleOutData(String consoleOutData);
     void setConsoleInData(String consoleInData);
-    void setPermissionForAction(int mode);
+    void setPermissionForActions(int mode);
     void setBreakpointsData(ArrayList<Integer> breakpointsData);
-    int consoleIn();
+    int requestOfInput();
 }
