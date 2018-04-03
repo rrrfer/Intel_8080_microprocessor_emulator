@@ -400,7 +400,7 @@ public class Intel8080Translator implements ITranslator {
                 case 1: {
                     if (lex.split(" ").length == 2) {
                         String argument = lex.split(" ")[1];
-                        if (argument.length() == 1 || argument.equals("sp")) {
+                        if (argument.length() == 1 || argument.equals("sp") || argument.equals("psw")) {
                             char a = argument.charAt(0);
                             if (cmdName.equals("ldax") || cmdName.equals("stax")) {
                                 if (a != 'b' && a != 'd') {
@@ -420,7 +420,8 @@ public class Intel8080Translator implements ITranslator {
                             }
 
                             if (a == 'a' || a == 'b' || a == 'c' || a == 'd' ||
-                                    a == 'e' || a == 'h' || a == 'l' || a == 'm' || argument.equals("sp")) {
+                                    a == 'e' || a == 'h' || a == 'l' || a == 'm' || argument.equals("sp")
+                                    || argument.equals("psw")) {
                                 commands.add(Integer.toHexString(currentAddress) + ":" + cmdName + " " + argument);
                                 currentAddress += 1;
                                 isCorrect = true;

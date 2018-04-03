@@ -13,7 +13,13 @@ public class CMD_Intel8080_POP implements ICommand {
     @Override
     public void execute(IMicroprocessor microprocessor) {
         int value = microprocessor.pop();
-        microprocessor.setValueByRegisterName(arg, value / 256);
+
+        if (!arg.equals("PSW")) {
+            microprocessor.setValueByRegisterName(arg, value / 256);
+        } else {
+            microprocessor.setValueByRegisterName("A", value / 256);
+        }
+
         switch (arg) {
             case "B": {
                 microprocessor.setValueByRegisterName("C", value % 256);
@@ -25,6 +31,10 @@ public class CMD_Intel8080_POP implements ICommand {
             }
             case "H": {
                 microprocessor.setValueByRegisterName("L", value % 256);
+                break;
+            }
+            case "PSW": {
+                microprocessor.setAllFlags(value % 256);
                 break;
             }
         }

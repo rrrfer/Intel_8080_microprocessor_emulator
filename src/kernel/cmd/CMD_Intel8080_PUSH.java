@@ -13,7 +13,13 @@ public class CMD_Intel8080_PUSH implements ICommand {
     @Override
     public void execute(IMicroprocessor microprocessor) {
 
-        int value = microprocessor.getValueByRegisterName(arg) * 256;
+        int value;
+        if (!arg.equals("PSW")) {
+            value = microprocessor.getValueByRegisterName(arg) * 256;
+        } else {
+            value = microprocessor.getValueByRegisterName("A") * 256;
+        }
+
         switch (arg) {
             case "B": {
                 value += microprocessor.getValueByRegisterName("C");
@@ -25,6 +31,10 @@ public class CMD_Intel8080_PUSH implements ICommand {
             }
             case "H": {
                 value += microprocessor.getValueByRegisterName("L");
+                break;
+            }
+            case "PSW": {
+                value += microprocessor.getAllFlags();
                 break;
             }
         }

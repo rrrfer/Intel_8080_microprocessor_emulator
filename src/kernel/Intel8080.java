@@ -117,6 +117,16 @@ public class Intel8080 implements IMicroprocessor {
     }
 
     @Override
+    public int getAllFlags() {
+        return flags;
+    }
+
+    @Override
+    public void setAllFlags(int flags) {
+        this.flags = flags;
+    }
+
+    @Override
     public void executeCommand(ICommand command) {
         registers[registerByName.get("PC")]
                 = (registers[registerByName.get("PC")] + command.getSize()) % memory.getSize();

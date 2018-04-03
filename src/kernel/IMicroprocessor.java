@@ -12,6 +12,9 @@ public interface IMicroprocessor extends IReadOnlyMicroprocessor {
 
     void setValueByFlagName(String flagName, int value);
 
+    int getAllFlags();
+    void setAllFlags(int flags);
+
     void executeCommand(ICommand command);
 
     void checkByteForSetFlags(int value);

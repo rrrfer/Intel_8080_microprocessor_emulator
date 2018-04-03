@@ -997,10 +997,9 @@ public class CommandsBuilder {
             case CommandsCodes.PUSH_H: {
                 return new CMD_Intel8080_PUSH("H");
             }
-            // FIXME: 31.03.18
-            //case CommandsCodes.PUSH_PSW: {
-            //    return new CMD_Intel8080_PUSH("B");
-            //}
+            case CommandsCodes.PUSH_PSW: {
+                return new CMD_Intel8080_PUSH("PSW");
+            }
 
             //================================================================================
             //================================================================================
@@ -1014,10 +1013,9 @@ public class CommandsBuilder {
             case CommandsCodes.POP_H: {
                 return new CMD_Intel8080_POP("H");
             }
-            // FIXME: 31.03.18
-            //case CommandsCodes.POP_PSW: {
-            //    return new CMD_Intel8080_POP("B");
-            //}
+            case CommandsCodes.POP_PSW: {
+                return new CMD_Intel8080_POP("PSW");
+            }
 
             //================================================================================
             //================================================================================
