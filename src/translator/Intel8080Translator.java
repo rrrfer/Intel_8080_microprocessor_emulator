@@ -218,11 +218,15 @@ public class Intel8080Translator implements ITranslator {
     }
 
     private String removeSpaceInBeginAndEndString(String lex) {
-        if (lex.charAt(0) == ' ') {
-            lex = lex.substring(1);
+        if (lex.length() > 0) {
+            if (lex.charAt(0) == ' ') {
+                lex = lex.substring(1);
+            }
         }
-        if (lex.charAt(lex.length() - 1) == ' ') {
-            lex = lex.substring(0, lex.length() - 1);
+        if (lex.length() > 0) {
+            if (lex.charAt(lex.length() - 1) == ' ') {
+                lex = lex.substring(0, lex.length() - 1);
+            }
         }
         return lex;
     }
