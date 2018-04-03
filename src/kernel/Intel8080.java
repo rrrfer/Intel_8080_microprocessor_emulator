@@ -9,7 +9,9 @@ public class Intel8080 implements IMicroprocessor {
 
     // Внутренние состояние микропроцессора
     private int[] registers;
-    private int[] flags; // FIXME: 31.03.18 Изменить представление флагов на int для реаизации регистра PSW
+    //private int[] flags; // FIXME: 31.03.18 Изменить представление флагов на int для реаизации регистра PSW
+    private int flags;
+    // S Z x AC x P x C
     private IMemory memory;
 
     private IIOSystem ioSystem;
@@ -20,7 +22,7 @@ public class Intel8080 implements IMicroprocessor {
 
     public Intel8080(IMemory memory) {
         this.registers = new int[9];
-        this.flags = new int[4];
+        this.flags = 0;
         this.memory = memory;
 
         this.registerByName = new HashMap<>();
@@ -63,12 +65,64 @@ public class Intel8080 implements IMicroprocessor {
 
     @Override
     public int getValueByFlagName(String flagName) {
-        return flags[flagByName.get(flagName)];
+        int value = 0;
+        switch (flagName) {
+            case "S": {
+                value = (flags & 0b10000000) > 0 ? 1 : 0;
+                break;
+            }
+            case "Z": {
+                value = (flags & 0b01000000) > 0 ? 1 : 0;
+                break;
+            }
+            case "P": {
+                value = (flags & 0b00000100) > 0 ? 1 : 0;
+                break;
+            }
+            case "C": {
+                value = (flags & 0b00000001) > 0 ? 1 : 0;
+                break;
+            }
+        }
+        return value;
     }
 
     @Override
     public void setValueByFlagName(String flagName, int value) {
-        flags[flagByName.get(flagName)] = value;
+        switch (flagName) {
+            case "S": {
+                if (value > 0) {
+                    flags = flags | (1 << 7);
+                } else {
+                    flags = flags & 0b01111111;
+                }
+                break;
+            }
+            case "Z": {
+                if (value > 0) {
+                    flags = flags | (1 << 6);
+                } else {
+                    flags = flags & 0b10111111;
+                }
+                break;
+            }
+            case "P": {
+                if (value > 0) {
+                    flags = flags | (1 << 2);
+                } else {
+                    flags = flags & 0b11111011;
+                }
+                break;
+            }
+            case "C": {
+                if (value > 0) {
+                    flags = flags | 1;
+                } else {
+                    flags = flags & 0b11111110;
+                }
+                break;
+            }
+        }
     }
 
     @Override
@@ -156,9 +210,7 @@ public class Intel8080 implements IMicroprocessor {
             registers[i] = 0;
         }
 
-        for (int i = 0; i < flags.length; ++i) {
-            flags[i] = 0;
-        }
+        flags = 0;
     }
 
     @Override
