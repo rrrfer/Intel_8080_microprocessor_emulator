@@ -16,5 +16,6 @@ public interface IMainPresenter {
     void consoleOut(int value);
     int requestOfInput();
     void loadProgramFromFile(String path) throws IOException;
-    void saveProgramInFile(String path, String programText) throws IOException;
+    void saveAsProgramInFile(String path, String programText) throws IOException;
+    boolean saveProgramInFile(String programText) throws IOException;
 }

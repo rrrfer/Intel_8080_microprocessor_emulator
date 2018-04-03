@@ -17,6 +17,8 @@ public class MainPresenter implements IMainPresenter {
     public static final int RUN_MODE = 1;
     public static final int IO_MODE = 2;
 
+    private String currentFilePath;
+
     private String dataSourceForCodeEditorPanel;
     private String dataSourceForTranslateResultPanel;
     private String dataSourceForConsoleOutputPanel;
@@ -200,16 +202,32 @@ public class MainPresenter implements IMainPresenter {
 
     @Override
     public void loadProgramFromFile(String path) throws IOException {
+        currentFilePath = path;
         dataSourceForCodeEditorPanel = emulator.loadProgramFromFile(path);
         mainView.setProgramText(dataSourceForCodeEditorPanel);
+        mainView.setEditableFileTitle(path);
     }
 
     @Override
-    public void saveProgramInFile(String path, String programText) throws IOException {
+    public void saveAsProgramInFile(String path, String programText) throws IOException {
         if (!path.endsWith(".i8080")) {
             path = path + ".i8080";
         }
         emulator.saveProgramInFile(path, programText);
+        mainView.setEditableFileTitle(path);
+    }
+
+    @Override
+    public boolean saveProgramInFile(String programText) throws IOException {
+        if (currentFilePath == null) {
+            return false;
+        } else {
+            if (!currentFilePath.endsWith(".i8080")) {
+                currentFilePath = currentFilePath + ".i8080";
+            }
+            emulator.saveProgramInFile(currentFilePath, programText);
+            return true;
+        }
     }
 
     private String[][] getDataSourceForMemoryTable(IEmulator emulator) {

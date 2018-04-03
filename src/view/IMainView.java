@@ -3,6 +3,7 @@ package view;
 import java.util.ArrayList;
 
 public interface IMainView {
+    void setEditableFileTitle(String title);
     void setMemoryDataTable(String[][] dataSource);
     void setProgramCounterPosition(int programCounterPosition);
     void setRegistersAndFlagsDataTable(String[][] dataSource);

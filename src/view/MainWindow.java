@@ -33,6 +33,7 @@ public class MainWindow extends JFrame implements IMainView {
     private JMenu fileMenu;
     private JMenuItem openItem;
     private JMenuItem saveItem;
+    private JMenuItem saveAsItem;
     private JMenuItem exitItem;
 
     private JMenu emulatorMenu;
@@ -43,6 +44,7 @@ public class MainWindow extends JFrame implements IMainView {
     private JMenuItem resetRegisterItem;
     private JMenuItem resetMemoryItem;
     private JMenuItem clearScreensItem;
+    private JMenuItem showHideScreens;
     private JMenuItem deleteAllBreakpointsItem;
 
     private JMenu helpMenu;
@@ -114,8 +116,14 @@ public class MainWindow extends JFrame implements IMainView {
                     case KeyEvent.VK_F2: {
                         if (translationItem.isEnabled()) {
                             translation();
-                            break;
                         }
+                        break;
+                    }
+                    case KeyEvent.VK_F3: {
+                        if (showHideScreens.isEnabled()) {
+                            showHideScreens();
+                        }
+                        break;
                     }
                     case KeyEvent.VK_F5: {
                         if (runItem.isEnabled()) {
@@ -142,8 +150,31 @@ public class MainWindow extends JFrame implements IMainView {
                         break;
                     }
                     case KeyEvent.VK_ENTER: {
-                        if (consoleInputTextPanel.isEditable()) {
+                        if (consoleInputTextPanel.isEditable() &&
+                                !consoleInputTextPanel.getText().isEmpty()) {
                             inputString = consoleInputTextPanel.getText();
+                        }
+                        break;
+                    }
+                    case KeyEvent.VK_O: {
+                        if (openItem.isEnabled()) {
+                            if (e.isControlDown()) {
+                                open();
+                            }
+                        }
+                        break;
+                    }
+                    case KeyEvent.VK_S: {
+                        if (saveItem.isEnabled()
+                                && e.isControlDown()
+                                && !e.isAltDown()) {
+                            save();
+                        }
+
+                        if (saveAsItem.isEnabled()
+                                && e.isControlDown()
+                                && e.isAltDown()) {
+                            saveAs();
                         }
                         break;
                     }
@@ -157,6 +188,21 @@ public class MainWindow extends JFrame implements IMainView {
                 if (e.getKeyCode() == KeyEvent.VK_F2) {
                     if (translationItem.isEnabled()) {
                         translation();
+                    }
+                }
+                if (e.getKeyCode() == KeyEvent.VK_O) {
+                    if (openItem.isEnabled()) {
+                        if (e.isControlDown()) {
+                            open();
+                        }
+                    }
+                }
+                if (e.getKeyCode() == KeyEvent.VK_S) {
+                    if (saveItem.isEnabled() && !e.isAltDown() && e.isControlDown()) {
+                        save();
+                    }
+                    if (saveAsItem.isEnabled() && e.isAltDown() && e.isControlDown()) {
+                        saveAs();
                     }
                 }
             }
@@ -193,6 +239,13 @@ public class MainWindow extends JFrame implements IMainView {
             @Override
             public void actionPerformed(ActionEvent e) {
                 save();
+            }
+        });
+
+        saveAsItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                saveAs();
             }
         });
 
@@ -275,10 +328,12 @@ public class MainWindow extends JFrame implements IMainView {
     }
 
     private void createMenuBar() {
-        openItem = new JMenuItem("Open...");
+        openItem = new JMenuItem("Open...        CTRL+O");
         openItem.setFont(mainFont);
-        saveItem = new JMenuItem("Save...");
+        saveItem = new JMenuItem("Save...        CTRL+S");
         saveItem.setFont(mainFont);
+        saveAsItem = new JMenuItem("Save As... CTRL+ALT+S");
+        saveAsItem.setFont(mainFont);
         exitItem = new JMenuItem("Exit");
         exitItem.setFont(mainFont);
 
@@ -286,24 +341,27 @@ public class MainWindow extends JFrame implements IMainView {
         fileMenu.setFont(mainFont);
         fileMenu.add(openItem);
         fileMenu.add(saveItem);
+        fileMenu.add(saveAsItem);
         fileMenu.addSeparator();
         fileMenu.add(exitItem);
 
-        translationItem = new JMenuItem("Translation       (F2)");
+        translationItem = new JMenuItem("Translation             F2");
         translationItem.setFont(mainFont);
-        runItem = new JMenuItem("Run               (F5)");
+        runItem = new JMenuItem("Run                     F5");
         runItem.setFont(mainFont);
-        stepItem = new JMenuItem("Step              (F9)");
+        stepItem = new JMenuItem("Step                    F9");
         stepItem.setFont(mainFont);
-        stopItem =                 new JMenuItem("Stop              (F12)");
+        stopItem =                 new JMenuItem("Stop                   F12");
         stopItem.setFont(mainFont);
-        resetRegisterItem = new JMenuItem("Reset registers   (Esc)");
+        resetRegisterItem = new JMenuItem("Reset Registers        Esc");
         resetRegisterItem.setFont(mainFont);
-        resetMemoryItem = new JMenuItem("Reset memory");
+        resetMemoryItem = new JMenuItem("Reset Memory");
         resetMemoryItem.setFont(mainFont);
-        clearScreensItem = new JMenuItem("Clear screens");
+        showHideScreens = new JMenuItem  ("Show/Hide Screens       F3");
+        showHideScreens.setFont(mainFont);
+        clearScreensItem = new JMenuItem("Clear Screens");
         clearScreensItem.setFont(mainFont);
-        deleteAllBreakpointsItem = new JMenuItem("Delete all breakpoints");
+        deleteAllBreakpointsItem = new JMenuItem("Delete All Breakpoints");
         deleteAllBreakpointsItem.setFont(mainFont);
 
         emulatorMenu = new JMenu("Emulator");
@@ -317,10 +375,12 @@ public class MainWindow extends JFrame implements IMainView {
         emulatorMenu.add(resetRegisterItem);
         emulatorMenu.add(resetMemoryItem);
         emulatorMenu.addSeparator();
+        emulatorMenu.add(showHideScreens);
         emulatorMenu.add(clearScreensItem);
+        emulatorMenu.addSeparator();
         emulatorMenu.add(deleteAllBreakpointsItem);
 
-        helpItem = new JMenuItem("Help (F1)");
+         helpItem = new JMenuItem("Help      F1");
         helpItem.setFont(mainFont);
         aboutItem = new JMenuItem("About...");
         aboutItem.setFont(mainFont);
@@ -394,6 +454,15 @@ public class MainWindow extends JFrame implements IMainView {
     }
 
     private void save() {
+        try {
+            String programText = codeEditorTextPanel.getText();
+            if (!presenter.saveProgramInFile(programText)) {
+                saveAs();
+            }
+        } catch (IOException ignored) {}
+    }
+
+    private void saveAs() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileFilter(new FileNameExtensionFilter("i8080", "i8080"));
         int result = fileChooser.showSaveDialog(MainWindow.this);
@@ -401,7 +470,7 @@ public class MainWindow extends JFrame implements IMainView {
             try {
                 String path = fileChooser.getSelectedFile().getPath();
                 String programText = codeEditorTextPanel.getText();
-                presenter.saveProgramInFile(path, programText);
+                presenter.saveAsProgramInFile(path, programText);
                 JOptionPane.showMessageDialog(MainWindow.this, "Save successful");
             } catch (IOException e) {
                 JOptionPane.showMessageDialog(MainWindow.this,
@@ -440,6 +509,10 @@ public class MainWindow extends JFrame implements IMainView {
 
     private void clearScreens() {
         presenter.clearScreens();
+    }
+
+    private void showHideScreens() {
+
     }
 
     private void removeAllBreakpoints() {
@@ -548,6 +621,11 @@ public class MainWindow extends JFrame implements IMainView {
     }
 
     @Override
+    public void setEditableFileTitle(String title) {
+        this.setTitle("Intel 8080 Emulator: " + title);
+    }
+
+    @Override
     public int requestOfInput() {
         consoleInputTextPanel.setEditable(true);
         consoleInputTextPanel.requestFocus();
@@ -575,6 +653,7 @@ public class MainWindow extends JFrame implements IMainView {
         fileMenu.setEnabled(true);
         openItem.setEnabled(true);
         saveItem.setEnabled(true);
+        saveAsItem.setEnabled(true);
         exitItem.setEnabled(true);
 
         emulatorMenu.setEnabled(true);
@@ -584,6 +663,7 @@ public class MainWindow extends JFrame implements IMainView {
         resetMemoryItem.setEnabled(true);
         resetRegisterItem.setEnabled(true);
         clearScreensItem.setEnabled(true);
+        showHideScreens.setEnabled(true);
         deleteAllBreakpointsItem.setEnabled(true);
 
         helpMenu.setEnabled(true);
@@ -600,6 +680,7 @@ public class MainWindow extends JFrame implements IMainView {
 
         openItem.setEnabled(false);
         saveItem.setEnabled(false);
+        saveAsItem.setEnabled(false);
         exitItem.setEnabled(true);
 
         emulatorMenu.setEnabled(true);
@@ -609,6 +690,7 @@ public class MainWindow extends JFrame implements IMainView {
         resetMemoryItem.setEnabled(false);
         resetRegisterItem.setEnabled(false);
         clearScreensItem.setEnabled(false);
+        showHideScreens.setEnabled(true);
         deleteAllBreakpointsItem.setEnabled(false);
 
         helpMenu.setEnabled(false);
@@ -625,6 +707,7 @@ public class MainWindow extends JFrame implements IMainView {
 
         openItem.setEnabled(false);
         saveItem.setEnabled(false);
+        saveAsItem.setEnabled(false);
         exitItem.setEnabled(true);
 
         emulatorMenu.setEnabled(false);
@@ -634,6 +717,7 @@ public class MainWindow extends JFrame implements IMainView {
         resetMemoryItem.setEnabled(false);
         resetRegisterItem.setEnabled(false);
         clearScreensItem.setEnabled(false);
+        showHideScreens.setEnabled(false);
         deleteAllBreakpointsItem.setEnabled(false);
 
         helpMenu.setEnabled(false);
