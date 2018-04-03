@@ -9,16 +9,13 @@ public class Intel8080 implements IMicroprocessor {
 
     // Внутренние состояние микропроцессора
     private int[] registers;
-    //private int[] flags; // FIXME: 31.03.18 Изменить представление флагов на int для реаизации регистра PSW
     private int flags;
-    // S Z x AC x P x C
     private IMemory memory;
 
     private IIOSystem ioSystem;
 
     // Вспомогательные переменные
     private HashMap<String, Integer> registerByName;
-    private HashMap<String, Integer> flagByName;
 
     public Intel8080(IMemory memory) {
         this.registers = new int[9];
@@ -35,12 +32,6 @@ public class Intel8080 implements IMicroprocessor {
         registerByName.put("L", 6);
         registerByName.put("PC", 7);
         registerByName.put("SP", 8);
-
-        this.flagByName = new HashMap<>();
-        flagByName.put("Z", 0);
-        flagByName.put("C", 1);
-        flagByName.put("S", 2);
-        flagByName.put("P", 3);
     }
 
     @Override
@@ -236,6 +227,10 @@ public class Intel8080 implements IMicroprocessor {
                 value = registers[registerByName.get("H")] * 256;
                 value += registers[registerByName.get("L")];
                 break;
+            }case "PSW": {
+                value = registers[registerByName.get("A")] * 256;
+                value += flags;
+                break;
             }
         }
         return value;
@@ -257,6 +252,11 @@ public class Intel8080 implements IMicroprocessor {
             case "H": {
                 registers[registerByName.get("H")] = value / 256;
                 registers[registerByName.get("L")] = value % 256;
+                break;
+            }
+            case "PSW": {
+                registers[registerByName.get("A")] = value / 256;
+                flags = value % 256;
                 break;
             }
         }
