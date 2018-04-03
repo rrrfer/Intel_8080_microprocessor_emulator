@@ -12,7 +12,7 @@ class MemoryTableCellRenderer extends DefaultTableCellRenderer {
         setFont(MainWindow.mainFont);
 
         if (isSelected) {
-            setBackground(MainWindow.selectedColor);
+            setBackground(MainWindow.greenColor);
         } else if (MainWindow.breakpoints.contains(row)) {
             setBackground(Color.ORANGE);
         } else {

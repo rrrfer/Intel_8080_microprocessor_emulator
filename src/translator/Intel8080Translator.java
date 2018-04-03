@@ -66,9 +66,9 @@ public class Intel8080Translator implements ITranslator {
                     }
 
                     hasErrors = true;
-                    statusString.append("Ошибка в строке № " + (i + 1) + ". " +
+                    /*statusString.append("Ошибка в строке № " + (i + 1) + ". " +
                             "Неизвестная или ошибочная директива: " + dividedProgramLines[i] +
-                            System.lineSeparator());
+                            System.lineSeparator());*/
 
                 }
 
@@ -554,8 +554,8 @@ public class Intel8080Translator implements ITranslator {
         }
 
         if (!isCorrect) {
-            statusString.append("Ошибка в строке № " + (lineNumber + 1) + ". " +
-                    "Неверная команда, аргумент или несуществующая метка: " + lex +
+            statusString.append("Ошибка в строке № " + (lineNumber + 1) + " " +
+                    "Неверная команда, аргумент, директива или несуществующая метка: " + lex +
                     System.lineSeparator());
         }
     }

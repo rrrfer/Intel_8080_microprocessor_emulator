@@ -135,7 +135,7 @@
                 <properties/>
                 <border type="none"/>
                 <children>
-                  <component id="b4c41" class="javax.swing.JEditorPane" binding="translateResultTextPanel">
+                  <component id="b4c41" class="javax.swing.JEditorPane" binding="translationResultTextPanel">
                     <constraints/>
                     <properties>
                       <editable value="false"/>

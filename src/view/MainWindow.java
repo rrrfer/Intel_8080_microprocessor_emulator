@@ -4,6 +4,8 @@ import presenter.IMainPresenter;
 import presenter.MainPresenter;
 
 import javax.swing.*;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.PlainDocument;
 import java.awt.*;
@@ -22,7 +24,7 @@ public class MainWindow extends JFrame implements IMainView {
     private JTable registersAndFlagsTable;
     private JTabbedPane emulatorTabbedPanel;
     private JEditorPane codeEditorTextPanel;
-    private JEditorPane translateResultTextPanel;
+    private JEditorPane translationResultTextPanel;
     private JScrollPane memoryTableScrollPanel;
     private JEditorPane consoleOutputTextPanel;
     private JTextField consoleInputTextPanel;
@@ -45,6 +47,7 @@ public class MainWindow extends JFrame implements IMainView {
     private JMenuItem resetMemoryItem;
     private JMenuItem clearScreensItem;
     private JMenuItem showHideScreens;
+    private JMenuItem switchTabItem;
     private JMenuItem deleteAllBreakpointsItem;
 
     private JMenu helpMenu;
@@ -67,7 +70,8 @@ public class MainWindow extends JFrame implements IMainView {
 
     // Resources
     public static final Font mainFont = new Font(Font.MONOSPACED, Font.PLAIN, 12);
-    public static final Color selectedColor = new Color(44, 192, 8);
+    public static final Color greenColor = new Color(44, 192, 8);
+    public static final Color redColor = new Color(122, 0, 6);
 
     public MainWindow(IMainPresenter presenter,
                       String[][] dataSourceForMemoryTable,
@@ -178,6 +182,11 @@ public class MainWindow extends JFrame implements IMainView {
                         }
                         break;
                     }
+                    case KeyEvent.VK_SPACE: {
+                        if (switchTabItem.isEnabled() && e.isControlDown()) {
+                            switchTab();
+                        }
+                    }
                 }
             }
         });
@@ -205,6 +214,18 @@ public class MainWindow extends JFrame implements IMainView {
                         saveAs();
                     }
                 }
+                if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+                    if (switchTabItem.isEnabled() && e.isControlDown()) {
+                        switchTab();
+                    }
+                }
+            }
+        });
+
+        codeEditorTextPanel.addCaretListener(new CaretListener() {
+            @Override
+            public void caretUpdate(CaretEvent e) {
+                setEditable();
             }
         });
 
@@ -298,6 +319,13 @@ public class MainWindow extends JFrame implements IMainView {
             }
         });
 
+        switchTabItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                switchTab();
+            }
+        });
+
         clearScreensItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -345,22 +373,24 @@ public class MainWindow extends JFrame implements IMainView {
         fileMenu.addSeparator();
         fileMenu.add(exitItem);
 
-        translationItem = new JMenuItem("Translation             F2");
+        translationItem = new JMenuItem("Translation                F2");
         translationItem.setFont(mainFont);
-        runItem = new JMenuItem("Run                     F5");
+        runItem = new JMenuItem("Run                        F5");
         runItem.setFont(mainFont);
-        stepItem = new JMenuItem("Step                    F9");
+        stepItem = new JMenuItem("Step                       F9");
         stepItem.setFont(mainFont);
-        stopItem =                 new JMenuItem("Stop                   F12");
+        stopItem =                 new JMenuItem("Stop                      F12");
         stopItem.setFont(mainFont);
-        resetRegisterItem = new JMenuItem("Reset Registers        Esc");
+        resetRegisterItem = new JMenuItem("Reset Registers           Esc");
         resetRegisterItem.setFont(mainFont);
         resetMemoryItem = new JMenuItem("Reset Memory");
         resetMemoryItem.setFont(mainFont);
-        showHideScreens = new JMenuItem  ("Show/Hide Screens       F3");
+        showHideScreens = new JMenuItem  ("Show/Hide Screens          F3");
         showHideScreens.setFont(mainFont);
         clearScreensItem = new JMenuItem("Clear Screens");
         clearScreensItem.setFont(mainFont);
+        switchTabItem = new JMenuItem("Switch tabs        CTRL+SPACE");
+        switchTabItem.setFont(mainFont);
         deleteAllBreakpointsItem = new JMenuItem("Delete All Breakpoints");
         deleteAllBreakpointsItem.setFont(mainFont);
 
@@ -375,6 +405,7 @@ public class MainWindow extends JFrame implements IMainView {
         emulatorMenu.add(resetRegisterItem);
         emulatorMenu.add(resetMemoryItem);
         emulatorMenu.addSeparator();
+        emulatorMenu.add(switchTabItem);
         emulatorMenu.add(showHideScreens);
         emulatorMenu.add(clearScreensItem);
         emulatorMenu.addSeparator();
@@ -428,7 +459,27 @@ public class MainWindow extends JFrame implements IMainView {
         registersAndFlagsTable.setFocusable(false);
         memoryTable.setFocusable(false);
         emulatorTabbedPanel.setFocusable(false);
+
         menuBar.setFocusable(false);
+        fileMenu.setFocusable(false);
+        emulatorMenu.setFocusable(false);
+        helpMenu.setFocusable(false);
+        openItem.setFocusable(false);
+        saveItem.setFocusable(false);
+        saveAsItem.setFocusable(false);
+        exitItem.setFocusable(false);
+        translationItem.setFocusable(false);
+        stepItem.setFocusable(false);
+        runItem.setFocusable(false);
+        stopItem.setFocusable(false);
+        resetMemoryItem.setFocusable(false);
+        resetRegisterItem.setFocusable(false);
+        switchTabItem.setFocusable(false);
+        showHideScreens.setFocusable(false);
+        clearScreensItem.setFocusable(false);
+        deleteAllBreakpointsItem.setFocusable(false);
+        helpItem.setFocusable(false);
+        aboutItem.setFocusable(false);
 
         stopItem.setEnabled(false);
 
@@ -511,8 +562,27 @@ public class MainWindow extends JFrame implements IMainView {
         presenter.clearScreens();
     }
 
+    private void switchTab() {
+        int currentTab = emulatorTabbedPanel.getSelectedIndex();
+        int size = emulatorTabbedPanel.getTabCount();
+        emulatorTabbedPanel.setSelectedIndex((currentTab + 1) % size);
+        if (emulatorTabbedPanel.getSelectedIndex() == 0) {
+            consoleInputTextPanel.requestFocus();
+        } else {
+            codeEditorTextPanel.requestFocus();
+        }
+    }
+
     private void showHideScreens() {
 
+    }
+
+    private void setEditable() {
+        if (!getTitle().equals("Intel 8080 Emulator")) {
+            if (getTitle().charAt(getTitle().length() - 1) != '*') {
+                setTitle(getTitle() + "*");
+            }
+        }
     }
 
     private void removeAllBreakpoints() {
@@ -588,7 +658,26 @@ public class MainWindow extends JFrame implements IMainView {
 
     @Override
     public void setTranslationResultText(String translationResult) {
-        translateResultTextPanel.setText(translationResult);
+        translationResultTextPanel.setText(translationResult);
+
+        // Помощь в поиске ошибки в программе
+        if (translationResult.split(System.lineSeparator())[1].equals("OK")) {
+            translationResultTextPanel.setBackground(greenColor);
+            translationResultTextPanel.setForeground(Color.BLACK);
+        } else {
+            String rowNumberStr = translationResult
+                    .split(System.lineSeparator())[1]
+                    .split(" ")[4];
+            int rowNumber = Integer.valueOf(rowNumberStr) - 1;
+            String errorString = codeEditorTextPanel.getText()
+                    .split(System.lineSeparator())[rowNumber];
+            int startErrorIndex = codeEditorTextPanel.getText().indexOf(errorString);
+
+            codeEditorTextPanel
+                    .select(startErrorIndex, startErrorIndex + errorString.length());
+            translationResultTextPanel.setBackground(redColor);
+            translationResultTextPanel.setForeground(Color.WHITE);
+        }
     }
 
     @Override
@@ -662,6 +751,7 @@ public class MainWindow extends JFrame implements IMainView {
         runItem.setEnabled(true);
         resetMemoryItem.setEnabled(true);
         resetRegisterItem.setEnabled(true);
+        switchTabItem.setEnabled(true);
         clearScreensItem.setEnabled(true);
         showHideScreens.setEnabled(true);
         deleteAllBreakpointsItem.setEnabled(true);
@@ -689,6 +779,7 @@ public class MainWindow extends JFrame implements IMainView {
         runItem.setEnabled(false);
         resetMemoryItem.setEnabled(false);
         resetRegisterItem.setEnabled(false);
+        switchTabItem.setEnabled(true);
         clearScreensItem.setEnabled(false);
         showHideScreens.setEnabled(true);
         deleteAllBreakpointsItem.setEnabled(false);
@@ -703,7 +794,7 @@ public class MainWindow extends JFrame implements IMainView {
     private void setPermissionForAction_IOMode() {
 
         consoleInputTextPanel.setEditable(true);
-        consoleInputTextPanel.setBackground(MainWindow.selectedColor);
+        consoleInputTextPanel.setBackground(MainWindow.greenColor);
 
         openItem.setEnabled(false);
         saveItem.setEnabled(false);
@@ -716,6 +807,7 @@ public class MainWindow extends JFrame implements IMainView {
         runItem.setEnabled(false);
         resetMemoryItem.setEnabled(false);
         resetRegisterItem.setEnabled(false);
+        switchTabItem.setEnabled(false);
         clearScreensItem.setEnabled(false);
         showHideScreens.setEnabled(false);
         deleteAllBreakpointsItem.setEnabled(false);

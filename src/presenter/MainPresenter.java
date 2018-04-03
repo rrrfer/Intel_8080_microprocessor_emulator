@@ -226,6 +226,7 @@ public class MainPresenter implements IMainPresenter {
                 currentFilePath = currentFilePath + ".i8080";
             }
             emulator.saveProgramInFile(currentFilePath, programText);
+            mainView.setEditableFileTitle(currentFilePath);
             return true;
         }
     }
