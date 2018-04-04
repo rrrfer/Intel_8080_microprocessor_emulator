@@ -237,25 +237,29 @@ public class MainWindow extends JFrame implements IMainView {
             @Override
             public void caretUpdate(CaretEvent e) {
                 setEditable();
+                translationResultTextPanel.setForeground(Color.BLACK);
+                translationResultTextPanel.setBackground(Color.ORANGE);
             }
         });
 
         memoryTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (e.getButton() == MouseEvent.BUTTON1) {
-                    presenter.setProgramCounter(memoryTable.getSelectedRow());
-                } else if (e.getButton() == MouseEvent.BUTTON3) {
-                    int oldRowSelection = memoryTable.getSelectedRow();
-                    int row = memoryTable.rowAtPoint(e.getPoint());
-                    memoryTable.setRowSelectionInterval(row, row);
-                    if (breakpoints.contains(memoryTable.getSelectedRow())) {
-                        breakpoints.remove((Integer) memoryTable.getSelectedRow());
-                    } else {
-                        breakpoints.add(memoryTable.getSelectedRow());
+                if (memoryTable.isEnabled()) {
+                    if (e.getButton() == MouseEvent.BUTTON1) {
+                        presenter.setProgramCounter(memoryTable.getSelectedRow());
+                    } else if (e.getButton() == MouseEvent.BUTTON3) {
+                        int oldRowSelection = memoryTable.getSelectedRow();
+                        int row = memoryTable.rowAtPoint(e.getPoint());
+                        memoryTable.setRowSelectionInterval(row, row);
+                        if (breakpoints.contains(memoryTable.getSelectedRow())) {
+                            breakpoints.remove((Integer) memoryTable.getSelectedRow());
+                        } else {
+                            breakpoints.add(memoryTable.getSelectedRow());
+                        }
+                        presenter.setBreakpoint(memoryTable.getSelectedRow());
+                        memoryTable.setRowSelectionInterval(oldRowSelection, oldRowSelection);
                     }
-                    presenter.setBreakpoint(memoryTable.getSelectedRow());
-                    memoryTable.setRowSelectionInterval(oldRowSelection, oldRowSelection);
                 }
             }
         });
@@ -550,6 +554,9 @@ public class MainWindow extends JFrame implements IMainView {
 
     private void run() {
         presenter.run();
+        emulatorTabbedPanel.setSelectedIndex(0);
+        emulatorTabbedPanel.setEnabledAt(1, false);
+        consoleInputTextPanel.requestFocus();
     }
 
     private void step() {
@@ -558,6 +565,7 @@ public class MainWindow extends JFrame implements IMainView {
 
     private void stop() {
         presenter.stop();
+        emulatorTabbedPanel.setEnabledAt(1, true);
     }
 
     private void resetRegisters() {
@@ -682,7 +690,17 @@ public class MainWindow extends JFrame implements IMainView {
                 int rowNumber = Integer.valueOf(rowNumberStr) - 1;
                 String errorString = codeEditorTextPanel.getText()
                         .split(System.lineSeparator())[rowNumber];
-                int startErrorIndex = codeEditorTextPanel.getText().indexOf(errorString);
+
+                int startErrorIndex = 0;
+                String[] programRows = codeEditorTextPanel.getText()
+                        .split(System.lineSeparator());
+                for (String currentString : programRows) {
+                    if (currentString.equals(errorString)) {
+                        break;
+                    } else {
+                        startErrorIndex += currentString.length() + 1;
+                    }
+                }
 
                 codeEditorTextPanel
                         .select(startErrorIndex, startErrorIndex + errorString.length());
@@ -760,6 +778,8 @@ public class MainWindow extends JFrame implements IMainView {
         consoleInputTextPanel.setEditable(false);
         consoleInputTextPanel.setBackground(Color.WHITE);
 
+        memoryTable.setEnabled(true);
+
         fileMenu.setEnabled(true);
         openItem.setEnabled(true);
         saveItem.setEnabled(true);
@@ -785,6 +805,8 @@ public class MainWindow extends JFrame implements IMainView {
 
     private void setPermissionForAction_RunMode() {
 
+        memoryTable.setEnabled(false);
+
         consoleInputTextPanel.setEditable(false);
         consoleInputTextPanel.setBackground(Color.WHITE);
 
@@ -799,7 +821,7 @@ public class MainWindow extends JFrame implements IMainView {
         runItem.setEnabled(false);
         resetMemoryItem.setEnabled(false);
         resetRegisterItem.setEnabled(false);
-        switchTabItem.setEnabled(true);
+        switchTabItem.setEnabled(false);
         showHideScreens.setEnabled(true);
         deleteAllBreakpointsItem.setEnabled(false);
 
@@ -811,6 +833,8 @@ public class MainWindow extends JFrame implements IMainView {
     }
 
     private void setPermissionForAction_IOMode() {
+
+        memoryTable.setEnabled(false);
 
         consoleInputTextPanel.setEditable(true);
         consoleInputTextPanel.setBackground(MainWindow.greenColor);
@@ -873,6 +897,4 @@ public class MainWindow extends JFrame implements IMainView {
     }
 }
 
-// Добавить программируемый таймер
 // Добавить символьный экран
-// Добавить пиксельный экран
