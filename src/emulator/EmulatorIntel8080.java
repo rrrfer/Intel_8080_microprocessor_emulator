@@ -18,7 +18,7 @@ public class EmulatorIntel8080 implements IEmulator {
 
     private ArrayList<Integer> breakpoints;
 
-    public EmulatorIntel8080(IIOSystem ioSystem) {
+    public EmulatorIntel8080(IInputOutputSystem ioSystem) {
         this.microprocessor = new Intel8080(new Memory(65536));
         this.microprocessor.setIOSystem(ioSystem);
         this.translator = new Intel8080Translator();

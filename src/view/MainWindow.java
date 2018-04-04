@@ -19,6 +19,9 @@ public class MainWindow extends JFrame implements IMainView {
     private IMainPresenter presenter;
 
     // View components
+    private ScreensWindow screensWindow;
+    private IScreenView pixelScreenView;
+
     private JPanel rootPanel;
     private JTable memoryTable;
     private JTable registersAndFlagsTable;
@@ -45,7 +48,6 @@ public class MainWindow extends JFrame implements IMainView {
     private JMenuItem stopItem;
     private JMenuItem resetRegisterItem;
     private JMenuItem resetMemoryItem;
-    private JMenuItem clearScreensItem;
     private JMenuItem showHideScreens;
     private JMenuItem switchTabItem;
     private JMenuItem deleteAllBreakpointsItem;
@@ -93,6 +95,10 @@ public class MainWindow extends JFrame implements IMainView {
         pack();
         setResizable(false);
         setLocationRelativeTo(null);
+
+        pixelScreenView = new PixelScreenView(256, 256, 1);
+        pixelScreenView.setData(new int[256][256]);
+        screensWindow = new ScreensWindow((PixelScreenView) pixelScreenView, this);
 
         setVisible(true);
     }
@@ -219,6 +225,11 @@ public class MainWindow extends JFrame implements IMainView {
                         switchTab();
                     }
                 }
+                if (e.getKeyCode() == KeyEvent.VK_F3) {
+                    if (showHideScreens.isEnabled()) {
+                        showHideScreens();
+                    }
+                }
             }
         });
 
@@ -326,10 +337,10 @@ public class MainWindow extends JFrame implements IMainView {
             }
         });
 
-        clearScreensItem.addActionListener(new ActionListener() {
+        showHideScreens.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                clearScreens();
+                showHideScreens();
             }
         });
 
@@ -387,8 +398,6 @@ public class MainWindow extends JFrame implements IMainView {
         resetMemoryItem.setFont(mainFont);
         showHideScreens = new JMenuItem  ("Show/Hide Screens          F3");
         showHideScreens.setFont(mainFont);
-        clearScreensItem = new JMenuItem("Clear Screens");
-        clearScreensItem.setFont(mainFont);
         switchTabItem = new JMenuItem("Switch tabs        CTRL+SPACE");
         switchTabItem.setFont(mainFont);
         deleteAllBreakpointsItem = new JMenuItem("Delete All Breakpoints");
@@ -407,7 +416,6 @@ public class MainWindow extends JFrame implements IMainView {
         emulatorMenu.addSeparator();
         emulatorMenu.add(switchTabItem);
         emulatorMenu.add(showHideScreens);
-        emulatorMenu.add(clearScreensItem);
         emulatorMenu.addSeparator();
         emulatorMenu.add(deleteAllBreakpointsItem);
 
@@ -476,7 +484,6 @@ public class MainWindow extends JFrame implements IMainView {
         resetRegisterItem.setFocusable(false);
         switchTabItem.setFocusable(false);
         showHideScreens.setFocusable(false);
-        clearScreensItem.setFocusable(false);
         deleteAllBreakpointsItem.setFocusable(false);
         helpItem.setFocusable(false);
         aboutItem.setFocusable(false);
@@ -561,10 +568,6 @@ public class MainWindow extends JFrame implements IMainView {
         presenter.resetMemory();
     }
 
-    private void clearScreens() {
-        presenter.clearScreens();
-    }
-
     private void switchTab() {
         int currentTab = emulatorTabbedPanel.getSelectedIndex();
         int size = emulatorTabbedPanel.getTabCount();
@@ -577,7 +580,11 @@ public class MainWindow extends JFrame implements IMainView {
     }
 
     private void showHideScreens() {
-
+        if (screensWindow.isVisible()) {
+            screensWindow._hide();
+        } else {
+            screensWindow._show();
+        }
     }
 
     private void setEditable() {
@@ -660,26 +667,31 @@ public class MainWindow extends JFrame implements IMainView {
     }
 
     @Override
-    public void setTranslationResultText(String translationResult) {
+    public void setTranslationResultText(String translationResult, boolean isErrorsSearch) {
         translationResultTextPanel.setText(translationResult);
 
-        // Помощь в поиске ошибки в программе
-        if (translationResult.split(System.lineSeparator())[1].equals("OK")) {
-            translationResultTextPanel.setBackground(greenColor);
-            translationResultTextPanel.setForeground(Color.BLACK);
-        } else {
-            String rowNumberStr = translationResult
-                    .split(System.lineSeparator())[1]
-                    .split(" ")[4];
-            int rowNumber = Integer.valueOf(rowNumberStr) - 1;
-            String errorString = codeEditorTextPanel.getText()
-                    .split(System.lineSeparator())[rowNumber];
-            int startErrorIndex = codeEditorTextPanel.getText().indexOf(errorString);
+        if (isErrorsSearch) {
+            // Помощь в поиске ошибки в программе
+            if (translationResult.split(System.lineSeparator())[1].equals("OK")) {
+                translationResultTextPanel.setBackground(greenColor);
+                translationResultTextPanel.setForeground(Color.BLACK);
+            } else {
+                String rowNumberStr = translationResult
+                        .split(System.lineSeparator())[1]
+                        .split(" ")[4];
+                int rowNumber = Integer.valueOf(rowNumberStr) - 1;
+                String errorString = codeEditorTextPanel.getText()
+                        .split(System.lineSeparator())[rowNumber];
+                int startErrorIndex = codeEditorTextPanel.getText().indexOf(errorString);
 
-            codeEditorTextPanel
-                    .select(startErrorIndex, startErrorIndex + errorString.length());
-            translationResultTextPanel.setBackground(redColor);
-            translationResultTextPanel.setForeground(Color.WHITE);
+                codeEditorTextPanel
+                        .select(startErrorIndex, startErrorIndex + errorString.length());
+                translationResultTextPanel.setBackground(redColor);
+                translationResultTextPanel.setForeground(Color.WHITE);
+            }
+        } else {
+            translationResultTextPanel.setForeground(Color.BLACK);
+            translationResultTextPanel.setBackground(Color.WHITE);
         }
     }
 
@@ -736,6 +748,12 @@ public class MainWindow extends JFrame implements IMainView {
         }
     }
 
+    @Override
+    public void setPixelScreenData(int[][] pixelScreenData) {
+        pixelScreenView.setData(pixelScreenData);
+        pixelScreenView.update();
+    }
+
     // Helps
     private void setPermissionForAction_DefaultMode() {
 
@@ -755,7 +773,6 @@ public class MainWindow extends JFrame implements IMainView {
         resetMemoryItem.setEnabled(true);
         resetRegisterItem.setEnabled(true);
         switchTabItem.setEnabled(true);
-        clearScreensItem.setEnabled(true);
         showHideScreens.setEnabled(true);
         deleteAllBreakpointsItem.setEnabled(true);
 
@@ -783,7 +800,6 @@ public class MainWindow extends JFrame implements IMainView {
         resetMemoryItem.setEnabled(false);
         resetRegisterItem.setEnabled(false);
         switchTabItem.setEnabled(true);
-        clearScreensItem.setEnabled(false);
         showHideScreens.setEnabled(true);
         deleteAllBreakpointsItem.setEnabled(false);
 
@@ -811,7 +827,6 @@ public class MainWindow extends JFrame implements IMainView {
         resetMemoryItem.setEnabled(false);
         resetRegisterItem.setEnabled(false);
         switchTabItem.setEnabled(false);
-        clearScreensItem.setEnabled(false);
         showHideScreens.setEnabled(false);
         deleteAllBreakpointsItem.setEnabled(false);
 

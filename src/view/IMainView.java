@@ -8,10 +8,11 @@ public interface IMainView {
     void setProgramCounterPosition(int programCounterPosition);
     void setRegistersAndFlagsDataTable(String[][] dataSource);
     void setProgramText(String codeSource);
-    void setTranslationResultText(String translationResult);
+    void setTranslationResultText(String translationResult, boolean isErrorsSearch);
     void setConsoleOutData(String consoleOutData);
     void setConsoleInData(String consoleInData);
     void setPermissionForActions(int mode);
     void setBreakpointsData(ArrayList<Integer> breakpointsData);
+    void setPixelScreenData(int[][] pixelScreenData);
     int requestOfInput();
 }

@@ -1,6 +1,6 @@
 package kernel;
 
-import emulator.IIOSystem;
+import emulator.IInputOutputSystem;
 import kernel.cmd.ICommand;
 
 public interface IMicroprocessor extends IReadOnlyMicroprocessor {
@@ -22,8 +22,8 @@ public interface IMicroprocessor extends IReadOnlyMicroprocessor {
     int getRoundedByte(int value);
     int getRoundedWord(int value);
 
-    void setIOSystem(IIOSystem ioSystem);
-    IIOSystem getIOSystem();
+    void setIOSystem(IInputOutputSystem ioSystem);
+    IInputOutputSystem getIOSystem();
 
     IMemory getMemory();
 

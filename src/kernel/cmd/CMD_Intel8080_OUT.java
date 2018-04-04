@@ -1,6 +1,6 @@
 package kernel.cmd;
 
-import emulator.IIOSystem;
+import emulator.IInputOutputSystem;
 import kernel.IMicroprocessor;
 
 public class CMD_Intel8080_OUT implements ICommand {
@@ -13,17 +13,21 @@ public class CMD_Intel8080_OUT implements ICommand {
 
     @Override
     public void execute(IMicroprocessor microprocessor) {
-        IIOSystem ioSystem = microprocessor.getIOSystem();
+        IInputOutputSystem ioSystem = microprocessor.getIOSystem();
         if (ioSystem != null) {
             int outputValue = microprocessor.getValueByRegisterName("A");
             int portNumber = Integer.valueOf(arg, 16);
             switch (portNumber) {
                 case 2: {
-                    ioSystem.consoleOut(outputValue);
+                    ioSystem.stdOutput(outputValue);
+                    break;
+                }
+                case 5: {
+                    ioSystem.writeValueInInputRegisterOfPixelScreen(outputValue);
                     break;
                 }
                 case 22: {
-                    ioSystem.setTimerValue(outputValue);
+                    ioSystem.writeTimerValue(outputValue);
                     break;
                 }
             }

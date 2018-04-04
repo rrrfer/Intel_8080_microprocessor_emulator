@@ -2,7 +2,8 @@ package presenter;
 
 import emulator.EmulatorIntel8080;
 import emulator.IEmulator;
-import emulator.IOSystem;
+import emulator.IInputOutputSystem;
+import emulator.InputOutputSystem;
 import kernel.IReadOnlyMicroprocessor;
 import view.IMainView;
 import view.MainWindow;
@@ -11,7 +12,7 @@ import javax.swing.*;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class MainPresenter implements IMainPresenter {
+public class MainPresenter implements IMainPresenter, IMainPresenter_Model {
 
     public static final int DEFAULT_MODE = 0;
     public static final int RUN_MODE = 1;
@@ -31,11 +32,14 @@ public class MainPresenter implements IMainPresenter {
     private IMainView mainView;
     private IEmulator emulator;
 
+    private IInputOutputSystem inputOutputSystem;
+
     private Thread commandRunThread;
     private Thread programRunThread;
 
     public MainPresenter() {
-        emulator = new EmulatorIntel8080(new IOSystem(this));
+        inputOutputSystem = new InputOutputSystem(this);
+        emulator = new EmulatorIntel8080(inputOutputSystem);
         dataSourceForMemoryTable = getDataSourceForMemoryTable(emulator);
         dataSourceForRegistersAndFlagsTable = getDataSourceForRegistersAndFlagsTable(emulator);
         dataSourceForConsoleOutputPanel = "";
@@ -50,6 +54,7 @@ public class MainPresenter implements IMainPresenter {
         });
     }
 
+    // For View
     @Override
     public void translation(String program) {
         emulator.resetRegisters();
@@ -62,7 +67,7 @@ public class MainPresenter implements IMainPresenter {
 
         mainView.setMemoryDataTable(dataSourceForMemoryTable);
         mainView.setRegistersAndFlagsDataTable(dataSourceForRegistersAndFlagsTable);
-        mainView.setTranslationResultText(dataSourceForTranslateResultPanel);
+        mainView.setTranslationResultText(dataSourceForTranslateResultPanel, true);
         mainView.setProgramCounterPosition(0);
     }
 
@@ -145,6 +150,7 @@ public class MainPresenter implements IMainPresenter {
         emulator.resetRegisters();
         dataSourceForRegistersAndFlagsTable = getDataSourceForRegistersAndFlagsTable(emulator);
         dataSourceForConsoleOutputPanel = "";
+        inputOutputSystem.clearScreens();
         mainView.setRegistersAndFlagsDataTable(dataSourceForRegistersAndFlagsTable);
         mainView.setConsoleOutData(dataSourceForConsoleOutputPanel);
         mainView.setProgramCounterPosition(0);
@@ -156,11 +162,6 @@ public class MainPresenter implements IMainPresenter {
         dataSourceForMemoryTable = getDataSourceForMemoryTable(emulator);
         mainView.setMemoryDataTable(dataSourceForMemoryTable);
         mainView.setProgramCounterPosition(0);
-    }
-
-    @Override
-    public void clearScreens() {
-
     }
 
     @Override
@@ -185,25 +186,10 @@ public class MainPresenter implements IMainPresenter {
     }
 
     @Override
-    public void consoleOut(int value) {
-        dataSourceForConsoleOutputPanel
-                = dataSourceForConsoleOutputPanel + " " + String.valueOf(value);
-        mainView.setConsoleOutData(dataSourceForConsoleOutputPanel);
-    }
-
-    @Override
-    public int requestOfInput() {
-        mainView.setPermissionForActions(MainPresenter.IO_MODE);
-        int value = mainView.requestOfInput();
-        mainView.setPermissionForActions(actionMode);
-        mainView.setConsoleInData("");
-        return value;
-    }
-
-    @Override
     public void loadProgramFromFile(String path) throws IOException {
         currentFilePath = path;
         dataSourceForCodeEditorPanel = emulator.loadProgramFromFile(path);
+        mainView.setTranslationResultText("", false);
         mainView.setProgramText(dataSourceForCodeEditorPanel);
         mainView.setEditableFileTitle(path);
     }
@@ -231,6 +217,29 @@ public class MainPresenter implements IMainPresenter {
         }
     }
 
+    // For Model
+    @Override
+    public void consoleOut(int value) {
+        dataSourceForConsoleOutputPanel
+                = dataSourceForConsoleOutputPanel + " " + String.valueOf(value);
+        mainView.setConsoleOutData(dataSourceForConsoleOutputPanel);
+    }
+
+    @Override
+    public int requestOfInput() {
+        mainView.setPermissionForActions(MainPresenter.IO_MODE);
+        int value = mainView.requestOfInput();
+        mainView.setPermissionForActions(actionMode);
+        mainView.setConsoleInData("");
+        return value;
+    }
+
+    @Override
+    public void pixelScreenUpdate(int[][] memory) {
+        mainView.setPixelScreenData(memory);
+    }
+
+    // Help
     private String[][] getDataSourceForMemoryTable(IEmulator emulator) {
         String[] commandsInMemory = emulator.getCommandsList();
         int length = emulator.getViewInterface().getReadOnlyMemory().getSize();

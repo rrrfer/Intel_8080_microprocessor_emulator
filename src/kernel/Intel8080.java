@@ -1,6 +1,6 @@
 package kernel;
 
-import emulator.IIOSystem;
+import emulator.IInputOutputSystem;
 import kernel.cmd.ICommand;
 
 import java.util.HashMap;
@@ -12,7 +12,7 @@ public class Intel8080 implements IMicroprocessor {
     private int flags;
     private IMemory memory;
 
-    private IIOSystem ioSystem;
+    private IInputOutputSystem ioSystem;
 
     // Вспомогательные переменные
     private HashMap<String, Integer> registerByName;
@@ -263,12 +263,12 @@ public class Intel8080 implements IMicroprocessor {
     }
 
     @Override
-    public void setIOSystem(IIOSystem ioSystem) {
+    public void setIOSystem(IInputOutputSystem ioSystem) {
         this.ioSystem = ioSystem;
     }
 
     @Override
-    public IIOSystem getIOSystem() {
+    public IInputOutputSystem getIOSystem() {
         return ioSystem;
     }
 }
