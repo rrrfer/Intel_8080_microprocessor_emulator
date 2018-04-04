@@ -7,7 +7,6 @@ public class CMD_Intel8080_CMA implements ICommand {
     public void execute(IMicroprocessor microprocessor) {
         int value = microprocessor.getValueByRegisterName("A");
         value = 255 - value;
-        microprocessor.checkByteForSetFlags(value);
         microprocessor.setValueByRegisterName("A", value);
     }
 

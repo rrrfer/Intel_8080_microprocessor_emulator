@@ -21,7 +21,28 @@ public class CMD_Intel8080_DCR implements ICommand {
         }
 
         value -= 1;
-        microprocessor.checkByteForSetFlags(value);
+        if (value % 256 == 0) {
+            microprocessor.setValueByFlagName("Z", 1);
+        } else {
+            microprocessor.setValueByFlagName("Z", 0);
+        }
+
+        if (value < 0) {
+            microprocessor.setValueByFlagName("S", 1);
+        } else {
+            microprocessor.setValueByFlagName("S", 0);
+        }
+
+        int tmpValue = value;
+        if (tmpValue < 0) tmpValue += 256;
+
+        int counter = 0;
+        for (int i = 0; i < 8; ++i) {
+            counter += tmpValue % 2;
+            tmpValue = tmpValue >> 1;
+        }
+
+        microprocessor.setValueByFlagName("P", (counter + 1) % 2);
         value = microprocessor.getRoundedByte(value);
 
         if (arg.equals("M")) {

@@ -59,7 +59,7 @@ class Timer implements Runnable {
     public void run() {
         while (value > 0) {
             try {
-                Thread.sleep(10);
+                Thread.sleep(100);
             } catch (InterruptedException ignored) {}
             synchronized (this) {
                 value -= 1;
