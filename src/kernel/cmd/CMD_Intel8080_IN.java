@@ -14,15 +14,20 @@ public class CMD_Intel8080_IN implements ICommand {
     @Override
     public void execute(IMicroprocessor microprocessor) {
         IIOSystem ioSystem = microprocessor.getIOSystem();
-        int portNumber = Integer.valueOf(arg);
-        switch (portNumber) {
-            case 8: {
-                int value = 0;
-                if (ioSystem != null) {
-                    value = ioSystem.requestOfInput();
+        if (ioSystem != null) {
+            int inputValue;
+            int portNumber = Integer.valueOf(arg, 16);
+            switch (portNumber) {
+                case 8: {
+                    inputValue = ioSystem.requestOfInput();
+                    microprocessor.setValueByRegisterName("A", inputValue);
+                    break;
                 }
-                microprocessor.setValueByRegisterName("A", value);
-                break;
+                case 22: {
+                    inputValue = ioSystem.getTimerValue();
+                    microprocessor.setValueByRegisterName("A", inputValue);
+                    break;
+                }
             }
         }
     }

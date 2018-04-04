@@ -510,7 +510,10 @@ public class MainWindow extends JFrame implements IMainView {
             if (!presenter.saveProgramInFile(programText)) {
                 saveAs();
             }
-        } catch (IOException ignored) {}
+        } catch (IOException ignored) {
+            JOptionPane.showMessageDialog(MainWindow.this,
+                    "Saving failed", "Error!", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void saveAs() {

@@ -15,10 +15,15 @@ public class CMD_Intel8080_OUT implements ICommand {
     public void execute(IMicroprocessor microprocessor) {
         IIOSystem ioSystem = microprocessor.getIOSystem();
         if (ioSystem != null) {
+            int outputValue = microprocessor.getValueByRegisterName("A");
             int portNumber = Integer.valueOf(arg, 16);
             switch (portNumber) {
                 case 2: {
-                    ioSystem.consoleOut(microprocessor.getValueByRegisterName("A"));
+                    ioSystem.consoleOut(outputValue);
+                    break;
+                }
+                case 22: {
+                    ioSystem.setTimerValue(outputValue);
                     break;
                 }
             }
