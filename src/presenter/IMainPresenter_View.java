@@ -2,7 +2,7 @@ package presenter;
 
 import java.io.IOException;
 
-public interface IMainPresenter {
+public interface IMainPresenter_View {
     void translation(String program);
     void run();
     void step();

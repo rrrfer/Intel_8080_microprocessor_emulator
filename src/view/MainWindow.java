@@ -1,6 +1,6 @@
 package view;
 
-import presenter.IMainPresenter;
+import presenter.IMainPresenter_View;
 import presenter.MainPresenter;
 
 import javax.swing.*;
@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public class MainWindow extends JFrame implements IMainView {
 
     // Presenter
-    private IMainPresenter presenter;
+    private IMainPresenter_View presenter;
 
     // View components
     private ScreensWindow screensWindow;
@@ -75,7 +75,7 @@ public class MainWindow extends JFrame implements IMainView {
     public static final Color greenColor = new Color(44, 192, 8);
     public static final Color redColor = new Color(122, 0, 6);
 
-    public MainWindow(IMainPresenter presenter,
+    public MainWindow(IMainPresenter_View presenter,
                       String[][] dataSourceForMemoryTable,
                       String[][] dataSourceForRegistersAndFlagsTable) {
         this.presenter = presenter;
@@ -85,7 +85,6 @@ public class MainWindow extends JFrame implements IMainView {
         memoryTableModel = new MemoryTableModel(dataSourceForMemoryTable);
         registersAndFlagsTableModel =
                 new RegistersAndFlagsTableModel(dataSourceForRegistersAndFlagsTable);
-
         setTitle("Intel 8080 Emulator");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setContentPane(rootPanel);
@@ -554,9 +553,6 @@ public class MainWindow extends JFrame implements IMainView {
 
     private void run() {
         presenter.run();
-        emulatorTabbedPanel.setSelectedIndex(0);
-        emulatorTabbedPanel.setEnabledAt(1, false);
-        consoleInputTextPanel.requestFocus();
     }
 
     private void step() {
@@ -565,7 +561,6 @@ public class MainWindow extends JFrame implements IMainView {
 
     private void stop() {
         presenter.stop();
-        emulatorTabbedPanel.setEnabledAt(1, true);
     }
 
     private void resetRegisters() {
@@ -749,8 +744,6 @@ public class MainWindow extends JFrame implements IMainView {
 
     @Override
     public int requestOfInput() {
-        consoleInputTextPanel.setEditable(true);
-        consoleInputTextPanel.requestFocus();
         while (true) {
             if (inputString != null) {
                 int value = otherRadix2Dec(inputString);
@@ -774,6 +767,10 @@ public class MainWindow extends JFrame implements IMainView {
 
     // Helps
     private void setPermissionForAction_DefaultMode() {
+
+        emulatorTabbedPanel.setSelectedIndex(0);
+        emulatorTabbedPanel.setEnabledAt(1, true);
+        consoleInputTextPanel.requestFocus();
 
         consoleInputTextPanel.setEditable(false);
         consoleInputTextPanel.setBackground(Color.WHITE);
@@ -805,6 +802,10 @@ public class MainWindow extends JFrame implements IMainView {
 
     private void setPermissionForAction_RunMode() {
 
+        emulatorTabbedPanel.setSelectedIndex(0);
+        emulatorTabbedPanel.setEnabledAt(1, false);
+        consoleInputTextPanel.requestFocus();
+
         memoryTable.setEnabled(false);
 
         consoleInputTextPanel.setEditable(false);
@@ -833,6 +834,10 @@ public class MainWindow extends JFrame implements IMainView {
     }
 
     private void setPermissionForAction_IOMode() {
+
+        emulatorTabbedPanel.setSelectedIndex(0);
+        emulatorTabbedPanel.setEnabledAt(1, false);
+        consoleInputTextPanel.requestFocus();
 
         memoryTable.setEnabled(false);
 

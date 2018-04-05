@@ -12,7 +12,7 @@ import javax.swing.*;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class MainPresenter implements IMainPresenter, IMainPresenter_Model {
+public class MainPresenter implements IMainPresenter_View, IMainPresenter_Model {
 
     public static final int DEFAULT_MODE = 0;
     public static final int RUN_MODE = 1;
