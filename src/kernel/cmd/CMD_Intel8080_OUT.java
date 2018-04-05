@@ -26,6 +26,10 @@ public class CMD_Intel8080_OUT implements ICommand {
                     ioSystem.writeValueInInputRegisterOfPixelScreen(outputValue);
                     break;
                 }
+                case 7: {
+                    ioSystem.writeValueInInputRegisterOfCharacterScreen(outputValue);
+                    break;
+                }
                 case 22: {
                     ioSystem.writeTimerValue(outputValue);
                     break;

@@ -9,9 +9,10 @@ public class ScreensWindow extends JFrame {
     private JPanel characterScreenPanel;
     private JFrame parent;
 
-    public ScreensWindow(PixelScreenView pixelScreenView, JFrame parent) {
+    public ScreensWindow(PixelScreenView pixelScreenView, CharacterScreenView characterScreenView ,JFrame parent) {
         this.parent = parent;
         this.pixelScreenPanel = pixelScreenView;
+        this.characterScreenPanel = characterScreenView;
         setTitle("Screens");
         setContentPane(rootPanel);
         setSize(265, 575);
@@ -24,9 +25,7 @@ public class ScreensWindow extends JFrame {
     private void createUIComponents() {
         IScreenView pixelScreenView = (IScreenView) pixelScreenPanel;
         pixelScreenView.update();
-        characterScreenPanel = new PixelScreenView(256, 256, 1);
         IScreenView characterScreenView = (IScreenView) characterScreenPanel;
-        characterScreenView.setData(new int[256][256]);
         characterScreenView.update();
     }
 

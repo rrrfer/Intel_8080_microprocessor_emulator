@@ -1,22 +1,25 @@
 package emulator;
 
-class PixelScreen implements IScreen {
+public class CharacterScreen implements IScreen {
 
     private int rowCount;
     private int columnCount;
 
-    private int[][] memory;
-
-    private int outputRegister;
+    private int[][] colorMemory;
+    private int[][] charMemory;
     private int inputState;
+    private int outputState;
+    private int outputRegister;
     private int rowSelectedAddress;
     private int columnSelectedAddress;
 
-    public PixelScreen(int rowCount, int columtCount) {
+    public CharacterScreen(int rowCount, int columnCount) {
         this.rowCount = rowCount;
-        this.columnCount = columtCount;
-        this.memory = new int[rowCount][columtCount];
+        this.columnCount = columnCount;
+        this.colorMemory = new int[rowCount][columnCount];
+        this.charMemory = new int[rowCount][columnCount];
         this.inputState = 0;
+        this.outputState = 0;
         this.outputRegister = 0;
     }
 
@@ -48,13 +51,20 @@ class PixelScreen implements IScreen {
                 if (value == 0) {
                     inputState = 3;
                 } else {
-                    outputRegister = memory[rowSelectedAddress][columnSelectedAddress];
+                    outputRegister = colorMemory[rowSelectedAddress][columnSelectedAddress];
                     inputState = 0;
                 }
                 break;
             }
             case 3: {
-                memory[rowSelectedAddress][columnSelectedAddress] = value;
+                colorMemory[rowSelectedAddress][columnSelectedAddress] = value;
+                outputRegister = 0x00;
+                inputState = 4;
+                break;
+            }
+            case 4: {
+                charMemory[rowSelectedAddress][columnSelectedAddress] = value;
+                outputRegister = 0x00;
                 inputState = 0;
                 return true;
             }
@@ -64,24 +74,38 @@ class PixelScreen implements IScreen {
 
     @Override
     public int getByte_Protocol() {
-        return outputRegister;
+        int returnValue = outputRegister;
+        switch (outputState) {
+            case 0: {
+                outputState = 1;
+                outputRegister = charMemory[rowSelectedAddress][columnSelectedAddress];
+                break;
+            }
+            case 1: {
+                outputState = 0;
+                outputRegister = colorMemory[rowSelectedAddress][columnSelectedAddress];
+                break;
+            }
+        }
+        return returnValue;
     }
 
     @Override
     public int[][] getColorMemory() {
-        return memory;
+        return colorMemory;
     }
 
     @Override
     public int[][] getCharMemory() {
-        return null;
+        return charMemory;
     }
 
     @Override
     public void clear() {
-        for (int i = 0; i < memory.length; ++i) {
-            for (int j = 0; j < memory[i].length; ++j) {
-                memory[i][j] = 0;
+        for (int i = 0; i < rowCount; ++i) {
+            for (int j = 0; j < columnCount; ++j) {
+                charMemory[i][j] = 0;
+                colorMemory[i][j] = 0;
             }
         }
     }

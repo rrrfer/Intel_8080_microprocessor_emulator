@@ -10,14 +10,18 @@ public class PixelScreenView extends JPanel implements IScreenView {
 
     public PixelScreenView(int weight, int height, int pixelSize) {
         this.pixelSize = pixelSize;
+        this.memory = new int[256][256];
         setSize(weight * pixelSize, height * pixelSize);
         setVisible(true);
     }
 
     @Override
-    public void setData(int[][] data) {
+    public void setColorData(int[][] data) {
         memory = data;
     }
+
+    @Override
+    public void setCharData(int[][] data) {}
 
     @Override
     public void update() {

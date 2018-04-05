@@ -1,6 +1,7 @@
 package view;
 
 public interface IScreenView {
-    void setData(int[][] data);
+    void setColorData(int[][] data);
+    void setCharData(int[][] data);
     void update();
 }

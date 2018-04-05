@@ -239,6 +239,11 @@ public class MainPresenter implements IMainPresenter_View, IMainPresenter_Model 
         mainView.setPixelScreenData(memory);
     }
 
+    @Override
+    public void characterScreenUpdate(int[][] colorMemory, int[][] charMemory) {
+        mainView.setCharacterScreenData(colorMemory, charMemory);
+    }
+
     // Help
     private String[][] getDataSourceForMemoryTable(IEmulator emulator) {
         String[] commandsInMemory = emulator.getCommandsList();

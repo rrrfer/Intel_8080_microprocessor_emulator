@@ -21,6 +21,7 @@ public class MainWindow extends JFrame implements IMainView {
     // View components
     private ScreensWindow screensWindow;
     private IScreenView pixelScreenView;
+    private IScreenView characterScreenView;
 
     private JPanel rootPanel;
     private JTable memoryTable;
@@ -96,8 +97,9 @@ public class MainWindow extends JFrame implements IMainView {
         setLocationRelativeTo(null);
 
         pixelScreenView = new PixelScreenView(256, 256, 1);
-        pixelScreenView.setData(new int[256][256]);
-        screensWindow = new ScreensWindow((PixelScreenView) pixelScreenView, this);
+        characterScreenView = new CharacterScreenView(240, 240, 12);
+        screensWindow = new ScreensWindow((PixelScreenView) pixelScreenView,
+                (CharacterScreenView) characterScreenView, this);
 
         setVisible(true);
     }
@@ -757,8 +759,15 @@ public class MainWindow extends JFrame implements IMainView {
 
     @Override
     public void setPixelScreenData(int[][] pixelScreenData) {
-        pixelScreenView.setData(pixelScreenData);
+        pixelScreenView.setColorData(pixelScreenData);
         pixelScreenView.update();
+    }
+
+    @Override
+    public void setCharacterScreenData(int[][] charScreenColorData, int[][] charScreenCharData) {
+        characterScreenView.setCharData(charScreenCharData);
+        characterScreenView.setColorData(charScreenColorData);
+        characterScreenView.update();
     }
 
     // Helps

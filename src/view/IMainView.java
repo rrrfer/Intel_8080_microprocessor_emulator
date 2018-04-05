@@ -14,5 +14,6 @@ public interface IMainView {
     void setPermissionForActions(int mode);
     void setBreakpointsData(ArrayList<Integer> breakpointsData);
     void setPixelScreenData(int[][] pixelScreenData);
+    void setCharacterScreenData(int[][] charScreenColorData, int[][] charScreenCharData);
     int requestOfInput();
 }

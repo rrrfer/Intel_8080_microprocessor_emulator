@@ -7,6 +7,7 @@ public class InputOutputSystem implements IInputOutputSystem {
     private IMainPresenter_Model presenter;
 
     private IScreen pixelScreen;
+    private IScreen charScreen;
 
     private Timer timer;
     private Thread timerThread;
@@ -15,6 +16,7 @@ public class InputOutputSystem implements IInputOutputSystem {
         this.presenter = presenter;
         this.timer = new Timer();
         this.pixelScreen = new PixelScreen(256, 256);
+        this.charScreen = new CharacterScreen(20, 20);
     }
 
     @Override
@@ -44,7 +46,7 @@ public class InputOutputSystem implements IInputOutputSystem {
     @Override
     public void writeValueInInputRegisterOfPixelScreen(int value) {
         if(pixelScreen.putByte_Protocol(value)) {
-            presenter.pixelScreenUpdate(pixelScreen.getMemory());
+            presenter.pixelScreenUpdate(pixelScreen.getColorMemory());
         }
     }
 
@@ -54,8 +56,22 @@ public class InputOutputSystem implements IInputOutputSystem {
     }
 
     @Override
+    public void writeValueInInputRegisterOfCharacterScreen(int value) {
+        if (charScreen.putByte_Protocol(value)) {
+            presenter.characterScreenUpdate(charScreen.getColorMemory(), charScreen.getCharMemory());
+        }
+    }
+
+    @Override
+    public int readValueFromOutputRegisterOfCharacterScreen() {
+        return charScreen.getByte_Protocol();
+    }
+
+    @Override
     public void clearScreens() {
         pixelScreen.clear();
-        presenter.pixelScreenUpdate(pixelScreen.getMemory());
+        presenter.pixelScreenUpdate(pixelScreen.getColorMemory());
+        charScreen.clear();
+        presenter.characterScreenUpdate(charScreen.getColorMemory(), charScreen.getCharMemory());
     }
 }

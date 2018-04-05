@@ -7,5 +7,7 @@ public interface IInputOutputSystem {
     int readTimerValue();
     void writeValueInInputRegisterOfPixelScreen(int value);
     int readValueFromOutputRegisterOfPixelScreen();
+    void writeValueInInputRegisterOfCharacterScreen(int value);
+    int readValueFromOutputRegisterOfCharacterScreen();
     void clearScreens();
 }

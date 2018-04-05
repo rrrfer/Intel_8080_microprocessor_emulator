@@ -22,6 +22,10 @@ public class CMD_Intel8080_IN implements ICommand {
                     inputValue = ioSystem.readValueFromOutputRegisterOfPixelScreen();
                     break;
                 }
+                case 7: {
+                    inputValue = ioSystem.readValueFromOutputRegisterOfCharacterScreen();
+                    break;
+                }
                 case 8: {
                     inputValue = ioSystem.requestOfStdInput();
                     break;
