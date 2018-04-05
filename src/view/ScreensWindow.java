@@ -1,6 +1,7 @@
 package view;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class ScreensWindow extends JFrame {
 
@@ -9,10 +10,14 @@ public class ScreensWindow extends JFrame {
     private JPanel characterScreenPanel;
     private JFrame parent;
 
+    private JScrollPane pixelScreenScrollPanel;
+    private JScrollPane characterScreenScrollPanel;
+
     public ScreensWindow(PixelScreenView pixelScreenView, CharacterScreenView characterScreenView ,JFrame parent) {
         this.parent = parent;
         this.pixelScreenPanel = pixelScreenView;
         this.characterScreenPanel = characterScreenView;
+
         setTitle("Screens");
         setContentPane(rootPanel);
         setSize(265, 575);
