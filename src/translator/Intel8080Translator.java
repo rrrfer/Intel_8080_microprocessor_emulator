@@ -79,7 +79,7 @@ public class Intel8080Translator implements ITranslator {
                         continue;
                     } else {
                         hasErrors = true;
-                        statusString.append("Ошибка в строке №" + (i + 1) + ". " +
+                        statusString.append("Ошибка в строке № " + (i + 1) + " " +
                                 "Повторное использование метки: " + dividedProgramLines[i]+
                                 System.lineSeparator());
                     }

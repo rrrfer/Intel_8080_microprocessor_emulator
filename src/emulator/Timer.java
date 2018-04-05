@@ -2,28 +2,27 @@ package emulator;
 
 class Timer implements Runnable {
 
-    private int value;
+    private volatile int value;
 
     public void setValue(int value) {
-        synchronized (this) {
-            this.value = value;
-        }
+        this.value = value;
     }
 
     public int getValue() {
-        synchronized (this) {
-            return value;
-        }
+        return value;
     }
 
     @Override
     public void run() {
-        while (value > 0) {
+        while (true) {
             try {
-                Thread.sleep(100);
-            } catch (InterruptedException ignored) {}
-            synchronized (this) {
+                Thread.sleep(10);
+            } catch (InterruptedException ignored) {
+            }
+            if (value > 0) {
                 value -= 1;
+            } else {
+
             }
         }
     }
