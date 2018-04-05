@@ -682,19 +682,15 @@ public class MainWindow extends JFrame implements IMainView {
                 String rowNumberStr = translationResult
                         .split(System.lineSeparator())[1]
                         .split(" ")[4];
-                int rowNumber = Integer.valueOf(rowNumberStr) - 1;
+                int errorRowNumber = Integer.valueOf(rowNumberStr) - 1;
                 String errorString = codeEditorTextPanel.getText()
-                        .split(System.lineSeparator())[rowNumber];
+                        .split(System.lineSeparator())[errorRowNumber];
 
                 int startErrorIndex = 0;
                 String[] programRows = codeEditorTextPanel.getText()
                         .split(System.lineSeparator());
-                for (String currentString : programRows) {
-                    if (currentString.equals(errorString)) {
-                        break;
-                    } else {
-                        startErrorIndex += currentString.length() + 1;
-                    }
+                for (int i = 0; i < errorRowNumber; ++i) {
+                        startErrorIndex += programRows[i].length() + 1;
                 }
 
                 codeEditorTextPanel
@@ -902,4 +898,4 @@ public class MainWindow extends JFrame implements IMainView {
     }
 }
 
-// Добавить символьный экран
+// TODO Добавить символьный экран
