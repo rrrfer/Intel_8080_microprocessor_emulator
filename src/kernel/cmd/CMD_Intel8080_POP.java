@@ -26,29 +26,29 @@ public class CMD_Intel8080_POP implements ICommand {
     public void execute(IMicroprocessorAdapterForCommands microprocessor) {
         int value = pop(microprocessor);
 
-        if (register != Intel8080Registers.PSW) {
+        if (register != null) {
             microprocessor.setValueInRegister(register, value / 256);
         } else {
             microprocessor.setValueInRegister(Intel8080Registers.A, value / 256);
         }
 
-        switch (register) {
-            case B: {
-                microprocessor.setValueInRegister(Intel8080Registers.C, value % 256);
-                break;
+        if (register != null) {
+            switch (register) {
+                case B: {
+                    microprocessor.setValueInRegister(Intel8080Registers.C, value % 256);
+                    break;
+                }
+                case D: {
+                    microprocessor.setValueInRegister(Intel8080Registers.E, value % 256);
+                    break;
+                }
+                case H: {
+                    microprocessor.setValueInRegister(Intel8080Registers.L, value % 256);
+                    break;
+                }
             }
-            case D: {
-                microprocessor.setValueInRegister(Intel8080Registers.E, value % 256);
-                break;
-            }
-            case H: {
-                microprocessor.setValueInRegister(Intel8080Registers.L, value % 256);
-                break;
-            }
-            case PSW: {
-                microprocessor.setAllFlags(value % 256);
-                break;
-            }
+        } else {
+            microprocessor.setAllFlags(value % 256);
         }
     }
 

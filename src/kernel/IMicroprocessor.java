@@ -8,8 +8,8 @@ public interface IMicroprocessor {
     int getValueFromRegister(Intel8080Registers register);
     void setValueInRegister(Intel8080Registers register, int value);
 
-    int getValueByRegisterPairName(String registerPairName);
-    void setValueByRegisterPairName(String registerPairName, int value);
+    int getValueFromRegisterPair(Intel8080RegisterPairs registerPair);
+    void setValueInRegisterPair(Intel8080RegisterPairs registerPair, int value);
 
     int getValueFromFlag(Intel8080Flags flag);
     void setValueInFlag(Intel8080Flags flag, int value);

@@ -25,29 +25,29 @@ public class CMD_Intel8080_PUSH implements ICommand {
     public void execute(IMicroprocessorAdapterForCommands microprocessor) {
 
         int value;
-        if (register != Intel8080Registers.PSW) {
+        if (register != null) {
             value = microprocessor.getValueFromRegister(register) * 256;
         } else {
             value = microprocessor.getValueFromRegister(Intel8080Registers.A) * 256;
         }
 
-        switch (register) {
-            case B: {
-                value += microprocessor.getValueFromRegister(Intel8080Registers.C);
-                break;
+        if (register != null) {
+            switch (register) {
+                case B: {
+                    value += microprocessor.getValueFromRegister(Intel8080Registers.C);
+                    break;
+                }
+                case D: {
+                    value += microprocessor.getValueFromRegister(Intel8080Registers.E);
+                    break;
+                }
+                case H: {
+                    value += microprocessor.getValueFromRegister(Intel8080Registers.L);
+                    break;
+                }
             }
-            case D: {
-                value += microprocessor.getValueFromRegister(Intel8080Registers.E);
-                break;
-            }
-            case H: {
-                value += microprocessor.getValueFromRegister(Intel8080Registers.L);
-                break;
-            }
-            case PSW: {
-                value += microprocessor.getAllFlags();
-                break;
-            }
+        } else {
+            value += microprocessor.getAllFlags();
         }
         push(microprocessor, value);
     }

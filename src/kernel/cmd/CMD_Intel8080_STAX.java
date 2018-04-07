@@ -1,20 +1,21 @@
 package kernel.cmd;
 
 import kernel.IMicroprocessorAdapterForCommands;
+import kernel.Intel8080RegisterPairs;
 import kernel.Intel8080Registers;
 
 public class CMD_Intel8080_STAX implements ICommand {
 
-    private String arg;
+    private Intel8080RegisterPairs registerPair;
 
-    public CMD_Intel8080_STAX(String arg) {
-        this.arg = arg.toUpperCase();
+    public CMD_Intel8080_STAX(Intel8080RegisterPairs registerPair) {
+        this.registerPair = registerPair;
     }
 
     @Override
     public void execute(IMicroprocessorAdapterForCommands microprocessor) {
         int value = microprocessor.getValueFromRegister(Intel8080Registers.A);
-        int address = microprocessor.getValueByRegisterPairName(arg);
+        int address = microprocessor.getValueFromRegisterPair(registerPair);
         microprocessor.getMemory().setValueByIndex(address, value);
     }
 
@@ -25,6 +26,6 @@ public class CMD_Intel8080_STAX implements ICommand {
 
     @Override
     public String getName() {
-        return "STAX " + arg;
+        return "STAX " + registerPair;
     }
 }

@@ -169,24 +169,24 @@ public class Intel8080 implements IMicroprocessor {
     }
 
     @Override
-    public int getValueByRegisterPairName(String registerPairName) {
+    public int getValueFromRegisterPair(Intel8080RegisterPairs registerPair) {
         int value = 0;
-        switch (registerPairName) {
-            case "B": {
+        switch (registerPair) {
+            case B: {
                 value = getValueFromRegister(Intel8080Registers.B) * 256;
                 value += getValueFromRegister(Intel8080Registers.C);
                 break;
             }
-            case "D": {
+            case D: {
                 value = getValueFromRegister(Intel8080Registers.D) * 256;
                 value += getValueFromRegister(Intel8080Registers.E);
                 break;
             }
-            case "H": {
+            case H: {
                 value = getValueFromRegister(Intel8080Registers.H) * 256;
                 value += getValueFromRegister(Intel8080Registers.L);
                 break;
-            }case "PSW": {
+            }case PSW: {
                 value = getValueFromRegister(Intel8080Registers.A) * 256;
                 value += flags;
                 break;
@@ -196,24 +196,24 @@ public class Intel8080 implements IMicroprocessor {
     }
 
     @Override
-    public void setValueByRegisterPairName(String registerPairName, int value) {
-        switch (registerPairName) {
-            case "B": {
+    public void setValueInRegisterPair(Intel8080RegisterPairs registerPair, int value) {
+        switch (registerPair) {
+            case B: {
                 setValueInRegister(Intel8080Registers.B, value / 256);
                 setValueInRegister(Intel8080Registers.C, value % 256);
                 break;
             }
-            case "D": {
+            case D: {
                 setValueInRegister(Intel8080Registers.D, value / 256);
                 setValueInRegister(Intel8080Registers.E, value % 256);
                 break;
             }
-            case "H": {
+            case H: {
                 setValueInRegister(Intel8080Registers.H, value / 256);
                 setValueInRegister(Intel8080Registers.L, value % 256);
                 break;
             }
-            case "PSW": {
+            case PSW: {
                 setValueInRegister(Intel8080Registers.A, value / 256);
                 flags = value % 256;
                 break;

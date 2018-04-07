@@ -10,8 +10,8 @@ public interface IMicroprocessorAdapterForCommands {
     int getValueFromFlag(Intel8080Flags flag);
     void setValueInFlag(Intel8080Flags flag, int value);
 
-    int getValueByRegisterPairName(String registerPairName);
-    void setValueByRegisterPairName(String registerPairName, int value);
+    int getValueFromRegisterPair(Intel8080RegisterPairs registerPair);
+    void setValueInRegisterPair(Intel8080RegisterPairs registerPair, int value);
 
     int getAllFlags();
     void setAllFlags(int flags);

@@ -1,22 +1,23 @@
 package kernel.cmd;
 
 import kernel.IMicroprocessorAdapterForCommands;
+import kernel.Intel8080RegisterPairs;
 import kernel.Intel8080Registers;
 import kernel._DByte;
 
 public class CMD_Intel8080_INX implements ICommand {
 
-    private String arg;
+    private Intel8080RegisterPairs registerPair;
 
-    public CMD_Intel8080_INX(String arg) {
-        this.arg = arg.toUpperCase();
+    public CMD_Intel8080_INX(Intel8080RegisterPairs registerPair) {
+        this.registerPair = registerPair;
     }
 
     @Override
     public void execute(IMicroprocessorAdapterForCommands microprocessor) {
         int value;
-        if (!arg.equals("SP")) {
-            value = microprocessor.getValueByRegisterPairName(arg);
+        if (registerPair != null) {
+            value = microprocessor.getValueFromRegisterPair(registerPair);
         } else {
             value = microprocessor.getValueFromRegister(Intel8080Registers.SP);
         }
@@ -26,8 +27,8 @@ public class CMD_Intel8080_INX implements ICommand {
 
         // TODO Проверка на перенос
 
-        if (!arg.equals("SP")) {
-            microprocessor.setValueByRegisterPairName(arg, value);
+        if (!registerPair.equals("SP")) {
+            microprocessor.setValueInRegisterPair(registerPair, value);
         } else {
             microprocessor.setValueInRegister(Intel8080Registers.SP, value);
         }
@@ -40,6 +41,6 @@ public class CMD_Intel8080_INX implements ICommand {
 
     @Override
     public String getName() {
-        return "INX " + arg;
+        return "INX " + registerPair;
     }
 }

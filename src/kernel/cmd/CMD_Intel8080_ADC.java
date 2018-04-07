@@ -1,9 +1,6 @@
 package kernel.cmd;
 
-import kernel.IMicroprocessorAdapterForCommands;
-import kernel.Intel8080Flags;
-import kernel.Intel8080Registers;
-import kernel._Byte;
+import kernel.*;
 
 public class CMD_Intel8080_ADC implements ICommand {
 
@@ -18,7 +15,7 @@ public class CMD_Intel8080_ADC implements ICommand {
         int firstValue = microprocessor.getValueFromRegister(Intel8080Registers.A);
         int secondValue;
         if (register == Intel8080Registers.M) {
-            int address = microprocessor.getValueByRegisterPairName("H");
+            int address = microprocessor.getValueFromRegisterPair(Intel8080RegisterPairs.H);
             secondValue = microprocessor.getMemory().getValueByIndex(address);
         } else {
             secondValue = microprocessor.getValueFromRegister(register);

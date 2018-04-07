@@ -1,6 +1,7 @@
 package kernel.cmd;
 
 import kernel.IMicroprocessorAdapterForCommands;
+import kernel.Intel8080RegisterPairs;
 import kernel.Intel8080Registers;
 
 public class CMD_Intel8080_MOV implements ICommand {
@@ -18,14 +19,14 @@ public class CMD_Intel8080_MOV implements ICommand {
         int value;
 
         if (secondRegister == Intel8080Registers.M) {
-            int address = microprocessor.getValueByRegisterPairName("H");
+            int address = microprocessor.getValueFromRegisterPair(Intel8080RegisterPairs.H);
             value = microprocessor.getMemory().getValueByIndex(address);
         } else {
             value = microprocessor.getValueFromRegister(secondRegister);
         }
 
         if (firstRegister == Intel8080Registers.M) {
-           int address = microprocessor.getValueByRegisterPairName("H");
+           int address = microprocessor.getValueFromRegisterPair(Intel8080RegisterPairs.H);
            microprocessor.getMemory().setValueByIndex(address, value);
         } else {
             microprocessor.setValueInRegister(firstRegister, value);

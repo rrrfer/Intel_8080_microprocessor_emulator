@@ -31,13 +31,13 @@ public class MicroprocessorAdapterForCommands implements IMicroprocessorAdapterF
     }
 
     @Override
-    public int getValueByRegisterPairName(String registerPairName) {
-        return microprocessor.getValueByRegisterPairName(registerPairName);
+    public int getValueFromRegisterPair(Intel8080RegisterPairs registerPair) {
+        return microprocessor.getValueFromRegisterPair(registerPair);
     }
 
     @Override
-    public void setValueByRegisterPairName(String registerPairName, int value) {
-        microprocessor.setValueByRegisterPairName(registerPairName, value);
+    public void setValueInRegisterPair(Intel8080RegisterPairs registerPair, int value) {
+        microprocessor.setValueInRegisterPair(registerPair, value);
     }
 
     @Override

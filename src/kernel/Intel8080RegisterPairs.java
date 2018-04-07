@@ -1,3 +1,3 @@
 package kernel;
 
-public enum Intel8080RegisterPairs { BC, DE, HL}
+public enum Intel8080RegisterPairs { B, D, H, PSW, SIZE}

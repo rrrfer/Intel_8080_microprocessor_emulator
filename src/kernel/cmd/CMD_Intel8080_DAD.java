@@ -1,28 +1,26 @@
 package kernel.cmd;
 
-import kernel.IMicroprocessorAdapterForCommands;
-import kernel.Intel8080Flags;
-import kernel.Intel8080Registers;
-import kernel._DByte;
+import kernel.*;
 
 public class CMD_Intel8080_DAD implements ICommand {
 
-    private String arg;
+    private Intel8080RegisterPairs registerPair;
 
-    public CMD_Intel8080_DAD(String arg) {
-        this.arg = arg.toUpperCase();
+    public CMD_Intel8080_DAD(Intel8080RegisterPairs registerPair) {
+        this.registerPair = registerPair;
     }
 
     @Override
     public void execute(IMicroprocessorAdapterForCommands microprocessor) {
+
         int firstValue;
-        if (!arg.equals("SP")) {
-            firstValue = microprocessor.getValueByRegisterPairName(arg);
+        if (registerPair != null) {
+            firstValue = microprocessor.getValueFromRegisterPair(registerPair);
         } else {
             firstValue = microprocessor.getValueFromRegister(Intel8080Registers.SP);
         }
 
-        int secondValue = microprocessor.getValueByRegisterPairName("H");
+        int secondValue = microprocessor.getValueFromRegisterPair(Intel8080RegisterPairs.H);
 
         secondValue += firstValue;
         if (secondValue > 65535 || secondValue < 0) {
@@ -32,7 +30,7 @@ public class CMD_Intel8080_DAD implements ICommand {
         }
 
         secondValue = _DByte.getRoundedValue(secondValue);
-        microprocessor.setValueByRegisterPairName("H", secondValue);
+        microprocessor.setValueInRegisterPair(Intel8080RegisterPairs.H, secondValue);
     }
 
     @Override
@@ -42,6 +40,6 @@ public class CMD_Intel8080_DAD implements ICommand {
 
     @Override
     public String getName() {
-        return "DAD " + arg;
+        return "DAD " + registerPair;
     }
 }

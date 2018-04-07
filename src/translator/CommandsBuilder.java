@@ -1,6 +1,7 @@
 package translator;
 
 import kernel.IReadOnlyMemory;
+import kernel.Intel8080RegisterPairs;
 import kernel.Intel8080Registers;
 import kernel.cmd.*;
 
@@ -301,20 +302,20 @@ public class CommandsBuilder {
             //================================================================================
 
             case CommandsCodes.LDAX_B: {
-                return new CMD_Intel8080_LDAX("B");
+                return new CMD_Intel8080_LDAX(Intel8080RegisterPairs.B);
             }
             case CommandsCodes.LDAX_D: {
-                return new CMD_Intel8080_LDAX("D");
+                return new CMD_Intel8080_LDAX(Intel8080RegisterPairs.D);
             }
 
             //================================================================================
             //================================================================================
 
             case CommandsCodes.STAX_B: {
-                return new CMD_Intel8080_STAX("B");
+                return new CMD_Intel8080_STAX(Intel8080RegisterPairs.B);
             }
             case CommandsCodes.STAX_D: {
-                return new CMD_Intel8080_STAX("D");
+                return new CMD_Intel8080_STAX(Intel8080RegisterPairs.D);
             }
 
             //================================================================================
@@ -500,16 +501,16 @@ public class CommandsBuilder {
             //================================================================================
 
             case CommandsCodes.INX_B: {
-                return new CMD_Intel8080_INX("B");
+                return new CMD_Intel8080_INX(Intel8080RegisterPairs.B);
             }
             case CommandsCodes.INX_D: {
-                return new CMD_Intel8080_INX("D");
+                return new CMD_Intel8080_INX(Intel8080RegisterPairs.D);
             }
             case CommandsCodes.INX_H: {
-                return new CMD_Intel8080_INX("H");
+                return new CMD_Intel8080_INX(Intel8080RegisterPairs.H);
             }
             case CommandsCodes.INX_SP: {
-                return new CMD_Intel8080_INX("SP");
+                return new CMD_Intel8080_INX(null);
             }
 
             //================================================================================
@@ -544,32 +545,32 @@ public class CommandsBuilder {
             //================================================================================
 
             case CommandsCodes.DCX_B: {
-                return new CMD_Intel8080_DCX("B");
+                return new CMD_Intel8080_DCX(Intel8080RegisterPairs.B);
             }
             case CommandsCodes.DCX_D: {
-                return new CMD_Intel8080_DCX("D");
+                return new CMD_Intel8080_DCX(Intel8080RegisterPairs.D);
             }
             case CommandsCodes.DCX_H: {
-                return new CMD_Intel8080_DCX("H");
+                return new CMD_Intel8080_DCX(Intel8080RegisterPairs.H);
             }
             case CommandsCodes.DCX_SP: {
-                return new CMD_Intel8080_DCX("SP");
+                return new CMD_Intel8080_DCX(null);
             }
 
             //================================================================================
             //================================================================================
 
             case CommandsCodes.DAD_B: {
-                return new CMD_Intel8080_DAD("B");
+                return new CMD_Intel8080_DAD(Intel8080RegisterPairs.B);
             }
             case CommandsCodes.DAD_D: {
-                return new CMD_Intel8080_DAD("D");
+                return new CMD_Intel8080_DAD(Intel8080RegisterPairs.D);
             }
             case CommandsCodes.DAD_H: {
-                return new CMD_Intel8080_DAD("H");
+                return new CMD_Intel8080_DAD(Intel8080RegisterPairs.H);
             }
             case CommandsCodes.DAD_SP: {
-                return new CMD_Intel8080_DAD("SP");
+                return new CMD_Intel8080_DAD(null);
             }
 
             //================================================================================
@@ -999,7 +1000,7 @@ public class CommandsBuilder {
                 return new CMD_Intel8080_PUSH(Intel8080Registers.H);
             }
             case CommandsCodes.PUSH_PSW: {
-                return new CMD_Intel8080_PUSH(Intel8080Registers.PSW);
+                return new CMD_Intel8080_PUSH(null);
             }
 
             //================================================================================
@@ -1015,7 +1016,7 @@ public class CommandsBuilder {
                 return new CMD_Intel8080_POP(Intel8080Registers.H);
             }
             case CommandsCodes.POP_PSW: {
-                return new CMD_Intel8080_POP(Intel8080Registers.PSW);
+                return new CMD_Intel8080_POP(null);
             }
 
             //================================================================================
