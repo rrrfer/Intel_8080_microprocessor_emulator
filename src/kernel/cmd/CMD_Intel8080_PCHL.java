@@ -1,11 +1,10 @@
 package kernel.cmd;
 
-import kernel.IMicroprocessor;
-import kernel.IMicroprocessorCommandsAdapter;
+import kernel.IMicroprocessorAdapterForCommands;
 
 public class CMD_Intel8080_PCHL implements ICommand {
     @Override
-    public void execute(IMicroprocessorCommandsAdapter microprocessor) {
+    public void execute(IMicroprocessorAdapterForCommands microprocessor) {
         int address = microprocessor.getValueByRegisterPairName("H");
         microprocessor.setValueByRegisterName("PC", address);
     }

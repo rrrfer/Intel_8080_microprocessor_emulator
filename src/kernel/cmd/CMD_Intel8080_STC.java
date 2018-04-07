@@ -1,12 +1,12 @@
 package kernel.cmd;
 
-import kernel.IMicroprocessor;
-import kernel.IMicroprocessorCommandsAdapter;
+import kernel.IMicroprocessorAdapterForCommands;
+import kernel.Intel8080Flags;
 
 public class CMD_Intel8080_STC implements ICommand {
     @Override
-    public void execute(IMicroprocessorCommandsAdapter microprocessor) {
-        microprocessor.setValueByFlagName("C", 1);
+    public void execute(IMicroprocessorAdapterForCommands microprocessor) {
+        microprocessor.setValueByFlagName(Intel8080Flags.C, 1);
     }
 
     @Override

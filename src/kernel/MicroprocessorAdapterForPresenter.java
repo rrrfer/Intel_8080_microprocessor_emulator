@@ -1,10 +1,10 @@
 package kernel;
 
-public class MicroprocessorPresenterAdapter implements IMicroprocessorPresenterAdapter {
+public class MicroprocessorAdapterForPresenter implements IMicroprocessorAdapterForPresenter {
 
     private IMicroprocessor microprocessor;
 
-    public MicroprocessorPresenterAdapter(IMicroprocessor microprocessor) {
+    public MicroprocessorAdapterForPresenter(IMicroprocessor microprocessor) {
         this.microprocessor = microprocessor;
     }
 
@@ -14,8 +14,8 @@ public class MicroprocessorPresenterAdapter implements IMicroprocessorPresenterA
     }
 
     @Override
-    public int getValueByFlagName(String flagName) {
-        return microprocessor.getValueByFlagName(flagName);
+    public int getValueByFlagName(Intel8080Flags flag) {
+        return microprocessor.getValueByFlagName(flag);
     }
 
     @Override

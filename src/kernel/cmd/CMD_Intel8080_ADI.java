@@ -1,7 +1,6 @@
 package kernel.cmd;
 
-import kernel.IMicroprocessor;
-import kernel.IMicroprocessorCommandsAdapter;
+import kernel.IMicroprocessorAdapterForCommands;
 import kernel._Byte;
 
 public class CMD_Intel8080_ADI implements ICommand {
@@ -13,7 +12,7 @@ public class CMD_Intel8080_ADI implements ICommand {
     }
 
     @Override
-    public void execute(IMicroprocessorCommandsAdapter microprocessor) {
+    public void execute(IMicroprocessorAdapterForCommands microprocessor) {
         int firstValue = Integer.valueOf(arg, 16);
         int secondValue = microprocessor.getValueByRegisterName("A");
         firstValue += secondValue;

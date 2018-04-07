@@ -1,7 +1,7 @@
 package kernel.cmd;
 
-import kernel.IMicroprocessor;
-import kernel.IMicroprocessorCommandsAdapter;
+import kernel.IMicroprocessorAdapterForCommands;
+import kernel.Intel8080Flags;
 import kernel._Byte;
 
 public class CMD_Intel8080_ADC implements ICommand {
@@ -13,7 +13,7 @@ public class CMD_Intel8080_ADC implements ICommand {
     }
 
     @Override
-    public void execute(IMicroprocessorCommandsAdapter microprocessor) {
+    public void execute(IMicroprocessorAdapterForCommands microprocessor) {
         int firstValue = microprocessor.getValueByRegisterName("A");
         int secondValue;
         if (arg.equals("M")) {
@@ -22,7 +22,7 @@ public class CMD_Intel8080_ADC implements ICommand {
         } else {
             secondValue = microprocessor.getValueByRegisterName(arg);
         }
-        firstValue = firstValue + secondValue + microprocessor.getValueByFlagName("C");
+        firstValue = firstValue + secondValue + microprocessor.getValueByFlagName(Intel8080Flags.C);
         microprocessor.checkByteForSetFlags(firstValue);
         firstValue = _Byte.getRoundedValue(firstValue);
         microprocessor.setValueByRegisterName("A", firstValue);

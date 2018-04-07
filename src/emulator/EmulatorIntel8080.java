@@ -13,35 +13,21 @@ import java.util.Date;
 
 public class EmulatorIntel8080 implements IEmulator {
 
-    private IMicroprocessorEmulatorAdapter microprocessor;
-    private IMicroprocessorPresenterAdapter microprocessorPresenterAdapter;
+    private IMicroprocessorAdapterForEmulator microprocessor;
+    private IMicroprocessorAdapterForPresenter microprocessorPresenterAdapter;
     private ITranslator translator;
+    private IInputOutputSystem ioSystem;
 
     private ArrayList<Integer> breakpoints;
 
     public EmulatorIntel8080(IInputOutputSystem ioSystem) {
         IMicroprocessor mp = new Intel8080(new Memory(_DByte.MAX_VALUE));
-        this.microprocessor = new MicroprocessorEmulatorAdapter(mp);
+        this.microprocessor = new MicroprocessorAdapterForEmulator(mp);
         this.microprocessor.setIOSystem(ioSystem);
-        this.microprocessorPresenterAdapter = new MicroprocessorPresenterAdapter(mp);
+        this.microprocessorPresenterAdapter = new MicroprocessorAdapterForPresenter(mp);
         this.translator = new Intel8080Translator();
         this.breakpoints = new ArrayList<>();
-    }
-
-    @Override
-    public void run() {
-        while (step() && !breakpoints.contains(microprocessor.getValueByRegisterName("PC"))) {}
-    }
-
-    @Override
-    public boolean step() {
-        int address = microprocessor.getValueByRegisterName("PC");
-        ICommand command = CommandsBuilder.getCommand(microprocessor.getMemory(), address);
-        if (!command.getName().equals("HLT")) {
-            microprocessor.executeCommand(command);
-            return true;
-        }
-        return false;
+        this.ioSystem = ioSystem;
     }
 
     @Override
@@ -67,6 +53,22 @@ public class EmulatorIntel8080 implements IEmulator {
                 }
             }
         }
+    }
+
+    @Override
+    public void run() {
+        while (step() && !breakpoints.contains(microprocessor.getValueByRegisterName("PC"))) {}
+    }
+
+    @Override
+    public boolean step() {
+        int address = microprocessor.getValueByRegisterName("PC");
+        ICommand command = CommandsBuilder.getCommand(microprocessor.getMemory(), address);
+        if (!command.getName().equals("HLT")) {
+            microprocessor.executeCommand(command);
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -98,7 +100,7 @@ public class EmulatorIntel8080 implements IEmulator {
     }
 
     @Override
-    public IMicroprocessorPresenterAdapter getMicroprocessor() {
+    public IMicroprocessorAdapterForPresenter getMicroprocessor() {
         return microprocessorPresenterAdapter;
     }
 
@@ -110,6 +112,13 @@ public class EmulatorIntel8080 implements IEmulator {
     @Override
     public void resetMemory() {
         microprocessor.resetMemory();
+    }
+
+    @Override
+    public void clearScreen() {
+        if (ioSystem != null) {
+            ioSystem.clearScreens();
+        }
     }
 
     @Override

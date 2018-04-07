@@ -2,11 +2,11 @@ package kernel;
 
 import emulator.IInputOutputSystem;
 
-public class MicroprocessorCommandsAdapter implements IMicroprocessorCommandsAdapter {
+public class MicroprocessorAdapterForCommands implements IMicroprocessorAdapterForCommands {
 
     private IMicroprocessor microprocessor;
 
-    public MicroprocessorCommandsAdapter(IMicroprocessor microprocessor) {
+    public MicroprocessorAdapterForCommands(IMicroprocessor microprocessor) {
         this.microprocessor = microprocessor;
     }
 
@@ -21,13 +21,13 @@ public class MicroprocessorCommandsAdapter implements IMicroprocessorCommandsAda
     }
 
     @Override
-    public int getValueByFlagName(String flagName) {
-        return microprocessor.getValueByFlagName(flagName);
+    public int getValueByFlagName(Intel8080Flags flag) {
+        return microprocessor.getValueByFlagName(flag);
     }
 
     @Override
-    public void setValueByFlagName(String flagName, int value) {
-        microprocessor.setValueByFlagName(flagName, value);
+    public void setValueByFlagName(Intel8080Flags flag, int value) {
+        microprocessor.setValueByFlagName(flag, value);
     }
 
     @Override

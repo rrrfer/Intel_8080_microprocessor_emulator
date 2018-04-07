@@ -1,8 +1,7 @@
 package kernel.cmd;
 
 import emulator.IInputOutputSystem;
-import kernel.IMicroprocessor;
-import kernel.IMicroprocessorCommandsAdapter;
+import kernel.IMicroprocessorAdapterForCommands;
 
 public class CMD_Intel8080_IN implements ICommand {
 
@@ -13,7 +12,7 @@ public class CMD_Intel8080_IN implements ICommand {
     }
 
     @Override
-    public void execute(IMicroprocessorCommandsAdapter microprocessor) {
+    public void execute(IMicroprocessorAdapterForCommands microprocessor) {
         IInputOutputSystem ioSystem = microprocessor.getIOSystem();
         if (ioSystem != null) {
             int inputValue = 0;

@@ -1,11 +1,10 @@
 package kernel.cmd;
 
-import kernel.IMicroprocessor;
-import kernel.IMicroprocessorCommandsAdapter;
+import kernel.IMicroprocessorAdapterForCommands;
 
 public class CMD_Intel8080_CMA implements ICommand {
     @Override
-    public void execute(IMicroprocessorCommandsAdapter microprocessor) {
+    public void execute(IMicroprocessorAdapterForCommands microprocessor) {
         int value = microprocessor.getValueByRegisterName("A");
         value = 255 - value;
         microprocessor.setValueByRegisterName("A", value);

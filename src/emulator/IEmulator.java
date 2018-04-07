@@ -1,6 +1,6 @@
 package emulator;
 
-import kernel.IMicroprocessorPresenterAdapter;
+import kernel.IMicroprocessorAdapterForPresenter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,13 +11,14 @@ public interface IEmulator {
     boolean step();
     void resetRegisters();
     void resetMemory();
+    void clearScreen();
     void setProgramCounter(int address);
     void setBreakpoint(int address);
     void removeAllBreakpoints();
     ArrayList<Integer> getBreakpoints();
     String getTranslationResult();
     String[] getCommandsList();
-    IMicroprocessorPresenterAdapter getMicroprocessor();
+    IMicroprocessorAdapterForPresenter getMicroprocessor();
     String loadProgramFromFile(String path) throws IOException;
     void saveProgramInFile(String path, String programText) throws IOException;
 }

@@ -1,7 +1,7 @@
 package kernel.cmd;
 
-import kernel.IMicroprocessor;
-import kernel.IMicroprocessorCommandsAdapter;
+import kernel.IMicroprocessorAdapterForCommands;
+import kernel.Intel8080Flags;
 import kernel._DByte;
 
 public class CMD_Intel8080_DAD implements ICommand {
@@ -13,7 +13,7 @@ public class CMD_Intel8080_DAD implements ICommand {
     }
 
     @Override
-    public void execute(IMicroprocessorCommandsAdapter microprocessor) {
+    public void execute(IMicroprocessorAdapterForCommands microprocessor) {
         int firstValue;
         if (!arg.equals("SP")) {
             firstValue = microprocessor.getValueByRegisterPairName(arg);
@@ -25,9 +25,9 @@ public class CMD_Intel8080_DAD implements ICommand {
 
         secondValue += firstValue;
         if (secondValue > 65535 || secondValue < 0) {
-            microprocessor.setValueByFlagName("C", 1);
+            microprocessor.setValueByFlagName(Intel8080Flags.C, 1);
         } else {
-           microprocessor.setValueByFlagName("C", 0);
+           microprocessor.setValueByFlagName(Intel8080Flags.C, 0);
         }
 
         secondValue = _DByte.getRoundedValue(secondValue);

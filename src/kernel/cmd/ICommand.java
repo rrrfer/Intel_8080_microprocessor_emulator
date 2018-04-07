@@ -1,9 +1,9 @@
 package kernel.cmd;
 
-import kernel.IMicroprocessorCommandsAdapter;
+import kernel.IMicroprocessorAdapterForCommands;
 
 public interface ICommand {
-    void execute(IMicroprocessorCommandsAdapter microprocessor);
+    void execute(IMicroprocessorAdapterForCommands microprocessor);
     int getSize();
     String getName();
 }

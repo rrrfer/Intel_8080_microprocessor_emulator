@@ -3,11 +3,11 @@ package kernel;
 import emulator.IInputOutputSystem;
 import kernel.cmd.ICommand;
 
-public class MicroprocessorEmulatorAdapter implements IMicroprocessorEmulatorAdapter {
+public class MicroprocessorAdapterForEmulator implements IMicroprocessorAdapterForEmulator {
 
     private IMicroprocessor microprocessor;
 
-    public MicroprocessorEmulatorAdapter(IMicroprocessor microprocessor) {
+    public MicroprocessorAdapterForEmulator(IMicroprocessor microprocessor) {
         this.microprocessor = microprocessor;
     }
 
@@ -29,6 +29,16 @@ public class MicroprocessorEmulatorAdapter implements IMicroprocessorEmulatorAda
     @Override
     public void setValueByRegisterName(String registerName, int value) {
         microprocessor.setValueByRegisterName(registerName, value);
+    }
+
+    @Override
+    public int getValueByFlagName(Intel8080Flags flag) {
+        return microprocessor.getValueByFlagName(flag);
+    }
+
+    @Override
+    public void setValueByFlagName(Intel8080Flags flag, int value) {
+        microprocessor.setValueByFlagName(flag, value);
     }
 
     @Override

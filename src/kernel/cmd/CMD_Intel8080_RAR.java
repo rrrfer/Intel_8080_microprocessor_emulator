@@ -1,19 +1,19 @@
 package kernel.cmd;
 
-import kernel.IMicroprocessor;
-import kernel.IMicroprocessorCommandsAdapter;
+import kernel.IMicroprocessorAdapterForCommands;
+import kernel.Intel8080Flags;
 
 public class CMD_Intel8080_RAR implements ICommand {
     @Override
-    public void execute(IMicroprocessorCommandsAdapter microprocessor) {
+    public void execute(IMicroprocessorAdapterForCommands microprocessor) {
         int value = microprocessor.getValueByRegisterName("A");
-        if (microprocessor.getValueByFlagName("C") == 1) {
+        if (microprocessor.getValueByFlagName(Intel8080Flags.C) == 1) {
             value += 256;
         }
         if (value % 2 == 1) {
-            microprocessor.setValueByFlagName("C", 1);
+            microprocessor.setValueByFlagName(Intel8080Flags.C, 1);
         } else {
-            microprocessor.setValueByFlagName("C", 0);
+            microprocessor.setValueByFlagName(Intel8080Flags.C, 0);
         }
         value = value >> 1;
         microprocessor.setValueByRegisterName("A", value);

@@ -2,9 +2,9 @@ package presenter;
 
 import emulator.EmulatorIntel8080;
 import emulator.IEmulator;
-import emulator.IInputOutputSystem;
 import emulator.InputOutputSystem;
-import kernel.IMicroprocessorPresenterAdapter;
+import kernel.IMicroprocessorAdapterForPresenter;
+import kernel.Intel8080Flags;
 import view.IMainView;
 import view.MainWindow;
 
@@ -33,14 +33,11 @@ public class MainPresenter implements IMainPresenter_View, IMainPresenter_Model 
     private IMainView mainView;
     private IEmulator emulator;
 
-    private IInputOutputSystem inputOutputSystem;
-
     private Thread commandRunThread;
     private Thread programRunThread;
 
     public MainPresenter() {
-        inputOutputSystem = new InputOutputSystem(this);
-        emulator = new EmulatorIntel8080(inputOutputSystem);
+        emulator = new EmulatorIntel8080(new InputOutputSystem(this));
 
         dataSourceForMemoryTable = new String[65536][3];
         dataSourceForRegistersTable = new String[13][4];
@@ -145,7 +142,7 @@ public class MainPresenter implements IMainPresenter_View, IMainPresenter_Model 
     @Override
     public void resetRegisters() {
         emulator.resetRegisters();
-        inputOutputSystem.clearScreens();
+        emulator.clearScreen();
 
         getDataSourceForRegistersTable(emulator, dataSourceForRegistersTable);
         dataSourceForConsoleOutputPanel = "";
@@ -275,7 +272,7 @@ public class MainPresenter implements IMainPresenter_View, IMainPresenter_Model 
     }
 
     private void getDataSourceForRegistersTable(IEmulator emulator, String[][] dataSourceForRegistersTable) {
-        IMicroprocessorPresenterAdapter microprocessor
+        IMicroprocessorAdapterForPresenter microprocessor
                 = emulator.getMicroprocessor();
 
         dataSourceForRegistersTable[0][0] = "Register A";
@@ -344,19 +341,19 @@ public class MainPresenter implements IMainPresenter_View, IMainPresenter_Model 
 
         dataSourceForRegistersTable[9][0] = "Flag Z";
         dataSourceForRegistersTable[9][1]
-                = createString(microprocessor.getValueByFlagName("Z"), 16);
+                = createString(microprocessor.getValueByFlagName(Intel8080Flags.Z), 16);
 
         dataSourceForRegistersTable[10][0] = "Flag C";
         dataSourceForRegistersTable[10][1]
-                = createString(microprocessor.getValueByFlagName("C"), 16);
+                = createString(microprocessor.getValueByFlagName(Intel8080Flags.C), 16);
 
         dataSourceForRegistersTable[11][0] = "Flag S";
         dataSourceForRegistersTable[11][1]
-                = createString(microprocessor.getValueByFlagName("S"), 16);
+                = createString(microprocessor.getValueByFlagName(Intel8080Flags.S), 16);
 
         dataSourceForRegistersTable[12][0] = "Flag P";
         dataSourceForRegistersTable[12][1]
-                = createString(microprocessor.getValueByFlagName("P"), 16);
+                = createString(microprocessor.getValueByFlagName(Intel8080Flags.P), 16);
     }
 
     private String createString(int value, int radix) {

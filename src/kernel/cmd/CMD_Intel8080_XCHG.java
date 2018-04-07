@@ -1,12 +1,11 @@
 package kernel.cmd;
 
-import kernel.IMicroprocessor;
-import kernel.IMicroprocessorCommandsAdapter;
+import kernel.IMicroprocessorAdapterForCommands;
 
 public class CMD_Intel8080_XCHG implements ICommand {
 
     @Override
-    public void execute(IMicroprocessorCommandsAdapter microprocessor) {
+    public void execute(IMicroprocessorAdapterForCommands microprocessor) {
         int fValue = microprocessor.getValueByRegisterPairName("H");
         int sValue = microprocessor.getValueByRegisterPairName("D");
         microprocessor.setValueByRegisterPairName("H", sValue);

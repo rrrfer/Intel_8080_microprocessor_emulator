@@ -16,10 +16,10 @@ public class Intel8080 implements IMicroprocessor {
 
     // Вспомогательные переменные
     private HashMap<String, Integer> registerNumberByName;
-    private IMicroprocessorCommandsAdapter microprocessorCommandsAdapter;
+    private IMicroprocessorAdapterForCommands microprocessorCommandsAdapter;
 
     public Intel8080(IMemory memory) {
-        this.microprocessorCommandsAdapter = new MicroprocessorCommandsAdapter(this);
+        this.microprocessorCommandsAdapter = new MicroprocessorAdapterForCommands(this);
 
         this.registers = new int[9];
         this.flags = 0;
@@ -58,22 +58,22 @@ public class Intel8080 implements IMicroprocessor {
     }
 
     @Override
-    public int getValueByFlagName(String flagName) {
+    public int getValueByFlagName(Intel8080Flags flag) {
         int value = 0;
-        switch (flagName) {
-            case "S": {
+        switch (flag) {
+            case S: {
                 value = (flags & 0b10000000) > 0 ? 1 : 0;
                 break;
             }
-            case "Z": {
+            case Z: {
                 value = (flags & 0b01000000) > 0 ? 1 : 0;
                 break;
             }
-            case "P": {
+            case P: {
                 value = (flags & 0b00000100) > 0 ? 1 : 0;
                 break;
             }
-            case "C": {
+            case C: {
                 value = (flags & 0b00000001) > 0 ? 1 : 0;
                 break;
             }
@@ -82,9 +82,9 @@ public class Intel8080 implements IMicroprocessor {
     }
 
     @Override
-    public void setValueByFlagName(String flagName, int value) {
-        switch (flagName) {
-            case "S": {
+    public void setValueByFlagName(Intel8080Flags flag, int value) {
+        switch (flag) {
+            case S: {
                 if (value > 0) {
                     flags = flags | (1 << 7);
                 } else {
@@ -92,7 +92,7 @@ public class Intel8080 implements IMicroprocessor {
                 }
                 break;
             }
-            case "Z": {
+            case Z: {
                 if (value > 0) {
                     flags = flags | (1 << 6);
                 } else {
@@ -100,7 +100,7 @@ public class Intel8080 implements IMicroprocessor {
                 }
                 break;
             }
-            case "P": {
+            case P: {
                 if (value > 0) {
                     flags = flags | (1 << 2);
                 } else {
@@ -108,7 +108,7 @@ public class Intel8080 implements IMicroprocessor {
                 }
                 break;
             }
-            case "C": {
+            case C: {
                 if (value > 0) {
                     flags = flags | 1;
                 } else {
@@ -139,21 +139,21 @@ public class Intel8080 implements IMicroprocessor {
     @Override
     public void checkByteForSetFlags(int value) {
         if (value % 256 == 0) {
-            setValueByFlagName("Z", 1);
+            setValueByFlagName(Intel8080Flags.Z, 1);
         } else {
-            setValueByFlagName("Z", 0);
+            setValueByFlagName(Intel8080Flags.Z, 0);
         }
 
         if (value < 0) {
-            setValueByFlagName("S", 1);
+            setValueByFlagName(Intel8080Flags.S, 1);
         } else {
-            setValueByFlagName("S", 0);
+            setValueByFlagName(Intel8080Flags.S, 0);
         }
 
         if (value > 255 || value < 0) {
-            setValueByFlagName("C", 1);
+            setValueByFlagName(Intel8080Flags.C, 1);
         } else {
-            setValueByFlagName("C", 0);
+            setValueByFlagName(Intel8080Flags.C, 0);
         }
 
         if (value < 0) value += 256;
@@ -164,7 +164,7 @@ public class Intel8080 implements IMicroprocessor {
             value = value >> 1;
         }
 
-        setValueByFlagName("P", (counter + 1) % 2);
+        setValueByFlagName(Intel8080Flags.P, (counter + 1) % 2);
     }
 
     @Override

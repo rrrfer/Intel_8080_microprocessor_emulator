@@ -1,7 +1,7 @@
 package kernel.cmd;
 
-import kernel.IMicroprocessor;
-import kernel.IMicroprocessorCommandsAdapter;
+import kernel.IMicroprocessorAdapterForCommands;
+import kernel.Intel8080Flags;
 import kernel._Byte;
 
 public class CMD_Intel8080_DCR implements ICommand {
@@ -13,7 +13,7 @@ public class CMD_Intel8080_DCR implements ICommand {
     }
 
     @Override
-    public void execute(IMicroprocessorCommandsAdapter microprocessor) {
+    public void execute(IMicroprocessorAdapterForCommands microprocessor) {
         int value;
         if (arg.equals("M")) {
             int address = microprocessor.getValueByRegisterPairName("H");
@@ -24,15 +24,15 @@ public class CMD_Intel8080_DCR implements ICommand {
 
         value -= 1;
         if (value % 256 == 0) {
-            microprocessor.setValueByFlagName("Z", 1);
+            microprocessor.setValueByFlagName(Intel8080Flags.Z, 1);
         } else {
-            microprocessor.setValueByFlagName("Z", 0);
+            microprocessor.setValueByFlagName(Intel8080Flags.Z, 0);
         }
 
         if (value < 0) {
-            microprocessor.setValueByFlagName("S", 1);
+            microprocessor.setValueByFlagName(Intel8080Flags.S, 1);
         } else {
-            microprocessor.setValueByFlagName("S", 0);
+            microprocessor.setValueByFlagName(Intel8080Flags.S, 0);
         }
 
         int tmpValue = value;
@@ -44,7 +44,7 @@ public class CMD_Intel8080_DCR implements ICommand {
             tmpValue = tmpValue >> 1;
         }
 
-        microprocessor.setValueByFlagName("P", (counter + 1) % 2);
+        microprocessor.setValueByFlagName(Intel8080Flags.P, (counter + 1) % 2);
         value = _Byte.getRoundedValue(value);
 
         if (arg.equals("M")) {
