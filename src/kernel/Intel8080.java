@@ -3,8 +3,6 @@ package kernel;
 import emulator.IInputOutputSystem;
 import kernel.cmd.ICommand;
 
-import java.util.HashMap;
-
 public class Intel8080 implements IMicroprocessor {
 
     // Внутренние состояние микропроцессора
@@ -15,7 +13,6 @@ public class Intel8080 implements IMicroprocessor {
     private IInputOutputSystem ioSystem;
 
     // Вспомогательные переменные
-    private HashMap<String, Integer> registerNumberByName;
     private IMicroprocessorAdapterForCommands microprocessorCommandsAdapter;
 
     public Intel8080(IMemory memory) {
@@ -24,17 +21,6 @@ public class Intel8080 implements IMicroprocessor {
         this.registers = new int[9];
         this.flags = 0;
         this.memory = memory;
-
-        this.registerNumberByName = new HashMap<>();
-        registerNumberByName.put("A", 0);
-        registerNumberByName.put("B", 1);
-        registerNumberByName.put("C", 2);
-        registerNumberByName.put("D", 3);
-        registerNumberByName.put("E", 4);
-        registerNumberByName.put("H", 5);
-        registerNumberByName.put("L", 6);
-        registerNumberByName.put("PC", 7);
-        registerNumberByName.put("SP", 8);
     }
 
     @Override
@@ -48,17 +34,17 @@ public class Intel8080 implements IMicroprocessor {
     }
 
     @Override
-    public int getValueByRegisterName(String registerName) {
-        return registers[registerNumberByName.get(registerName)];
+    public int getValueFromRegister(Intel8080Registers register) {
+        return registers[register.ordinal()];
     }
 
     @Override
-    public void setValueByRegisterName(String registerName, int value) {
-        registers[registerNumberByName.get(registerName)] = value;
+    public void setValueInRegister(Intel8080Registers register, int value) {
+        registers[register.ordinal()] = value;
     }
 
     @Override
-    public int getValueByFlagName(Intel8080Flags flag) {
+    public int getValueFromFlag(Intel8080Flags flag) {
         int value = 0;
         switch (flag) {
             case S: {
@@ -82,7 +68,7 @@ public class Intel8080 implements IMicroprocessor {
     }
 
     @Override
-    public void setValueByFlagName(Intel8080Flags flag, int value) {
+    public void setValueInFlag(Intel8080Flags flag, int value) {
         switch (flag) {
             case S: {
                 if (value > 0) {
@@ -131,29 +117,30 @@ public class Intel8080 implements IMicroprocessor {
 
     @Override
     public void executeCommand(ICommand command) {
-        registers[registerNumberByName.get("PC")]
-                = (registers[registerNumberByName.get("PC")] + command.getSize()) % memory.getSize();
+        int PC = getValueFromRegister(Intel8080Registers.PC);
+        PC = PC + command.getSize() % memory.getSize();
+        setValueInRegister(Intel8080Registers.PC, PC);
         command.execute(microprocessorCommandsAdapter);
     }
 
     @Override
-    public void checkByteForSetFlags(int value) {
+    public void checkValueForSetFlags(int value) {
         if (value % 256 == 0) {
-            setValueByFlagName(Intel8080Flags.Z, 1);
+            setValueInFlag(Intel8080Flags.Z, 1);
         } else {
-            setValueByFlagName(Intel8080Flags.Z, 0);
+            setValueInFlag(Intel8080Flags.Z, 0);
         }
 
         if (value < 0) {
-            setValueByFlagName(Intel8080Flags.S, 1);
+            setValueInFlag(Intel8080Flags.S, 1);
         } else {
-            setValueByFlagName(Intel8080Flags.S, 0);
+            setValueInFlag(Intel8080Flags.S, 0);
         }
 
         if (value > 255 || value < 0) {
-            setValueByFlagName(Intel8080Flags.C, 1);
+            setValueInFlag(Intel8080Flags.C, 1);
         } else {
-            setValueByFlagName(Intel8080Flags.C, 0);
+            setValueInFlag(Intel8080Flags.C, 0);
         }
 
         if (value < 0) value += 256;
@@ -164,7 +151,7 @@ public class Intel8080 implements IMicroprocessor {
             value = value >> 1;
         }
 
-        setValueByFlagName(Intel8080Flags.P, (counter + 1) % 2);
+        setValueInFlag(Intel8080Flags.P, (counter + 1) % 2);
     }
 
     @Override
@@ -186,21 +173,21 @@ public class Intel8080 implements IMicroprocessor {
         int value = 0;
         switch (registerPairName) {
             case "B": {
-                value = registers[registerNumberByName.get("B")] * 256;
-                value += registers[registerNumberByName.get("C")];
+                value = getValueFromRegister(Intel8080Registers.B) * 256;
+                value += getValueFromRegister(Intel8080Registers.C);
                 break;
             }
             case "D": {
-                value = registers[registerNumberByName.get("D")] * 256;
-                value += registers[registerNumberByName.get("E")];
+                value = getValueFromRegister(Intel8080Registers.D) * 256;
+                value += getValueFromRegister(Intel8080Registers.E);
                 break;
             }
             case "H": {
-                value = registers[registerNumberByName.get("H")] * 256;
-                value += registers[registerNumberByName.get("L")];
+                value = getValueFromRegister(Intel8080Registers.H) * 256;
+                value += getValueFromRegister(Intel8080Registers.L);
                 break;
             }case "PSW": {
-                value = registers[registerNumberByName.get("A")] * 256;
+                value = getValueFromRegister(Intel8080Registers.A) * 256;
                 value += flags;
                 break;
             }
@@ -212,22 +199,22 @@ public class Intel8080 implements IMicroprocessor {
     public void setValueByRegisterPairName(String registerPairName, int value) {
         switch (registerPairName) {
             case "B": {
-                registers[registerNumberByName.get("B")] = value / 256;
-                registers[registerNumberByName.get("C")] = value % 256;
+                setValueInRegister(Intel8080Registers.B, value / 256);
+                setValueInRegister(Intel8080Registers.C, value % 256);
                 break;
             }
             case "D": {
-                registers[registerNumberByName.get("D")] = value / 256;
-                registers[registerNumberByName.get("E")] = value % 256;
+                setValueInRegister(Intel8080Registers.D, value / 256);
+                setValueInRegister(Intel8080Registers.E, value % 256);
                 break;
             }
             case "H": {
-                registers[registerNumberByName.get("H")] = value / 256;
-                registers[registerNumberByName.get("L")] = value % 256;
+                setValueInRegister(Intel8080Registers.H, value / 256);
+                setValueInRegister(Intel8080Registers.L, value % 256);
                 break;
             }
             case "PSW": {
-                registers[registerNumberByName.get("A")] = value / 256;
+                setValueInRegister(Intel8080Registers.A, value / 256);
                 flags = value % 256;
                 break;
             }

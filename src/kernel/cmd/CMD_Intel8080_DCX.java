@@ -1,6 +1,7 @@
 package kernel.cmd;
 
 import kernel.IMicroprocessorAdapterForCommands;
+import kernel.Intel8080Registers;
 import kernel._DByte;
 
 public class CMD_Intel8080_DCX implements ICommand {
@@ -17,7 +18,7 @@ public class CMD_Intel8080_DCX implements ICommand {
         if (!arg.equals("SP")) {
             value = microprocessor.getValueByRegisterPairName(arg);
         } else {
-            value = microprocessor.getValueByRegisterName("SP");
+            value = microprocessor.getValueFromRegister(Intel8080Registers.SP);
         }
 
         value -= 1;
@@ -28,7 +29,7 @@ public class CMD_Intel8080_DCX implements ICommand {
         if (!arg.equals("SP")) {
             microprocessor.setValueByRegisterPairName(arg, value);
         } else {
-            microprocessor.setValueByRegisterName("SP", value);
+            microprocessor.setValueInRegister(Intel8080Registers.SP, value);
         }
     }
 

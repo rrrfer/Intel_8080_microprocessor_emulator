@@ -1,6 +1,7 @@
 package kernel.cmd;
 
 import kernel.IMicroprocessorAdapterForCommands;
+import kernel.Intel8080Registers;
 
 public class CMD_Intel8080_JMP implements ICommand {
 
@@ -13,7 +14,7 @@ public class CMD_Intel8080_JMP implements ICommand {
     @Override
     public void execute(IMicroprocessorAdapterForCommands microprocessor) {
         int address = Integer.valueOf(arg, 16);
-        microprocessor.setValueByRegisterName("PC", address);
+        microprocessor.setValueInRegister(Intel8080Registers.PC, address);
     }
 
     @Override

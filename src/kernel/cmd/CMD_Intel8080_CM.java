@@ -11,7 +11,7 @@ public class CMD_Intel8080_CM extends CMD_Intel8080_CALL {
 
     @Override
     public void execute(IMicroprocessorAdapterForCommands microprocessor) {
-        if (microprocessor.getValueByFlagName(Intel8080Flags.S) == 1) {
+        if (microprocessor.getValueFromFlag(Intel8080Flags.S) == 1) {
             super.execute(microprocessor);
         }
     }

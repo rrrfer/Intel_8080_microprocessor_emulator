@@ -2,37 +2,38 @@ package kernel.cmd;
 
 import kernel.IMicroprocessorAdapterForCommands;
 import kernel.Intel8080Flags;
+import kernel.Intel8080Registers;
 import kernel._Byte;
 
 public class CMD_Intel8080_DCR implements ICommand {
 
-    private String arg;
+    private Intel8080Registers register;
 
-    public CMD_Intel8080_DCR(String arg) {
-        this.arg = arg.toUpperCase();
+    public CMD_Intel8080_DCR(Intel8080Registers register) {
+        this.register = register;
     }
 
     @Override
     public void execute(IMicroprocessorAdapterForCommands microprocessor) {
         int value;
-        if (arg.equals("M")) {
+        if (register == Intel8080Registers.M) {
             int address = microprocessor.getValueByRegisterPairName("H");
             value = microprocessor.getMemory().getValueByIndex(address);
         } else {
-            value = microprocessor.getValueByRegisterName(arg);
+            value = microprocessor.getValueFromRegister(register);
         }
 
         value -= 1;
         if (value % 256 == 0) {
-            microprocessor.setValueByFlagName(Intel8080Flags.Z, 1);
+            microprocessor.setValueInFlag(Intel8080Flags.Z, 1);
         } else {
-            microprocessor.setValueByFlagName(Intel8080Flags.Z, 0);
+            microprocessor.setValueInFlag(Intel8080Flags.Z, 0);
         }
 
         if (value < 0) {
-            microprocessor.setValueByFlagName(Intel8080Flags.S, 1);
+            microprocessor.setValueInFlag(Intel8080Flags.S, 1);
         } else {
-            microprocessor.setValueByFlagName(Intel8080Flags.S, 0);
+            microprocessor.setValueInFlag(Intel8080Flags.S, 0);
         }
 
         int tmpValue = value;
@@ -44,14 +45,14 @@ public class CMD_Intel8080_DCR implements ICommand {
             tmpValue = tmpValue >> 1;
         }
 
-        microprocessor.setValueByFlagName(Intel8080Flags.P, (counter + 1) % 2);
+        microprocessor.setValueInFlag(Intel8080Flags.P, (counter + 1) % 2);
         value = _Byte.getRoundedValue(value);
 
-        if (arg.equals("M")) {
+        if (register == Intel8080Registers.M) {
             int address = microprocessor.getValueByRegisterPairName("H");
             microprocessor.getMemory().setValueByIndex(address, value);
         } else {
-            microprocessor.setValueByRegisterName(arg, value);
+            microprocessor.setValueInRegister(register, value);
         }
     }
 
@@ -62,6 +63,6 @@ public class CMD_Intel8080_DCR implements ICommand {
 
     @Override
     public String getName() {
-        return "DCR " + arg;
+        return "DCR " + register;
     }
 }

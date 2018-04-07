@@ -11,23 +11,23 @@ public class MicroprocessorAdapterForCommands implements IMicroprocessorAdapterF
     }
 
     @Override
-    public int getValueByRegisterName(String registerName) {
-        return microprocessor.getValueByRegisterName(registerName);
+    public int getValueFromRegister(Intel8080Registers register) {
+        return microprocessor.getValueFromRegister(register);
     }
 
     @Override
-    public void setValueByRegisterName(String registerName, int value) {
-        microprocessor.setValueByRegisterName(registerName, value);
+    public void setValueInRegister(Intel8080Registers register, int value) {
+        microprocessor.setValueInRegister(register, value);
     }
 
     @Override
-    public int getValueByFlagName(Intel8080Flags flag) {
-        return microprocessor.getValueByFlagName(flag);
+    public int getValueFromFlag(Intel8080Flags flag) {
+        return microprocessor.getValueFromFlag(flag);
     }
 
     @Override
-    public void setValueByFlagName(Intel8080Flags flag, int value) {
-        microprocessor.setValueByFlagName(flag, value);
+    public void setValueInFlag(Intel8080Flags flag, int value) {
+        microprocessor.setValueInFlag(flag, value);
     }
 
     @Override
@@ -62,6 +62,6 @@ public class MicroprocessorAdapterForCommands implements IMicroprocessorAdapterF
 
     @Override
     public void checkByteForSetFlags(int value) {
-        microprocessor.checkByteForSetFlags(value);
+        microprocessor.checkValueForSetFlags(value);
     }
 }

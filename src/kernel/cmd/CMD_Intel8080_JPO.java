@@ -11,7 +11,7 @@ public class CMD_Intel8080_JPO extends CMD_Intel8080_JMP {
 
     @Override
     public void execute(IMicroprocessorAdapterForCommands microprocessor) {
-        if (microprocessor.getValueByFlagName(Intel8080Flags.P) == 0) {
+        if (microprocessor.getValueFromFlag(Intel8080Flags.P) == 0) {
             super.execute(microprocessor);
         }
     }

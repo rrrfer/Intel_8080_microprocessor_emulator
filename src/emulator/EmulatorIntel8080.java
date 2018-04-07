@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class EmulatorIntel8080 implements IEmulator {
-
     private IMicroprocessorAdapterForEmulator microprocessor;
     private IMicroprocessorAdapterForPresenter microprocessorPresenterAdapter;
     private ITranslator translator;
@@ -21,7 +20,7 @@ public class EmulatorIntel8080 implements IEmulator {
     private ArrayList<Integer> breakpoints;
 
     public EmulatorIntel8080(IInputOutputSystem ioSystem) {
-        IMicroprocessor mp = new Intel8080(new Memory(_DByte.MAX_VALUE));
+        IMicroprocessor mp = new Intel8080(new Memory(65536));
         this.microprocessor = new MicroprocessorAdapterForEmulator(mp);
         this.microprocessor.setIOSystem(ioSystem);
         this.microprocessorPresenterAdapter = new MicroprocessorAdapterForPresenter(mp);
@@ -57,12 +56,14 @@ public class EmulatorIntel8080 implements IEmulator {
 
     @Override
     public void run() {
-        while (step() && !breakpoints.contains(microprocessor.getValueByRegisterName("PC"))) {}
+        while (step()
+                && !breakpoints
+                .contains(microprocessor.getValueFromRegister(Intel8080Registers.PC))) {}
     }
 
     @Override
     public boolean step() {
-        int address = microprocessor.getValueByRegisterName("PC");
+        int address = microprocessor.getValueFromRegister(Intel8080Registers.PC);
         ICommand command = CommandsBuilder.getCommand(microprocessor.getMemory(), address);
         if (!command.getName().equals("HLT")) {
             microprocessor.executeCommand(command);
@@ -123,7 +124,7 @@ public class EmulatorIntel8080 implements IEmulator {
 
     @Override
     public void setProgramCounter(int address) {
-        microprocessor.setValueByRegisterName("PC", address);
+        microprocessor.setValueInRegister(Intel8080Registers.PC, address);
     }
 
     @Override

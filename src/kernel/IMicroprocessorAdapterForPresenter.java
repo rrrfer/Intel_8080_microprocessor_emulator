@@ -1,7 +1,7 @@
 package kernel;
 
 public interface IMicroprocessorAdapterForPresenter {
-    int getValueByRegisterName(String registerName);
-    int getValueByFlagName(Intel8080Flags flag);
+    int getValueFromRegister(Intel8080Registers register);
+    int getValueByFlag(Intel8080Flags flag);
     IReadOnlyMemory getReadOnlyMemory();
 }

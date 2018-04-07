@@ -2,19 +2,20 @@ package kernel.cmd;
 
 import kernel.IMicroprocessorAdapterForCommands;
 import kernel.Intel8080Flags;
+import kernel.Intel8080Registers;
 
 public class CMD_Intel8080_RRC implements ICommand {
     @Override
     public void execute(IMicroprocessorAdapterForCommands microprocessor) {
-        int value = microprocessor.getValueByRegisterName("A");
+        int value = microprocessor.getValueFromRegister(Intel8080Registers.A);
         if (value % 2 == 1) {
             value += 256;
-            microprocessor.setValueByFlagName(Intel8080Flags.C, 1);
+            microprocessor.setValueInFlag(Intel8080Flags.C, 1);
         } else {
-            microprocessor.setValueByFlagName(Intel8080Flags.C, 0);
+            microprocessor.setValueInFlag(Intel8080Flags.C, 0);
         }
         value = value >> 1;
-        microprocessor.setValueByRegisterName("A", value);
+        microprocessor.setValueInRegister(Intel8080Registers.A, value);
     }
 
     @Override

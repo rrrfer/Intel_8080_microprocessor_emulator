@@ -79,7 +79,7 @@ public class MainWindow extends JFrame implements IMainView {
                       @NotNull int[][] dataSourceForCharacterScreen_Character) {
         this.presenter = presenter;
 
-        setViewTitle("Intel 8080 Emulator");
+        setTitle("Intel 8080 Emulator");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         createUI(dataSourceForMemoryTable, dataSourceForRegisterTable, dataSourceForPixelScreen,
@@ -443,6 +443,7 @@ public class MainWindow extends JFrame implements IMainView {
     }
 
     private void createMemoryTable(String[][] dataSourceForMemoryTable) {
+
         memoryTableModel = new MemoryTableModel(dataSourceForMemoryTable);
         memoryTable.setModel(memoryTableModel);
         memoryTable.setAutoResizeMode(JTable.AUTO_RESIZE_NEXT_COLUMN);
@@ -456,6 +457,7 @@ public class MainWindow extends JFrame implements IMainView {
     }
 
     private void createRegistersAndFlagsTable(String[][] dataSourceForRegisterTable) {
+
         registersAndFlagsTableModel = new RegistersAndFlagsTableModel(dataSourceForRegisterTable);
         registersAndFlagsTable.setModel(registersAndFlagsTableModel);
         registersAndFlagsTable.setFocusable(false);
@@ -612,7 +614,7 @@ public class MainWindow extends JFrame implements IMainView {
     private void setEditable() {
         if (!getTitle().equals("Intel 8080 Emulator")) {
             if (getTitle().charAt(getTitle().length() - 1) != '*') {
-                setViewTitle(getTitle() + "*");
+                setTitle(getTitle() + "*");
             }
         }
     }
@@ -901,5 +903,3 @@ public class MainWindow extends JFrame implements IMainView {
         }
     }
 }
-
-// Оптимизировать ядро эмулятора (кэшировать созданные команды)

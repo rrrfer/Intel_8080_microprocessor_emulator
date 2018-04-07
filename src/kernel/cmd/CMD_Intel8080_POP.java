@@ -1,50 +1,51 @@
 package kernel.cmd;
 
 import kernel.IMicroprocessorAdapterForCommands;
+import kernel.Intel8080Registers;
 import kernel._DByte;
 
 public class CMD_Intel8080_POP implements ICommand {
 
     public static int pop(IMicroprocessorAdapterForCommands microprocessor) {
-        int address = microprocessor.getValueByRegisterName("SP");
+        int address = microprocessor.getValueFromRegister(Intel8080Registers.SP);
         int value = microprocessor.getMemory().getValueByIndex(address);
         address = _DByte.getRoundedValue(address + 1);
         value += microprocessor.getMemory().getValueByIndex(address) * 256;
         address = _DByte.getRoundedValue(address + 1);
-        microprocessor.setValueByRegisterName("SP", address);
+        microprocessor.setValueInRegister(Intel8080Registers.SP, address);
         return value;
     }
 
-    private String arg;
+    private Intel8080Registers register;
 
-    public CMD_Intel8080_POP(String arg) {
-        this.arg = arg.toUpperCase();
+    public CMD_Intel8080_POP(Intel8080Registers register) {
+        this.register = register;
     }
 
     @Override
     public void execute(IMicroprocessorAdapterForCommands microprocessor) {
         int value = pop(microprocessor);
 
-        if (!arg.equals("PSW")) {
-            microprocessor.setValueByRegisterName(arg, value / 256);
+        if (register != Intel8080Registers.PSW) {
+            microprocessor.setValueInRegister(register, value / 256);
         } else {
-            microprocessor.setValueByRegisterName("A", value / 256);
+            microprocessor.setValueInRegister(Intel8080Registers.A, value / 256);
         }
 
-        switch (arg) {
-            case "B": {
-                microprocessor.setValueByRegisterName("C", value % 256);
+        switch (register) {
+            case B: {
+                microprocessor.setValueInRegister(Intel8080Registers.C, value % 256);
                 break;
             }
-            case "D": {
-                microprocessor.setValueByRegisterName("E", value % 256);
+            case D: {
+                microprocessor.setValueInRegister(Intel8080Registers.E, value % 256);
                 break;
             }
-            case "H": {
-                microprocessor.setValueByRegisterName("L", value % 256);
+            case H: {
+                microprocessor.setValueInRegister(Intel8080Registers.L, value % 256);
                 break;
             }
-            case "PSW": {
+            case PSW: {
                 microprocessor.setAllFlags(value % 256);
                 break;
             }
@@ -58,6 +59,6 @@ public class CMD_Intel8080_POP implements ICommand {
 
     @Override
     public String getName() {
-        return "POP " + arg;
+        return "POP " + register;
     }
 }

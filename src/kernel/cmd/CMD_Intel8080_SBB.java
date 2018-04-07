@@ -2,30 +2,31 @@ package kernel.cmd;
 
 import kernel.IMicroprocessorAdapterForCommands;
 import kernel.Intel8080Flags;
+import kernel.Intel8080Registers;
 import kernel._Byte;
 
 public class CMD_Intel8080_SBB implements ICommand {
 
-    private String arg;
+    private Intel8080Registers register;
 
-    public CMD_Intel8080_SBB(String arg) {
-        this.arg = arg.toUpperCase();
+    public CMD_Intel8080_SBB(Intel8080Registers register) {
+        this.register = register;
     }
 
     @Override
     public void execute(IMicroprocessorAdapterForCommands microprocessor) {
-        int firstValue = microprocessor.getValueByRegisterName("A");
+        int firstValue = microprocessor.getValueFromRegister(Intel8080Registers.A);
         int secondValue;
-        if (arg.equals("M")) {
+        if (register == Intel8080Registers.M) {
             int address = microprocessor.getValueByRegisterPairName("H");
             secondValue = microprocessor.getMemory().getValueByIndex(address);
         } else {
-            secondValue = microprocessor.getValueByRegisterName(arg);
+            secondValue = microprocessor.getValueFromRegister(register);
         }
-        firstValue = firstValue - secondValue - microprocessor.getValueByFlagName(Intel8080Flags.C);
+        firstValue = firstValue - secondValue - microprocessor.getValueFromFlag(Intel8080Flags.C);
         microprocessor.checkByteForSetFlags(firstValue);
         firstValue = _Byte.getRoundedValue(firstValue);
-        microprocessor.setValueByRegisterName("A", firstValue);
+        microprocessor.setValueInRegister(Intel8080Registers.A, firstValue);
     }
 
     @Override
@@ -35,6 +36,6 @@ public class CMD_Intel8080_SBB implements ICommand {
 
     @Override
     public String getName() {
-        return "SBB " + arg;
+        return "SBB " + register;
     }
 }

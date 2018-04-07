@@ -4,11 +4,11 @@ import emulator.IInputOutputSystem;
 
 public interface IMicroprocessorAdapterForCommands {
 
-    int getValueByRegisterName(String registerName);
-    void setValueByRegisterName(String registerName, int value);
+    int getValueFromRegister(Intel8080Registers register);
+    void setValueInRegister(Intel8080Registers register, int value);
 
-    int getValueByFlagName(Intel8080Flags flag);
-    void setValueByFlagName(Intel8080Flags flag, int value);
+    int getValueFromFlag(Intel8080Flags flag);
+    void setValueInFlag(Intel8080Flags flag, int value);
 
     int getValueByRegisterPairName(String registerPairName);
     void setValueByRegisterPairName(String registerPairName, int value);

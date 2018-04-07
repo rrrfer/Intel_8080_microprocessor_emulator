@@ -1,38 +1,40 @@
 package kernel.cmd;
 
 import kernel.IMicroprocessorAdapterForCommands;
+import kernel.Intel8080;
+import kernel.Intel8080Registers;
 
 public class CMD_Intel8080_LXI implements ICommand {
 
-    private String firstArg;
+    private Intel8080Registers register;
     private String secondArg;
 
-    public CMD_Intel8080_LXI(String firstArg, String secondArg) {
-        this.firstArg = firstArg.toUpperCase();
+    public CMD_Intel8080_LXI(Intel8080Registers register, String secondArg) {
+        this.register = register;
         this.secondArg = secondArg.toUpperCase();
     }
 
     @Override
     public void execute(IMicroprocessorAdapterForCommands microprocessor) {
         int value = Integer.valueOf(secondArg, 16);
-        if (!firstArg.equals("SP")) {
-            microprocessor.setValueByRegisterName(firstArg, value / 256);
+        if (register != Intel8080Registers.SP) {
+            microprocessor.setValueInRegister(register, value / 256);
         }
-        switch (firstArg) {
-            case "B": {
-                microprocessor.setValueByRegisterName("C", value % 256);
+        switch (register) {
+            case B: {
+                microprocessor.setValueInRegister(Intel8080Registers.C, value % 256);
                 break;
             }
-            case "D": {
-                microprocessor.setValueByRegisterName("E", value % 256);
+            case D: {
+                microprocessor.setValueInRegister(Intel8080Registers.E, value % 256);
                 break;
             }
-            case "H": {
-                microprocessor.setValueByRegisterName("L", value % 256);
+            case H: {
+                microprocessor.setValueInRegister(Intel8080Registers.L, value % 256);
                 break;
             }
-            case "SP": {
-                microprocessor.setValueByRegisterName("SP", value);
+            case SP: {
+                microprocessor.setValueInRegister(Intel8080Registers.SP, value);
             }
         }
     }
@@ -44,6 +46,6 @@ public class CMD_Intel8080_LXI implements ICommand {
 
     @Override
     public String getName() {
-        return "LXI " + firstArg + "," + secondArg;
+        return "LXI " + register + "," + secondArg;
     }
 }

@@ -69,14 +69,14 @@
                   </grid>
                 </constraints>
                 <properties>
-                  <horizontalScrollBarPolicy value="31"/>
+                  <horizontalScrollBarPolicy register="31"/>
                 </properties>
                 <border type="none" title="Output 0x02"/>
                 <children>
                   <component id="b71fe" class="javax.swing.JEditorPane" binding="consoleOutputTextPanel">
                     <constraints/>
                     <properties>
-                      <editable value="false"/>
+                      <editable register="false"/>
                     </properties>
                   </component>
                 </children>
@@ -86,8 +86,8 @@
                   <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <horizontalScrollBarPolicy value="31"/>
-                  <verticalScrollBarPolicy value="21"/>
+                  <horizontalScrollBarPolicy register="31"/>
+                  <verticalScrollBarPolicy register="21"/>
                 </properties>
                 <border type="none" title="Input 0x08"/>
                 <children>
@@ -116,16 +116,16 @@
                   </grid>
                 </constraints>
                 <properties>
-                  <horizontalScrollBarPolicy value="30"/>
+                  <horizontalScrollBarPolicy register="30"/>
                 </properties>
                 <border type="none"/>
                 <children>
                   <component id="98a01" class="javax.swing.JEditorPane" binding="codeEditorTextPanel">
                     <constraints/>
                     <properties>
-                      <focusTraversalPolicyProvider value="false"/>
+                      <focusTraversalPolicyProvider register="false"/>
                       <minimumSize width="750" height="24"/>
-                      <text value=""/>
+                      <text register=""/>
                     </properties>
                   </component>
                 </children>
@@ -139,15 +139,15 @@
                   </grid>
                 </constraints>
                 <properties>
-                  <horizontalScrollBarPolicy value="31"/>
+                  <horizontalScrollBarPolicy register="31"/>
                 </properties>
                 <border type="none"/>
                 <children>
                   <component id="b4c41" class="javax.swing.JEditorPane" binding="translationResultTextPanel">
                     <constraints/>
                     <properties>
-                      <editable value="false"/>
-                      <text value=""/>
+                      <editable register="false"/>
+                      <text register=""/>
                     </properties>
                   </component>
                 </children>

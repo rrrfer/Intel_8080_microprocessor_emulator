@@ -1,6 +1,6 @@
 package emulator;
 
-public class CharacterScreen implements IScreen {
+class CharacterScreen implements IScreen {
 
     private int rowCount;
     private int columnCount;

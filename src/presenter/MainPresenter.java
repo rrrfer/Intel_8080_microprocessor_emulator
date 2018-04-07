@@ -5,6 +5,7 @@ import emulator.IEmulator;
 import emulator.InputOutputSystem;
 import kernel.IMicroprocessorAdapterForPresenter;
 import kernel.Intel8080Flags;
+import kernel.Intel8080Registers;
 import view.IMainView;
 import view.MainWindow;
 
@@ -74,22 +75,19 @@ public class MainPresenter implements IMainPresenter_View, IMainPresenter_Model 
     @Override
     public void run() {
         if (programRunThread == null || !programRunThread.isAlive()) {
-            programRunThread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    emulator.run();
+            programRunThread = new Thread(() -> {
+                emulator.run();
 
-                    getDataSourceForRegistersTable(emulator, dataSourceForRegistersTable);
-                    getDataSourceForMemoryTable(emulator, dataSourceForMemoryTable);
-                    int PC = emulator.getMicroprocessor().getValueByRegisterName("PC");
+                getDataSourceForRegistersTable(emulator, dataSourceForRegistersTable);
+                getDataSourceForMemoryTable(emulator, dataSourceForMemoryTable);
+                int PC = emulator.getMicroprocessor().getValueFromRegister(Intel8080Registers.PC);
 
-                    mainView.memoryTableUpdate();
-                    mainView.registersTableUpdate();
-                    mainView.setProgramCounterPosition(PC);
+                mainView.memoryTableUpdate();
+                mainView.registersTableUpdate();
+                mainView.setProgramCounterPosition(PC);
 
-                    mainView.setPermissionForActions(MainPresenter.DEFAULT_ACTION_MODE);
-                    currentActionMode = DEFAULT_ACTION_MODE;
-                }
+                mainView.setPermissionForActions(MainPresenter.DEFAULT_ACTION_MODE);
+                currentActionMode = DEFAULT_ACTION_MODE;
             });
             currentActionMode = RUN_ACTION_MODE;
             mainView.setPermissionForActions(MainPresenter.RUN_ACTION_MODE);
@@ -102,21 +100,17 @@ public class MainPresenter implements IMainPresenter_View, IMainPresenter_Model 
         if (commandRunThread == null || !commandRunThread.isAlive()) {
             commandRunThread = new Thread(() -> {
                 emulator.step();
+
+                getDataSourceForMemoryTable(emulator, dataSourceForMemoryTable);
+                getDataSourceForRegistersTable(emulator, dataSourceForRegistersTable);
+                int PC = emulator.getMicroprocessor().getValueFromRegister(Intel8080Registers.PC);
+
+                mainView.memoryTableUpdate();
+                mainView.registersTableUpdate();
+                mainView.setProgramCounterPosition(PC);
             });
             commandRunThread.start();
         }
-
-        try {
-            commandRunThread.join();
-        } catch (InterruptedException ignored) {}
-
-        getDataSourceForMemoryTable(emulator, dataSourceForMemoryTable);
-        getDataSourceForRegistersTable(emulator, dataSourceForRegistersTable);
-        int PC = emulator.getMicroprocessor().getValueByRegisterName("PC");
-
-        mainView.memoryTableUpdate();
-        mainView.registersTableUpdate();
-        mainView.setProgramCounterPosition(PC);
     }
 
     @Override
@@ -126,7 +120,7 @@ public class MainPresenter implements IMainPresenter_View, IMainPresenter_Model 
 
             getDataSourceForRegistersTable(emulator, dataSourceForRegistersTable);
             getDataSourceForMemoryTable(emulator, dataSourceForMemoryTable);
-            int PC = emulator.getMicroprocessor().getValueByRegisterName("PC");
+            int PC = emulator.getMicroprocessor().getValueFromRegister(Intel8080Registers.PC);
 
             mainView.memoryTableUpdate();
             mainView.registersTableUpdate();
@@ -169,7 +163,7 @@ public class MainPresenter implements IMainPresenter_View, IMainPresenter_Model 
     public void removeAllBreakpoints() {
         emulator.removeAllBreakpoints();
         ArrayList<Integer> breakpoints = emulator.getBreakpoints();
-        int PC = emulator.getMicroprocessor().getValueByRegisterName("PC");
+        int PC = emulator.getMicroprocessor().getValueFromRegister(Intel8080Registers.PC);
         mainView.setBreakpoints(breakpoints);
         mainView.setProgramCounterPosition(PC);
     }
@@ -277,83 +271,83 @@ public class MainPresenter implements IMainPresenter_View, IMainPresenter_Model 
 
         dataSourceForRegistersTable[0][0] = "Register A";
         dataSourceForRegistersTable[0][1]
-                = createString(microprocessor.getValueByRegisterName("A"), 16);
+                = createString(microprocessor.getValueFromRegister(Intel8080Registers.A), 16);
         dataSourceForRegistersTable[0][2]
-                = createString(microprocessor.getValueByRegisterName("A"), 2);
+                = createString(microprocessor.getValueFromRegister(Intel8080Registers.A), 2);
         dataSourceForRegistersTable[0][3]
-                = Integer.toString(microprocessor.getValueByRegisterName("A"));
+                = Integer.toString(microprocessor.getValueFromRegister(Intel8080Registers.A));
 
         dataSourceForRegistersTable[1][0] = "Register B";
         dataSourceForRegistersTable[1][1]
-                = createString(microprocessor.getValueByRegisterName("B"), 16);
+                = createString(microprocessor.getValueFromRegister(Intel8080Registers.B), 16);
         dataSourceForRegistersTable[1][2]
-                = createString(microprocessor.getValueByRegisterName("B"), 2);
+                = createString(microprocessor.getValueFromRegister(Intel8080Registers.B), 2);
         dataSourceForRegistersTable[1][3]
-                = Integer.toString(microprocessor.getValueByRegisterName("B"));
+                = Integer.toString(microprocessor.getValueFromRegister(Intel8080Registers.B));
 
         dataSourceForRegistersTable[2][0] = "Register C";
         dataSourceForRegistersTable[2][1]
-                = createString(microprocessor.getValueByRegisterName("C"), 16);
+                = createString(microprocessor.getValueFromRegister(Intel8080Registers.C), 16);
         dataSourceForRegistersTable[2][2]
-                = createString(microprocessor.getValueByRegisterName("C"), 2);
+                = createString(microprocessor.getValueFromRegister(Intel8080Registers.C), 2);
         dataSourceForRegistersTable[2][3]
-                = Integer.toString(microprocessor.getValueByRegisterName("C"));
+                = Integer.toString(microprocessor.getValueFromRegister(Intel8080Registers.C));
 
         dataSourceForRegistersTable[3][0] = "Register D";
         dataSourceForRegistersTable[3][1]
-                = createString(microprocessor.getValueByRegisterName("D"), 16);
+                = createString(microprocessor.getValueFromRegister(Intel8080Registers.D), 16);
         dataSourceForRegistersTable[3][2]
-                = createString(microprocessor.getValueByRegisterName("D"), 2);
+                = createString(microprocessor.getValueFromRegister(Intel8080Registers.D), 2);
         dataSourceForRegistersTable[3][3]
-                = Integer.toString(microprocessor.getValueByRegisterName("D"));
+                = Integer.toString(microprocessor.getValueFromRegister(Intel8080Registers.D));
 
         dataSourceForRegistersTable[4][0] = "Register E";
         dataSourceForRegistersTable[4][1]
-                = createString(microprocessor.getValueByRegisterName("E"), 16);
+                = createString(microprocessor.getValueFromRegister(Intel8080Registers.E), 16);
         dataSourceForRegistersTable[4][2]
-                = createString(microprocessor.getValueByRegisterName("E"), 2);
+                = createString(microprocessor.getValueFromRegister(Intel8080Registers.E), 2);
         dataSourceForRegistersTable[4][3]
-                = Integer.toString(microprocessor.getValueByRegisterName("E"));
+                = Integer.toString(microprocessor.getValueFromRegister(Intel8080Registers.E));
 
         dataSourceForRegistersTable[5][0] = "Register H";
         dataSourceForRegistersTable[5][1]
-                = createString(microprocessor.getValueByRegisterName("H"), 16);
+                = createString(microprocessor.getValueFromRegister(Intel8080Registers.H), 16);
         dataSourceForRegistersTable[5][2]
-                = createString(microprocessor.getValueByRegisterName("H"), 2);
+                = createString(microprocessor.getValueFromRegister(Intel8080Registers.H), 2);
         dataSourceForRegistersTable[5][3]
-                = Integer.toString(microprocessor.getValueByRegisterName("H"));
+                = Integer.toString(microprocessor.getValueFromRegister(Intel8080Registers.H));
 
         dataSourceForRegistersTable[6][0] = "Register L";
         dataSourceForRegistersTable[6][1]
-                = createString(microprocessor.getValueByRegisterName("L"), 16);
+                = createString(microprocessor.getValueFromRegister(Intel8080Registers.L), 16);
         dataSourceForRegistersTable[6][2]
-                = createString(microprocessor.getValueByRegisterName("L"), 2);
+                = createString(microprocessor.getValueFromRegister(Intel8080Registers.L), 2);
         dataSourceForRegistersTable[6][3]
-                = Integer.toString(microprocessor.getValueByRegisterName("L"));
+                = Integer.toString(microprocessor.getValueFromRegister(Intel8080Registers.L));
 
         dataSourceForRegistersTable[7][0] = "Register PC";
         dataSourceForRegistersTable[7][1]
-                = createString(microprocessor.getValueByRegisterName("PC"), 16);
+                = createString(microprocessor.getValueFromRegister(Intel8080Registers.PC), 16);
 
         dataSourceForRegistersTable[8][0] = "Register SP";
         dataSourceForRegistersTable[8][1]
-                = createString(microprocessor.getValueByRegisterName("SP"), 16);
+                = createString(microprocessor.getValueFromRegister(Intel8080Registers.SP), 16);
 
         dataSourceForRegistersTable[9][0] = "Flag Z";
         dataSourceForRegistersTable[9][1]
-                = createString(microprocessor.getValueByFlagName(Intel8080Flags.Z), 16);
+                = createString(microprocessor.getValueByFlag(Intel8080Flags.Z), 16);
 
         dataSourceForRegistersTable[10][0] = "Flag C";
         dataSourceForRegistersTable[10][1]
-                = createString(microprocessor.getValueByFlagName(Intel8080Flags.C), 16);
+                = createString(microprocessor.getValueByFlag(Intel8080Flags.C), 16);
 
         dataSourceForRegistersTable[11][0] = "Flag S";
         dataSourceForRegistersTable[11][1]
-                = createString(microprocessor.getValueByFlagName(Intel8080Flags.S), 16);
+                = createString(microprocessor.getValueByFlag(Intel8080Flags.S), 16);
 
         dataSourceForRegistersTable[12][0] = "Flag P";
         dataSourceForRegistersTable[12][1]
-                = createString(microprocessor.getValueByFlagName(Intel8080Flags.P), 16);
+                = createString(microprocessor.getValueByFlag(Intel8080Flags.P), 16);
     }
 
     private String createString(int value, int radix) {

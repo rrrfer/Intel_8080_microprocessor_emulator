@@ -9,13 +9,13 @@ public class MicroprocessorAdapterForPresenter implements IMicroprocessorAdapter
     }
 
     @Override
-    public int getValueByRegisterName(String registerName) {
-        return microprocessor.getValueByRegisterName(registerName);
+    public int getValueFromRegister(Intel8080Registers register) {
+        return microprocessor.getValueFromRegister(register);
     }
 
     @Override
-    public int getValueByFlagName(Intel8080Flags flag) {
-        return microprocessor.getValueByFlagName(flag);
+    public int getValueByFlag(Intel8080Flags flag) {
+        return microprocessor.getValueFromFlag(flag);
     }
 
     @Override

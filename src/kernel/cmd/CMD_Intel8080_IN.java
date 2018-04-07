@@ -2,6 +2,7 @@ package kernel.cmd;
 
 import emulator.IInputOutputSystem;
 import kernel.IMicroprocessorAdapterForCommands;
+import kernel.Intel8080Registers;
 
 public class CMD_Intel8080_IN implements ICommand {
 
@@ -35,7 +36,7 @@ public class CMD_Intel8080_IN implements ICommand {
                     break;
                 }
             }
-            microprocessor.setValueByRegisterName("A", inputValue);
+            microprocessor.setValueInRegister(Intel8080Registers.A, inputValue);
         }
     }
 

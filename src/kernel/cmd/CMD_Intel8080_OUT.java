@@ -2,6 +2,7 @@ package kernel.cmd;
 
 import emulator.IInputOutputSystem;
 import kernel.IMicroprocessorAdapterForCommands;
+import kernel.Intel8080Registers;
 
 public class CMD_Intel8080_OUT implements ICommand {
 
@@ -15,7 +16,7 @@ public class CMD_Intel8080_OUT implements ICommand {
     public void execute(IMicroprocessorAdapterForCommands microprocessor) {
         IInputOutputSystem ioSystem = microprocessor.getIOSystem();
         if (ioSystem != null) {
-            int outputValue = microprocessor.getValueByRegisterName("A");
+            int outputValue = microprocessor.getValueFromRegister(Intel8080Registers.A);
             int portNumber = Integer.valueOf(arg, 16);
             switch (portNumber) {
                 case 2: {

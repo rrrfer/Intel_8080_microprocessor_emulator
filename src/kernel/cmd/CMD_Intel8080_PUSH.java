@@ -1,49 +1,50 @@
 package kernel.cmd;
 
 import kernel.IMicroprocessorAdapterForCommands;
+import kernel.Intel8080Registers;
 import kernel._DByte;
 
 public class CMD_Intel8080_PUSH implements ICommand {
 
     public static void push(IMicroprocessorAdapterForCommands microprocessor, int value) {
-        int address = microprocessor.getValueByRegisterName("SP");
+        int address = microprocessor.getValueFromRegister(Intel8080Registers.SP);
         address = _DByte.getRoundedValue(address - 1);
         microprocessor.getMemory().setValueByIndex(address, value / 256);
         address = _DByte.getRoundedValue(address - 1);
         microprocessor.getMemory().setValueByIndex(address, value % 256);
-        microprocessor.setValueByRegisterName("SP", address);
+        microprocessor.setValueInRegister(Intel8080Registers.SP, address);
     }
 
-    private String arg;
+    private Intel8080Registers register;
 
-    public CMD_Intel8080_PUSH(String arg) {
-        this.arg = arg.toUpperCase();
+    public CMD_Intel8080_PUSH(Intel8080Registers register) {
+        this.register = register;
     }
 
     @Override
     public void execute(IMicroprocessorAdapterForCommands microprocessor) {
 
         int value;
-        if (!arg.equals("PSW")) {
-            value = microprocessor.getValueByRegisterName(arg) * 256;
+        if (register != Intel8080Registers.PSW) {
+            value = microprocessor.getValueFromRegister(register) * 256;
         } else {
-            value = microprocessor.getValueByRegisterName("A") * 256;
+            value = microprocessor.getValueFromRegister(Intel8080Registers.A) * 256;
         }
 
-        switch (arg) {
-            case "B": {
-                value += microprocessor.getValueByRegisterName("C");
+        switch (register) {
+            case B: {
+                value += microprocessor.getValueFromRegister(Intel8080Registers.C);
                 break;
             }
-            case "D": {
-                value += microprocessor.getValueByRegisterName("E");
+            case D: {
+                value += microprocessor.getValueFromRegister(Intel8080Registers.E);
                 break;
             }
-            case "H": {
-                value += microprocessor.getValueByRegisterName("L");
+            case H: {
+                value += microprocessor.getValueFromRegister(Intel8080Registers.L);
                 break;
             }
-            case "PSW": {
+            case PSW: {
                 value += microprocessor.getAllFlags();
                 break;
             }
@@ -58,6 +59,6 @@ public class CMD_Intel8080_PUSH implements ICommand {
 
     @Override
     public String getName() {
-        return "PUSH " + arg;
+        return "PUSH " + register;
     }
 }

@@ -1,30 +1,31 @@
 package kernel.cmd;
 
 import kernel.IMicroprocessorAdapterForCommands;
+import kernel.Intel8080Registers;
 
 public class CMD_Intel8080_ANA implements ICommand {
 
-    private String arg;
+    private Intel8080Registers register;
 
-    public CMD_Intel8080_ANA(String arg) {
-        this.arg = arg.toUpperCase();
+    public CMD_Intel8080_ANA(Intel8080Registers register) {
+        this.register = register;
     }
 
     @Override
     public void execute(IMicroprocessorAdapterForCommands microprocessor) {
-        int firstValue = microprocessor.getValueByRegisterName("A");
+        int firstValue = microprocessor.getValueFromRegister(Intel8080Registers.A);
         int secondValue;
-        if (arg.equals("M")) {
+        if (register == Intel8080Registers.M) {
             int address = microprocessor.getValueByRegisterPairName("H");
             secondValue = microprocessor.getMemory().getValueByIndex(address);
         } else {
-            secondValue = microprocessor.getValueByRegisterName(arg);
+            secondValue = microprocessor.getValueFromRegister(register);
         }
 
         firstValue = firstValue & secondValue;
         microprocessor.checkByteForSetFlags(firstValue);
 
-        microprocessor.setValueByRegisterName("A", firstValue);
+        microprocessor.setValueInRegister(Intel8080Registers.A, firstValue);
     }
 
     @Override
@@ -34,6 +35,6 @@ public class CMD_Intel8080_ANA implements ICommand {
 
     @Override
     public String getName() {
-        return "ANA " + arg;
+        return "ANA " + register;
     }
 }

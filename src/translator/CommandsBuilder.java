@@ -1,6 +1,7 @@
 package translator;
 
 import kernel.IReadOnlyMemory;
+import kernel.Intel8080Registers;
 import kernel.cmd.*;
 
 public class CommandsBuilder {
@@ -12,200 +13,200 @@ public class CommandsBuilder {
             //================================================================================
 
             case CommandsCodes.MOV_A_A: {
-                return new CMD_Intel8080_MOV("A", "A");
+                return new CMD_Intel8080_MOV(Intel8080Registers.A, Intel8080Registers.A);
             }
             case CommandsCodes.MOV_A_B: {
-                return new CMD_Intel8080_MOV("A", "B");
+                return new CMD_Intel8080_MOV(Intel8080Registers.A, Intel8080Registers.B);
             }
             case CommandsCodes.MOV_A_C: {
-                return new CMD_Intel8080_MOV("A", "C");
+                return new CMD_Intel8080_MOV(Intel8080Registers.A, Intel8080Registers.C);
             }
             case CommandsCodes.MOV_A_D: {
-                return new CMD_Intel8080_MOV("A", "D");
+                return new CMD_Intel8080_MOV(Intel8080Registers.A, Intel8080Registers.D);
             }
             case CommandsCodes.MOV_A_E: {
-                return new CMD_Intel8080_MOV("A", "E");
+                return new CMD_Intel8080_MOV(Intel8080Registers.A, Intel8080Registers.E);
             }
             case CommandsCodes.MOV_A_H: {
-                return new CMD_Intel8080_MOV("A", "H");
+                return new CMD_Intel8080_MOV(Intel8080Registers.A, Intel8080Registers.H);
             }
             case CommandsCodes.MOV_A_L: {
-                return new CMD_Intel8080_MOV("A", "L");
+                return new CMD_Intel8080_MOV(Intel8080Registers.A, Intel8080Registers.L);
             }
             case CommandsCodes.MOV_A_M: {
-                return new CMD_Intel8080_MOV("A", "M");
+                return new CMD_Intel8080_MOV(Intel8080Registers.A, Intel8080Registers.M);
             }
 
             case CommandsCodes.MOV_B_A: {
-                return new CMD_Intel8080_MOV("B", "A");
+                return new CMD_Intel8080_MOV(Intel8080Registers.B, Intel8080Registers.A);
             }
             case CommandsCodes.MOV_B_B: {
-                return new CMD_Intel8080_MOV("B", "B");
+                return new CMD_Intel8080_MOV(Intel8080Registers.B, Intel8080Registers.B);
             }
             case CommandsCodes.MOV_B_C: {
-                return new CMD_Intel8080_MOV("B", "C");
+                return new CMD_Intel8080_MOV(Intel8080Registers.B, Intel8080Registers.C);
             }
             case CommandsCodes.MOV_B_D: {
-                return new CMD_Intel8080_MOV("B", "D");
+                return new CMD_Intel8080_MOV(Intel8080Registers.B, Intel8080Registers.D);
             }
             case CommandsCodes.MOV_B_E: {
-                return new CMD_Intel8080_MOV("B", "E");
+                return new CMD_Intel8080_MOV(Intel8080Registers.B, Intel8080Registers.E);
             }
             case CommandsCodes.MOV_B_H: {
-                return new CMD_Intel8080_MOV("B", "H");
+                return new CMD_Intel8080_MOV(Intel8080Registers.B, Intel8080Registers.H);
             }
             case CommandsCodes.MOV_B_L: {
-                return new CMD_Intel8080_MOV("B", "L");
+                return new CMD_Intel8080_MOV(Intel8080Registers.B, Intel8080Registers.L);
             }
             case CommandsCodes.MOV_B_M: {
-                return new CMD_Intel8080_MOV("B", "M");
+                return new CMD_Intel8080_MOV(Intel8080Registers.B, Intel8080Registers.M);
             }
 
             case CommandsCodes.MOV_C_A: {
-                return new CMD_Intel8080_MOV("C", "A");
+                return new CMD_Intel8080_MOV(Intel8080Registers.C, Intel8080Registers.A);
             }
             case CommandsCodes.MOV_C_B: {
-                return new CMD_Intel8080_MOV("C", "B");
+                return new CMD_Intel8080_MOV(Intel8080Registers.C, Intel8080Registers.B);
             }
             case CommandsCodes.MOV_C_C: {
-                return new CMD_Intel8080_MOV("C", "C");
+                return new CMD_Intel8080_MOV(Intel8080Registers.C, Intel8080Registers.C);
             }
             case CommandsCodes.MOV_C_D: {
-                return new CMD_Intel8080_MOV("C", "D");
+                return new CMD_Intel8080_MOV(Intel8080Registers.C, Intel8080Registers.D);
             }
             case CommandsCodes.MOV_C_E: {
-                return new CMD_Intel8080_MOV("C", "E");
+                return new CMD_Intel8080_MOV(Intel8080Registers.C, Intel8080Registers.E);
             }
             case CommandsCodes.MOV_C_H: {
-                return new CMD_Intel8080_MOV("C", "H");
+                return new CMD_Intel8080_MOV(Intel8080Registers.C, Intel8080Registers.H);
             }
             case CommandsCodes.MOV_C_L: {
-                return new CMD_Intel8080_MOV("C", "L");
+                return new CMD_Intel8080_MOV(Intel8080Registers.C, Intel8080Registers.L);
             }
             case CommandsCodes.MOV_C_M: {
-                return new CMD_Intel8080_MOV("C", "M");
+                return new CMD_Intel8080_MOV(Intel8080Registers.C, Intel8080Registers.M);
             }
 
             case CommandsCodes.MOV_D_A: {
-                return new CMD_Intel8080_MOV("D", "A");
+                return new CMD_Intel8080_MOV(Intel8080Registers.D, Intel8080Registers.A);
             }
             case CommandsCodes.MOV_D_B: {
-                return new CMD_Intel8080_MOV("D", "B");
+                return new CMD_Intel8080_MOV(Intel8080Registers.D, Intel8080Registers.B);
             }
             case CommandsCodes.MOV_D_C: {
-                return new CMD_Intel8080_MOV("D", "C");
+                return new CMD_Intel8080_MOV(Intel8080Registers.D, Intel8080Registers.C);
             }
             case CommandsCodes.MOV_D_D: {
-                return new CMD_Intel8080_MOV("D", "D");
+                return new CMD_Intel8080_MOV(Intel8080Registers.D, Intel8080Registers.D);
             }
             case CommandsCodes.MOV_D_E: {
-                return new CMD_Intel8080_MOV("D", "E");
+                return new CMD_Intel8080_MOV(Intel8080Registers.D, Intel8080Registers.E);
             }
             case CommandsCodes.MOV_D_H: {
-                return new CMD_Intel8080_MOV("D", "H");
+                return new CMD_Intel8080_MOV(Intel8080Registers.D, Intel8080Registers.H);
             }
             case CommandsCodes.MOV_D_L: {
-                return new CMD_Intel8080_MOV("D", "L");
+                return new CMD_Intel8080_MOV(Intel8080Registers.D, Intel8080Registers.L);
             }
             case CommandsCodes.MOV_D_M: {
-                return new CMD_Intel8080_MOV("D", "M");
+                return new CMD_Intel8080_MOV(Intel8080Registers.D, Intel8080Registers.M);
             }
 
             case CommandsCodes.MOV_E_A: {
-                return new CMD_Intel8080_MOV("E", "A");
+                return new CMD_Intel8080_MOV(Intel8080Registers.E, Intel8080Registers.A);
             }
             case CommandsCodes.MOV_E_B: {
-                return new CMD_Intel8080_MOV("E", "B");
+                return new CMD_Intel8080_MOV(Intel8080Registers.E, Intel8080Registers.B);
             }
             case CommandsCodes.MOV_E_C: {
-                return new CMD_Intel8080_MOV("E", "C");
+                return new CMD_Intel8080_MOV(Intel8080Registers.E, Intel8080Registers.C);
             }
             case CommandsCodes.MOV_E_D: {
-                return new CMD_Intel8080_MOV("E", "D");
+                return new CMD_Intel8080_MOV(Intel8080Registers.E, Intel8080Registers.D);
             }
             case CommandsCodes.MOV_E_E: {
-                return new CMD_Intel8080_MOV("E", "E");
+                return new CMD_Intel8080_MOV(Intel8080Registers.E, Intel8080Registers.E);
             }
             case CommandsCodes.MOV_E_H: {
-                return new CMD_Intel8080_MOV("E", "H");
+                return new CMD_Intel8080_MOV(Intel8080Registers.E, Intel8080Registers.H);
             }
             case CommandsCodes.MOV_E_L: {
-                return new CMD_Intel8080_MOV("E", "L");
+                return new CMD_Intel8080_MOV(Intel8080Registers.E, Intel8080Registers.L);
             }
             case CommandsCodes.MOV_E_M: {
-                return new CMD_Intel8080_MOV("E", "M");
+                return new CMD_Intel8080_MOV(Intel8080Registers.E, Intel8080Registers.M);
             }
 
             case CommandsCodes.MOV_H_A: {
-                return new CMD_Intel8080_MOV("H", "A");
+                return new CMD_Intel8080_MOV(Intel8080Registers.H, Intel8080Registers.A);
             }
             case CommandsCodes.MOV_H_B: {
-                return new CMD_Intel8080_MOV("H", "B");
+                return new CMD_Intel8080_MOV(Intel8080Registers.H, Intel8080Registers.B);
             }
             case CommandsCodes.MOV_H_C: {
-                return new CMD_Intel8080_MOV("H", "C");
+                return new CMD_Intel8080_MOV(Intel8080Registers.H, Intel8080Registers.C);
             }
             case CommandsCodes.MOV_H_D: {
-                return new CMD_Intel8080_MOV("H", "D");
+                return new CMD_Intel8080_MOV(Intel8080Registers.H, Intel8080Registers.D);
             }
             case CommandsCodes.MOV_H_E: {
-                return new CMD_Intel8080_MOV("H", "E");
+                return new CMD_Intel8080_MOV(Intel8080Registers.H, Intel8080Registers.E);
             }
             case CommandsCodes.MOV_H_H: {
-                return new CMD_Intel8080_MOV("H", "H");
+                return new CMD_Intel8080_MOV(Intel8080Registers.H, Intel8080Registers.H);
             }
             case CommandsCodes.MOV_H_L: {
-                return new CMD_Intel8080_MOV("H", "L");
+                return new CMD_Intel8080_MOV(Intel8080Registers.H, Intel8080Registers.L);
             }
             case CommandsCodes.MOV_H_M: {
-                return new CMD_Intel8080_MOV("H", "M");
+                return new CMD_Intel8080_MOV(Intel8080Registers.H, Intel8080Registers.M);
             }
 
             case CommandsCodes.MOV_L_A: {
-                return new CMD_Intel8080_MOV("L", "A");
+                return new CMD_Intel8080_MOV(Intel8080Registers.L, Intel8080Registers.A);
             }
             case CommandsCodes.MOV_L_B: {
-                return new CMD_Intel8080_MOV("L", "B");
+                return new CMD_Intel8080_MOV(Intel8080Registers.L, Intel8080Registers.B);
             }
             case CommandsCodes.MOV_L_C: {
-                return new CMD_Intel8080_MOV("L", "C");
+                return new CMD_Intel8080_MOV(Intel8080Registers.L, Intel8080Registers.C);
             }
             case CommandsCodes.MOV_L_D: {
-                return new CMD_Intel8080_MOV("L", "D");
+                return new CMD_Intel8080_MOV(Intel8080Registers.L, Intel8080Registers.D);
             }
             case CommandsCodes.MOV_L_E: {
-                return new CMD_Intel8080_MOV("L", "E");
+                return new CMD_Intel8080_MOV(Intel8080Registers.L, Intel8080Registers.E);
             }
             case CommandsCodes.MOV_L_H: {
-                return new CMD_Intel8080_MOV("L", "H");
+                return new CMD_Intel8080_MOV(Intel8080Registers.L, Intel8080Registers.H);
             }
             case CommandsCodes.MOV_L_L: {
-                return new CMD_Intel8080_MOV("L", "L");
+                return new CMD_Intel8080_MOV(Intel8080Registers.L, Intel8080Registers.L);
             }
             case CommandsCodes.MOV_L_M: {
-                return new CMD_Intel8080_MOV("L", "M");
+                return new CMD_Intel8080_MOV(Intel8080Registers.L, Intel8080Registers.M);
             }
 
             case CommandsCodes.MOV_M_A: {
-                return new CMD_Intel8080_MOV("M", "A");
+                return new CMD_Intel8080_MOV(Intel8080Registers.M, Intel8080Registers.A);
             }
             case CommandsCodes.MOV_M_B: {
-                return new CMD_Intel8080_MOV("M", "B");
+                return new CMD_Intel8080_MOV(Intel8080Registers.M, Intel8080Registers.B);
             }
             case CommandsCodes.MOV_M_C: {
-                return new CMD_Intel8080_MOV("M", "C");
+                return new CMD_Intel8080_MOV(Intel8080Registers.M, Intel8080Registers.C);
             }
             case CommandsCodes.MOV_M_D: {
-                return new CMD_Intel8080_MOV("M", "D");
+                return new CMD_Intel8080_MOV(Intel8080Registers.M, Intel8080Registers.D);
             }
             case CommandsCodes.MOV_M_E: {
-                return new CMD_Intel8080_MOV("M", "E");
+                return new CMD_Intel8080_MOV(Intel8080Registers.M, Intel8080Registers.E);
             }
             case CommandsCodes.MOV_M_H: {
-                return new CMD_Intel8080_MOV("M", "H");
+                return new CMD_Intel8080_MOV(Intel8080Registers.M, Intel8080Registers.H);
             }
             case CommandsCodes.MOV_M_L: {
-                return new CMD_Intel8080_MOV("M", "L");
+                return new CMD_Intel8080_MOV(Intel8080Registers.M, Intel8080Registers.L);
             }
 
             //================================================================================
@@ -213,35 +214,35 @@ public class CommandsBuilder {
 
             case CommandsCodes.MVI_A: {
                 String arg = getValueFromNextByte(memory, address);
-                return new CMD_Intel8080_MVI("A", arg);
+                return new CMD_Intel8080_MVI(Intel8080Registers.A, arg);
             }
             case CommandsCodes.MVI_B: {
                 String arg = getValueFromNextByte(memory, address);
-                return new CMD_Intel8080_MVI("B", arg);
+                return new CMD_Intel8080_MVI(Intel8080Registers.B, arg);
             }
             case CommandsCodes.MVI_C: {
                 String arg = getValueFromNextByte(memory, address);
-                return new CMD_Intel8080_MVI("C", arg);
+                return new CMD_Intel8080_MVI(Intel8080Registers.C, arg);
             }
             case CommandsCodes.MVI_D: {
                 String arg = getValueFromNextByte(memory, address);
-                return new CMD_Intel8080_MVI("D", arg);
+                return new CMD_Intel8080_MVI(Intel8080Registers.D, arg);
             }
             case CommandsCodes.MVI_E: {
                 String arg = getValueFromNextByte(memory, address);
-                return new CMD_Intel8080_MVI("E", arg);
+                return new CMD_Intel8080_MVI(Intel8080Registers.E, arg);
             }
             case CommandsCodes.MVI_H: {
                 String arg = getValueFromNextByte(memory, address);
-                return new CMD_Intel8080_MVI("H", arg);
+                return new CMD_Intel8080_MVI(Intel8080Registers.H, arg);
             }
             case CommandsCodes.MVI_L: {
                 String arg = getValueFromNextByte(memory, address);
-                return new CMD_Intel8080_MVI("L", arg);
+                return new CMD_Intel8080_MVI(Intel8080Registers.L, arg);
             }
             case CommandsCodes.MVI_M: {
                 String arg = getValueFromNextByte(memory, address);
-                return new CMD_Intel8080_MVI("M", arg);
+                return new CMD_Intel8080_MVI(Intel8080Registers.M, arg);
             }
 
             //================================================================================
@@ -249,19 +250,19 @@ public class CommandsBuilder {
 
             case CommandsCodes.LXI_B_data: {
                 String arg = getValueFromNextWord(memory, address);
-                return new CMD_Intel8080_LXI("B", arg);
+                return new CMD_Intel8080_LXI(Intel8080Registers.B, arg);
             }
             case CommandsCodes.LXI_D_data: {
                 String arg = getValueFromNextWord(memory, address);
-                return new CMD_Intel8080_LXI("D", arg);
+                return new CMD_Intel8080_LXI(Intel8080Registers.D, arg);
             }
             case CommandsCodes.LXI_H_data: {
                 String arg = getValueFromNextWord(memory, address);
-                return new CMD_Intel8080_LXI("H", arg);
+                return new CMD_Intel8080_LXI(Intel8080Registers.H, arg);
             }
             case CommandsCodes.LXI_SP_data: {
                 String arg = getValueFromNextWord(memory, address);
-                return new CMD_Intel8080_LXI("SP", arg);
+                return new CMD_Intel8080_LXI(Intel8080Registers.SP, arg);
             }
 
             //================================================================================
@@ -327,28 +328,28 @@ public class CommandsBuilder {
             //================================================================================
 
             case CommandsCodes.ADD_A: {
-                return new CMD_Intel8080_ADD("A");
+                return new CMD_Intel8080_ADD(Intel8080Registers.A);
             }
             case CommandsCodes.ADD_B: {
-                return new CMD_Intel8080_ADD("B");
+                return new CMD_Intel8080_ADD(Intel8080Registers.B);
             }
             case CommandsCodes.ADD_C: {
-                return new CMD_Intel8080_ADD("C");
+                return new CMD_Intel8080_ADD(Intel8080Registers.C);
             }
             case CommandsCodes.ADD_D: {
-                return new CMD_Intel8080_ADD("D");
+                return new CMD_Intel8080_ADD(Intel8080Registers.D);
             }
             case CommandsCodes.ADD_E: {
-                return new CMD_Intel8080_ADD("E");
+                return new CMD_Intel8080_ADD(Intel8080Registers.E);
             }
             case CommandsCodes.ADD_H: {
-                return new CMD_Intel8080_ADD("H");
+                return new CMD_Intel8080_ADD(Intel8080Registers.H);
             }
             case CommandsCodes.ADD_L: {
-                return new CMD_Intel8080_ADD("L");
+                return new CMD_Intel8080_ADD(Intel8080Registers.L);
             }
             case CommandsCodes.ADD_M: {
-                return new CMD_Intel8080_ADD("M");
+                return new CMD_Intel8080_ADD(Intel8080Registers.M);
             }
 
             //================================================================================
@@ -363,28 +364,28 @@ public class CommandsBuilder {
             //================================================================================
 
             case CommandsCodes.ADC_A: {
-                return new CMD_Intel8080_ADC("A");
+                return new CMD_Intel8080_ADC(Intel8080Registers.A);
             }
             case CommandsCodes.ADC_B: {
-                return new CMD_Intel8080_ADC("B");
+                return new CMD_Intel8080_ADC(Intel8080Registers.B);
             }
             case CommandsCodes.ADC_C: {
-                return new CMD_Intel8080_ADC("C");
+                return new CMD_Intel8080_ADC(Intel8080Registers.C);
             }
             case CommandsCodes.ADC_D: {
-                return new CMD_Intel8080_ADC("D");
+                return new CMD_Intel8080_ADC(Intel8080Registers.D);
             }
             case CommandsCodes.ADC_E: {
-                return new CMD_Intel8080_ADC("E");
+                return new CMD_Intel8080_ADC(Intel8080Registers.E);
             }
             case CommandsCodes.ADC_H: {
-                return new CMD_Intel8080_ADC("H");
+                return new CMD_Intel8080_ADC(Intel8080Registers.H);
             }
             case CommandsCodes.ADC_L: {
-                return new CMD_Intel8080_ADC("L");
+                return new CMD_Intel8080_ADC(Intel8080Registers.L);
             }
             case CommandsCodes.ADC_M: {
-                return new CMD_Intel8080_ADC("M");
+                return new CMD_Intel8080_ADC(Intel8080Registers.M);
             }
 
             //================================================================================
@@ -399,28 +400,28 @@ public class CommandsBuilder {
             //================================================================================
 
             case CommandsCodes.SUB_A: {
-                return new CMD_Intel8080_SUB("A");
+                return new CMD_Intel8080_SUB(Intel8080Registers.A);
             }
             case CommandsCodes.SUB_B: {
-                return new CMD_Intel8080_SUB("B");
+                return new CMD_Intel8080_SUB(Intel8080Registers.B);
             }
             case CommandsCodes.SUB_C: {
-                return new CMD_Intel8080_SUB("C");
+                return new CMD_Intel8080_SUB(Intel8080Registers.C);
             }
             case CommandsCodes.SUB_D: {
-                return new CMD_Intel8080_SUB("D");
+                return new CMD_Intel8080_SUB(Intel8080Registers.D);
             }
             case CommandsCodes.SUB_E: {
-                return new CMD_Intel8080_SUB("E");
+                return new CMD_Intel8080_SUB(Intel8080Registers.E);
             }
             case CommandsCodes.SUB_H: {
-                return new CMD_Intel8080_SUB("H");
+                return new CMD_Intel8080_SUB(Intel8080Registers.H);
             }
             case CommandsCodes.SUB_L: {
-                return new CMD_Intel8080_SUB("L");
+                return new CMD_Intel8080_SUB(Intel8080Registers.L);
             }
             case CommandsCodes.SUB_M: {
-                return new CMD_Intel8080_SUB("M");
+                return new CMD_Intel8080_SUB(Intel8080Registers.M);
             }
 
             //================================================================================
@@ -435,28 +436,28 @@ public class CommandsBuilder {
             //================================================================================
 
             case CommandsCodes.SBB_A: {
-                return new CMD_Intel8080_SBB("A");
+                return new CMD_Intel8080_SBB(Intel8080Registers.A);
             }
             case CommandsCodes.SBB_B: {
-                return new CMD_Intel8080_SBB("B");
+                return new CMD_Intel8080_SBB(Intel8080Registers.B);
             }
             case CommandsCodes.SBB_C: {
-                return new CMD_Intel8080_SBB("C");
+                return new CMD_Intel8080_SBB(Intel8080Registers.C);
             }
             case CommandsCodes.SBB_D: {
-                return new CMD_Intel8080_SBB("D");
+                return new CMD_Intel8080_SBB(Intel8080Registers.D);
             }
             case CommandsCodes.SBB_E: {
-                return new CMD_Intel8080_SBB("E");
+                return new CMD_Intel8080_SBB(Intel8080Registers.E);
             }
             case CommandsCodes.SBB_H: {
-                return new CMD_Intel8080_SBB("H");
+                return new CMD_Intel8080_SBB(Intel8080Registers.H);
             }
             case CommandsCodes.SBB_L: {
-                return new CMD_Intel8080_SBB("L");
+                return new CMD_Intel8080_SBB(Intel8080Registers.L);
             }
             case CommandsCodes.SBB_M: {
-                return new CMD_Intel8080_SBB("M");
+                return new CMD_Intel8080_SBB(Intel8080Registers.M);
             }
 
             //================================================================================
@@ -471,28 +472,28 @@ public class CommandsBuilder {
             //================================================================================
 
             case CommandsCodes.INR_A: {
-                return new CMD_Intel8080_INR("A");
+                return new CMD_Intel8080_INR(Intel8080Registers.A);
             }
             case CommandsCodes.INR_B: {
-                return new CMD_Intel8080_INR("B");
+                return new CMD_Intel8080_INR(Intel8080Registers.B);
             }
             case CommandsCodes.INR_C: {
-                return new CMD_Intel8080_INR("C");
+                return new CMD_Intel8080_INR(Intel8080Registers.C);
             }
             case CommandsCodes.INR_D: {
-                return new CMD_Intel8080_INR("D");
+                return new CMD_Intel8080_INR(Intel8080Registers.D);
             }
             case CommandsCodes.INR_E: {
-                return new CMD_Intel8080_INR("E");
+                return new CMD_Intel8080_INR(Intel8080Registers.E);
             }
             case CommandsCodes.INR_H: {
-                return new CMD_Intel8080_INR("H");
+                return new CMD_Intel8080_INR(Intel8080Registers.H);
             }
             case CommandsCodes.INR_L: {
-                return new CMD_Intel8080_INR("L");
+                return new CMD_Intel8080_INR(Intel8080Registers.L);
             }
             case CommandsCodes.INR_M: {
-                return new CMD_Intel8080_INR("M");
+                return new CMD_Intel8080_INR(Intel8080Registers.M);
             }
 
             //================================================================================
@@ -515,28 +516,28 @@ public class CommandsBuilder {
             //================================================================================
 
             case CommandsCodes.DCR_A: {
-                return new CMD_Intel8080_DCR("A");
+                return new CMD_Intel8080_DCR(Intel8080Registers.A);
             }
             case CommandsCodes.DCR_B: {
-                return new CMD_Intel8080_DCR("B");
+                return new CMD_Intel8080_DCR(Intel8080Registers.B);
             }
             case CommandsCodes.DCR_C: {
-                return new CMD_Intel8080_DCR("C");
+                return new CMD_Intel8080_DCR(Intel8080Registers.C);
             }
             case CommandsCodes.DCR_D: {
-                return new CMD_Intel8080_DCR("D");
+                return new CMD_Intel8080_DCR(Intel8080Registers.D);
             }
             case CommandsCodes.DCR_E: {
-                return new CMD_Intel8080_DCR("E");
+                return new CMD_Intel8080_DCR(Intel8080Registers.E);
             }
             case CommandsCodes.DCR_H: {
-                return new CMD_Intel8080_DCR("H");
+                return new CMD_Intel8080_DCR(Intel8080Registers.H);
             }
             case CommandsCodes.DCR_L: {
-                return new CMD_Intel8080_DCR("L");
+                return new CMD_Intel8080_DCR(Intel8080Registers.L);
             }
             case CommandsCodes.DCR_M: {
-                return new CMD_Intel8080_DCR("M");
+                return new CMD_Intel8080_DCR(Intel8080Registers.M);
             }
 
             //================================================================================
@@ -575,28 +576,28 @@ public class CommandsBuilder {
             //================================================================================
 
             case CommandsCodes.ANA_A: {
-                return new CMD_Intel8080_ANA("A");
+                return new CMD_Intel8080_ANA(Intel8080Registers.A);
             }
             case CommandsCodes.ANA_B: {
-                return new CMD_Intel8080_ANA("B");
+                return new CMD_Intel8080_ANA(Intel8080Registers.B);
             }
             case CommandsCodes.ANA_C: {
-                return new CMD_Intel8080_ANA("C");
+                return new CMD_Intel8080_ANA(Intel8080Registers.C);
             }
             case CommandsCodes.ANA_D: {
-                return new CMD_Intel8080_ANA("D");
+                return new CMD_Intel8080_ANA(Intel8080Registers.D);
             }
             case CommandsCodes.ANA_E: {
-                return new CMD_Intel8080_ANA("E");
+                return new CMD_Intel8080_ANA(Intel8080Registers.E);
             }
             case CommandsCodes.ANA_H: {
-                return new CMD_Intel8080_ANA("H");
+                return new CMD_Intel8080_ANA(Intel8080Registers.H);
             }
             case CommandsCodes.ANA_L: {
-                return new CMD_Intel8080_ANA("L");
+                return new CMD_Intel8080_ANA(Intel8080Registers.L);
             }
             case CommandsCodes.ANA_M: {
-                return new CMD_Intel8080_ANA("M");
+                return new CMD_Intel8080_ANA(Intel8080Registers.M);
             }
 
             //================================================================================
@@ -611,28 +612,28 @@ public class CommandsBuilder {
             //================================================================================
 
             case CommandsCodes.ORA_A: {
-                return new CMD_Intel8080_ORA("A");
+                return new CMD_Intel8080_ORA(Intel8080Registers.A);
             }
             case CommandsCodes.ORA_B: {
-                return new CMD_Intel8080_ORA("B");
+                return new CMD_Intel8080_ORA(Intel8080Registers.B);
             }
             case CommandsCodes.ORA_C: {
-                return new CMD_Intel8080_ORA("C");
+                return new CMD_Intel8080_ORA(Intel8080Registers.C);
             }
             case CommandsCodes.ORA_D: {
-                return new CMD_Intel8080_ORA("D");
+                return new CMD_Intel8080_ORA(Intel8080Registers.D);
             }
             case CommandsCodes.ORA_E: {
-                return new CMD_Intel8080_ORA("E");
+                return new CMD_Intel8080_ORA(Intel8080Registers.E);
             }
             case CommandsCodes.ORA_H: {
-                return new CMD_Intel8080_ORA("H");
+                return new CMD_Intel8080_ORA(Intel8080Registers.H);
             }
             case CommandsCodes.ORA_L: {
-                return new CMD_Intel8080_ORA("L");
+                return new CMD_Intel8080_ORA(Intel8080Registers.L);
             }
             case CommandsCodes.ORA_M: {
-                return new CMD_Intel8080_ORA("M");
+                return new CMD_Intel8080_ORA(Intel8080Registers.M);
             }
 
             //================================================================================
@@ -647,28 +648,28 @@ public class CommandsBuilder {
             //================================================================================
 
             case CommandsCodes.XRA_A: {
-                return new CMD_Intel8080_XRA("A");
+                return new CMD_Intel8080_XRA(Intel8080Registers.A);
             }
             case CommandsCodes.XRA_B: {
-                return new CMD_Intel8080_XRA("B");
+                return new CMD_Intel8080_XRA(Intel8080Registers.B);
             }
             case CommandsCodes.XRA_C: {
-                return new CMD_Intel8080_XRA("C");
+                return new CMD_Intel8080_XRA(Intel8080Registers.C);
             }
             case CommandsCodes.XRA_D: {
-                return new CMD_Intel8080_XRA("D");
+                return new CMD_Intel8080_XRA(Intel8080Registers.D);
             }
             case CommandsCodes.XRA_E: {
-                return new CMD_Intel8080_XRA("E");
+                return new CMD_Intel8080_XRA(Intel8080Registers.E);
             }
             case CommandsCodes.XRA_H: {
-                return new CMD_Intel8080_XRA("H");
+                return new CMD_Intel8080_XRA(Intel8080Registers.H);
             }
             case CommandsCodes.XRA_L: {
-                return new CMD_Intel8080_XRA("L");
+                return new CMD_Intel8080_XRA(Intel8080Registers.L);
             }
             case CommandsCodes.XRA_M: {
-                return new CMD_Intel8080_XRA("M");
+                return new CMD_Intel8080_XRA(Intel8080Registers.M);
             }
 
             //================================================================================
@@ -683,28 +684,28 @@ public class CommandsBuilder {
             //================================================================================
 
             case CommandsCodes.CMP_A: {
-                return new CMD_Intel8080_CMP("A");
+                return new CMD_Intel8080_CMP(Intel8080Registers.A);
             }
             case CommandsCodes.CMP_B: {
-                return new CMD_Intel8080_CMP("B");
+                return new CMD_Intel8080_CMP(Intel8080Registers.B);
             }
             case CommandsCodes.CMP_C: {
-                return new CMD_Intel8080_CMP("C");
+                return new CMD_Intel8080_CMP(Intel8080Registers.C);
             }
             case CommandsCodes.CMP_D: {
-                return new CMD_Intel8080_CMP("D");
+                return new CMD_Intel8080_CMP(Intel8080Registers.D);
             }
             case CommandsCodes.CMP_E: {
-                return new CMD_Intel8080_CMP("E");
+                return new CMD_Intel8080_CMP(Intel8080Registers.E);
             }
             case CommandsCodes.CMP_H: {
-                return new CMD_Intel8080_CMP("H");
+                return new CMD_Intel8080_CMP(Intel8080Registers.H);
             }
             case CommandsCodes.CMP_L: {
-                return new CMD_Intel8080_CMP("L");
+                return new CMD_Intel8080_CMP(Intel8080Registers.L);
             }
             case CommandsCodes.CMP_M: {
-                return new CMD_Intel8080_CMP("M");
+                return new CMD_Intel8080_CMP(Intel8080Registers.M);
             }
 
             //================================================================================
@@ -989,32 +990,32 @@ public class CommandsBuilder {
             //================================================================================
 
             case CommandsCodes.PUSH_B: {
-                return new CMD_Intel8080_PUSH("B");
+                return new CMD_Intel8080_PUSH(Intel8080Registers.B);
             }
             case CommandsCodes.PUSH_D: {
-                return new CMD_Intel8080_PUSH("D");
+                return new CMD_Intel8080_PUSH(Intel8080Registers.D);
             }
             case CommandsCodes.PUSH_H: {
-                return new CMD_Intel8080_PUSH("H");
+                return new CMD_Intel8080_PUSH(Intel8080Registers.H);
             }
             case CommandsCodes.PUSH_PSW: {
-                return new CMD_Intel8080_PUSH("PSW");
+                return new CMD_Intel8080_PUSH(Intel8080Registers.PSW);
             }
 
             //================================================================================
             //================================================================================
 
             case CommandsCodes.POP_B: {
-                return new CMD_Intel8080_POP("B");
+                return new CMD_Intel8080_POP(Intel8080Registers.B);
             }
             case CommandsCodes.POP_D: {
-                return new CMD_Intel8080_POP("D");
+                return new CMD_Intel8080_POP(Intel8080Registers.D);
             }
             case CommandsCodes.POP_H: {
-                return new CMD_Intel8080_POP("H");
+                return new CMD_Intel8080_POP(Intel8080Registers.H);
             }
             case CommandsCodes.POP_PSW: {
-                return new CMD_Intel8080_POP("PSW");
+                return new CMD_Intel8080_POP(Intel8080Registers.PSW);
             }
 
             //================================================================================

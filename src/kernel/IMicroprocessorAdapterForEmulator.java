@@ -7,11 +7,11 @@ public interface IMicroprocessorAdapterForEmulator {
 
     void setIOSystem(IInputOutputSystem ioSystem);
 
-    void setValueByRegisterName(String registerName, int value);
-    int getValueByRegisterName(String registerName);
+    int getValueFromRegister(Intel8080Registers register);
+    void setValueInRegister(Intel8080Registers register, int value);
 
-    int getValueByFlagName(Intel8080Flags flag);
-    void setValueByFlagName(Intel8080Flags flag, int value);
+    int getValueFromFlag(Intel8080Flags flag);
+    void setValueInFlag(Intel8080Flags flag, int value);
 
     IMemory getMemory();
 

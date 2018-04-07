@@ -6,9 +6,9 @@ import kernel.Intel8080Flags;
 public class CMD_Intel8080_CMC implements ICommand {
     @Override
     public void execute(IMicroprocessorAdapterForCommands microprocessor) {
-        int value = microprocessor.getValueByFlagName(Intel8080Flags.C);
+        int value = microprocessor.getValueFromFlag(Intel8080Flags.C);
         value = (value + 1) % 2;
-        microprocessor.setValueByFlagName(Intel8080Flags.C, value);
+        microprocessor.setValueInFlag(Intel8080Flags.C, value);
     }
 
     @Override
