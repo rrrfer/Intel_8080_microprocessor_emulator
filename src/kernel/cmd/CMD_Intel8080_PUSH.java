@@ -1,8 +1,18 @@
 package kernel.cmd;
 
 import kernel.IMicroprocessor;
+import kernel._DByte;
 
 public class CMD_Intel8080_PUSH implements ICommand {
+
+    public static void push(IMicroprocessor microprocessor, int value) {
+        int address = microprocessor.getValueByRegisterName("SP");
+        address = _DByte.getRoundedValue(address - 1);
+        microprocessor.getMemory().setValueByIndex(address, value / 256);
+        address = _DByte.getRoundedValue(address - 1);
+        microprocessor.getMemory().setValueByIndex(address, value % 256);
+        microprocessor.setValueByRegisterName("SP", address);
+    }
 
     private String arg;
 
@@ -38,7 +48,7 @@ public class CMD_Intel8080_PUSH implements ICommand {
                 break;
             }
         }
-        microprocessor.push(value);
+        push(microprocessor, value);
     }
 
     @Override

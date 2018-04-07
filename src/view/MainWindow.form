@@ -115,12 +115,16 @@
                     <maximum-size width="800" height="400"/>
                   </grid>
                 </constraints>
-                <properties/>
+                <properties>
+                  <horizontalScrollBarPolicy value="30"/>
+                </properties>
                 <border type="none"/>
                 <children>
                   <component id="98a01" class="javax.swing.JEditorPane" binding="codeEditorTextPanel">
                     <constraints/>
                     <properties>
+                      <focusTraversalPolicyProvider value="false"/>
+                      <minimumSize width="750" height="24"/>
                       <text value=""/>
                     </properties>
                   </component>
@@ -134,7 +138,9 @@
                     <maximum-size width="800" height="100"/>
                   </grid>
                 </constraints>
-                <properties/>
+                <properties>
+                  <horizontalScrollBarPolicy value="31"/>
+                </properties>
                 <border type="none"/>
                 <children>
                   <component id="b4c41" class="javax.swing.JEditorPane" binding="translationResultTextPanel">

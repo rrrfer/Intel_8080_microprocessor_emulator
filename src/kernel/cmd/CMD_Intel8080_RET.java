@@ -5,7 +5,7 @@ import kernel.IMicroprocessor;
 public class CMD_Intel8080_RET implements ICommand {
     @Override
     public void execute(IMicroprocessor microprocessor) {
-        int address = microprocessor.pop();
+        int address = CMD_Intel8080_POP.pop(microprocessor);
         microprocessor.setValueByRegisterName("PC", address);
     }
 

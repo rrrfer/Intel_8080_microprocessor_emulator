@@ -1,5 +1,6 @@
 package view;
 
+import com.sun.istack.internal.NotNull;
 import presenter.IMainPresenter_View;
 import presenter.MainPresenter;
 
@@ -61,10 +62,6 @@ public class MainWindow extends JFrame implements IMainView {
     private MemoryTableModel memoryTableModel;
     private RegistersAndFlagsTableModel registersAndFlagsTableModel;
 
-    // Data Source for model components
-    private String[][] dataSourceForMemoryTable = new String[65536][3];
-    private String[][] dataSourceForRegistersAndFlagsTable = new String[13][4];
-
     // Input
     private String inputString;
 
@@ -76,39 +73,42 @@ public class MainWindow extends JFrame implements IMainView {
     public static final Color greenColor = new Color(44, 192, 8);
     public static final Color redColor = new Color(122, 0, 6);
 
-    public MainWindow(IMainPresenter_View presenter,
-                      String[][] dataSourceForMemoryTable,
-                      String[][] dataSourceForRegistersAndFlagsTable) {
+    public MainWindow(@NotNull IMainPresenter_View presenter, @NotNull String[][] dataSourceForMemoryTable,
+                      @NotNull String[][] dataSourceForRegisterTable, @NotNull int[][] dataSourceForPixelScreen,
+                      @NotNull int[][] dataSourceForCharacterScreen_Color,
+                      @NotNull int[][] dataSourceForCharacterScreen_Character) {
         this.presenter = presenter;
-        this.dataSourceForMemoryTable = dataSourceForMemoryTable;
-        this.dataSourceForRegistersAndFlagsTable = dataSourceForRegistersAndFlagsTable;
 
-        memoryTableModel = new MemoryTableModel(dataSourceForMemoryTable);
-        registersAndFlagsTableModel =
-                new RegistersAndFlagsTableModel(dataSourceForRegistersAndFlagsTable);
-        setTitle("Intel 8080 Emulator");
+        setViewTitle("Intel 8080 Emulator");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setContentPane(rootPanel);
 
-        createUI();
+        createUI(dataSourceForMemoryTable, dataSourceForRegisterTable, dataSourceForPixelScreen,
+                dataSourceForCharacterScreen_Color, dataSourceForCharacterScreen_Character);
+
+        setContentPane(rootPanel);
 
         pack();
         setResizable(false);
-        setLocationRelativeTo(null);
 
-        pixelScreenView = new PixelScreenView(256, 256, 1);
-        characterScreenView = new CharacterScreenView(240, 240, 12);
-        screensWindow = new ScreensWindow((PixelScreenView) pixelScreenView,
-                (CharacterScreenView) characterScreenView, this);
+        setLocationRelativeTo(null);
 
         setVisible(true);
     }
 
     // Create&Setting GUI
-    private void createUI() {
+    private void createUI(String[][] dataSourceForMemoryTable,
+                          String[][] dataSourceForRegisterTable, int[][] dataSourceForPixelScreen,
+                          int[][] dataSourceForCharacterScreen_Color,
+                          int[][] dataSourceForCharacterScreen_Character) {
+
         createMenuBar();
-        createMemoryTable();
-        createRegistersAndFlagsTable();
+        createMemoryTable(dataSourceForMemoryTable);
+        createRegistersAndFlagsTable(dataSourceForRegisterTable);
+
+        createScreens(dataSourceForPixelScreen,
+                dataSourceForCharacterScreen_Color,
+                dataSourceForCharacterScreen_Character);
+
         applySettingUI();
         setActionsListeners();
     }
@@ -442,7 +442,8 @@ public class MainWindow extends JFrame implements IMainView {
         this.setJMenuBar(menuBar);
     }
 
-    private void createMemoryTable() {
+    private void createMemoryTable(String[][] dataSourceForMemoryTable) {
+        memoryTableModel = new MemoryTableModel(dataSourceForMemoryTable);
         memoryTable.setModel(memoryTableModel);
         memoryTable.setAutoResizeMode(JTable.AUTO_RESIZE_NEXT_COLUMN);
         memoryTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -454,7 +455,8 @@ public class MainWindow extends JFrame implements IMainView {
         memoryTable.getColumnModel().getColumn(2).setPreferredWidth(20);
     }
 
-    private void createRegistersAndFlagsTable() {
+    private void createRegistersAndFlagsTable(String[][] dataSourceForRegisterTable) {
+        registersAndFlagsTableModel = new RegistersAndFlagsTableModel(dataSourceForRegisterTable);
         registersAndFlagsTable.setModel(registersAndFlagsTableModel);
         registersAndFlagsTable.setFocusable(false);
         registersAndFlagsTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
@@ -463,6 +465,21 @@ public class MainWindow extends JFrame implements IMainView {
                 new RegistersAndFlagsTableCellRenderer());
         registersAndFlagsTable.getColumnModel().getColumn(0).setPreferredWidth(90);
     }
+
+    private void createScreens(int[][] dataSourceForPixelScreen, int[][] dataSourceForCharacterScreen_Color,
+                               int[][] dataSourceForCharacterScreen_Character) {
+
+        pixelScreenView = new PixelScreenView(256, 256, 1);
+        characterScreenView = new CharacterScreenView(240, 240, 12);
+
+        pixelScreenView.setColorData(dataSourceForPixelScreen);
+        characterScreenView.setColorData(dataSourceForCharacterScreen_Color);
+        characterScreenView.setCharData(dataSourceForCharacterScreen_Character);
+
+        screensWindow = new ScreensWindow((PixelScreenView) pixelScreenView,
+                (CharacterScreenView) characterScreenView, this);
+    }
+
 
     private void applySettingUI() {
 
@@ -595,7 +612,7 @@ public class MainWindow extends JFrame implements IMainView {
     private void setEditable() {
         if (!getTitle().equals("Intel 8080 Emulator")) {
             if (getTitle().charAt(getTitle().length() - 1) != '*') {
-                setTitle(getTitle() + "*");
+                setViewTitle(getTitle() + "*");
             }
         }
     }
@@ -614,15 +631,9 @@ public class MainWindow extends JFrame implements IMainView {
 
     // IMainView
     @Override
-    public void setMemoryDataTable(String[][] dataSource) {
-        System.arraycopy(dataSource, 0,
-                            dataSourceForMemoryTable, 0, dataSource.length);
-        memoryTableModel.fireTableDataChanged();
-    }
-
-    @Override
     public void setProgramCounterPosition(int programCounterPosition) {
         memoryTable.setRowSelectionInterval(programCounterPosition, programCounterPosition);
+
         int tableSize = memoryTable.getRowCount();
         int scrollMax = memoryTableScrollPanel.getVerticalScrollBar().getMaximum();
         if (programCounterPosition > 10) {
@@ -631,6 +642,7 @@ public class MainWindow extends JFrame implements IMainView {
         } else {
             memoryTableScrollPanel.getVerticalScrollBar().setValue(0);
         }
+
         if (programCounterPosition < 20) {
             memoryTableModel.fireTableRowsUpdated(0, programCounterPosition + 20);
         } else {
@@ -639,29 +651,7 @@ public class MainWindow extends JFrame implements IMainView {
     }
 
     @Override
-    public void setRegistersAndFlagsDataTable(String[][] dataSource) {
-        ArrayList<Integer> selectedRow = new ArrayList<>();
-        for (int i = 0; i < dataSourceForRegistersAndFlagsTable.length; ++i) {
-            for (int j = 0; j < dataSourceForRegistersAndFlagsTable[i].length; ++j) {
-                if (dataSourceForRegistersAndFlagsTable[i][j] != null) {
-                    if (!dataSourceForRegistersAndFlagsTable[i][j].equals(dataSource[i][j])) {
-                        selectedRow.add(i);
-                    }
-                }
-                dataSourceForRegistersAndFlagsTable[i][j] = dataSource[i][j];
-            }
-        }
-        if (registersAndFlagsTableModel != null) {
-            registersAndFlagsTableModel.fireTableDataChanged();
-        }
-
-        for (int i = 0; i < selectedRow.size(); ++i) {
-            registersAndFlagsTable.addRowSelectionInterval(selectedRow.get(i), selectedRow.get(i));
-        }
-    }
-
-    @Override
-    public void setBreakpointsData(ArrayList<Integer> breakpointsData) {
+    public void setBreakpoints(ArrayList<Integer> breakpointsData) {
         breakpoints.clear();
         breakpoints.addAll(breakpointsData);
     }
@@ -672,7 +662,7 @@ public class MainWindow extends JFrame implements IMainView {
     }
 
     @Override
-    public void setTranslationResultText(String translationResult, boolean isErrorsSearch) {
+    public void setTranslationResult(String translationResult, boolean isErrorsSearch) {
         translationResultTextPanel.setText(translationResult);
 
         if (isErrorsSearch) {
@@ -707,27 +697,27 @@ public class MainWindow extends JFrame implements IMainView {
     }
 
     @Override
-    public void setConsoleOutData(String consoleOutData) {
+    public void setConsoleOutputData(String consoleOutData) {
         consoleOutputTextPanel.setText(consoleOutData);
     }
 
     @Override
-    public void setConsoleInData(String consoleInData) {
-        consoleInputTextPanel.setText(consoleInData);
+    public void clearInputConsole() {
+        consoleInputTextPanel.setText("");
     }
 
     @Override
     public void setPermissionForActions(int mode) {
         switch (mode) {
-            case MainPresenter.DEFAULT_MODE: {
+            case MainPresenter.DEFAULT_ACTION_MODE: {
                 setPermissionForAction_DefaultMode();
                 break;
             }
-            case MainPresenter.RUN_MODE: {
+            case MainPresenter.RUN_ACTION_MODE: {
                 setPermissionForAction_RunMode();
                 break;
             }
-            case MainPresenter.IO_MODE: {
+            case MainPresenter.IO_ACTION_MODE: {
                 setPermissionForAction_IOMode();
                 break;
             }
@@ -736,8 +726,8 @@ public class MainWindow extends JFrame implements IMainView {
     }
 
     @Override
-    public void setEditableFileTitle(String title) {
-        this.setTitle("Intel 8080 Emulator: " + title);
+    public void setViewTitle(String title) {
+        setTitle("Intel 8080 Emulator: " + title);
     }
 
     @Override
@@ -758,19 +748,25 @@ public class MainWindow extends JFrame implements IMainView {
     }
 
     @Override
-    public void setPixelScreenData(int[][] pixelScreenData) {
-        pixelScreenView.setColorData(pixelScreenData);
+    public void memoryTableUpdate() {
+        memoryTableModel.fireTableDataChanged();
+    }
+
+    @Override
+    public void registersTableUpdate() {
+        registersAndFlagsTableModel.fireTableDataChanged();
+    }
+
+    @Override
+    public void pixelScreenUpdate() {
         pixelScreenView.update();
     }
 
     @Override
-    public void setCharacterScreenData(int[][] charScreenColorData, int[][] charScreenCharData) {
-        characterScreenView.setCharData(charScreenCharData);
-        characterScreenView.setColorData(charScreenColorData);
+    public void characterScreenUpdate() {
         characterScreenView.update();
     }
 
-    // Helps
     private void setPermissionForAction_DefaultMode() {
 
         emulatorTabbedPanel.setSelectedIndex(0);
@@ -854,10 +850,11 @@ public class MainWindow extends JFrame implements IMainView {
         saveAsItem.setEnabled(false);
         exitItem.setEnabled(true);
 
-        emulatorMenu.setEnabled(false);
+        emulatorMenu.setEnabled(true);
         translationItem.setEnabled(false);
         stepItem.setEnabled(false);
         runItem.setEnabled(false);
+        stopItem.setEnabled(true);
         resetMemoryItem.setEnabled(false);
         resetRegisterItem.setEnabled(false);
         switchTabItem.setEnabled(false);
@@ -867,8 +864,6 @@ public class MainWindow extends JFrame implements IMainView {
         helpMenu.setEnabled(false);
         helpItem.setEnabled(false);
         aboutItem.setEnabled(false);
-
-        stopItem.setEnabled(false);
     }
 
     private int otherRadix2Dec(String number) {
@@ -907,4 +902,4 @@ public class MainWindow extends JFrame implements IMainView {
     }
 }
 
-// TODO Добавить символьный экран
+// Оптимизировать ядро эмулятора (кэшировать созданные команды)

@@ -1,6 +1,7 @@
 package kernel.cmd;
 
 import kernel.IMicroprocessor;
+import kernel._DByte;
 
 public class CMD_Intel8080_INX implements ICommand {
 
@@ -20,7 +21,7 @@ public class CMD_Intel8080_INX implements ICommand {
         }
 
         value += 1;
-        value = microprocessor.getRoundedWord(value);
+        value = _DByte.getRoundedValue(value);
 
         if (!arg.equals("SP")) {
             microprocessor.setValueByRegisterPairName(arg, value);

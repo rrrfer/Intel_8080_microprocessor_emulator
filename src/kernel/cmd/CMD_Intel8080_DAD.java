@@ -1,6 +1,7 @@
 package kernel.cmd;
 
 import kernel.IMicroprocessor;
+import kernel._DByte;
 
 public class CMD_Intel8080_DAD implements ICommand {
 
@@ -28,7 +29,7 @@ public class CMD_Intel8080_DAD implements ICommand {
            microprocessor.setValueByFlagName("C", 0);
         }
 
-        secondValue = microprocessor.getRoundedWord(secondValue);
+        secondValue = _DByte.getRoundedValue(secondValue);
         microprocessor.setValueByRegisterPairName("H", secondValue);
     }
 

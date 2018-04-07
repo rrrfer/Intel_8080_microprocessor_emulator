@@ -9,7 +9,6 @@ public interface IMicroprocessor extends IReadOnlyMicroprocessor {
     void setValueByRegisterPairName(String registerPairName, int value);
 
     void setValueByRegisterName(String registerName, int value);
-
     void setValueByFlagName(String flagName, int value);
 
     int getAllFlags();
@@ -19,9 +18,6 @@ public interface IMicroprocessor extends IReadOnlyMicroprocessor {
 
     void checkByteForSetFlags(int value);
 
-    int getRoundedByte(int value);
-    int getRoundedWord(int value);
-
     void setIOSystem(IInputOutputSystem ioSystem);
     IInputOutputSystem getIOSystem();
 
@@ -29,7 +25,4 @@ public interface IMicroprocessor extends IReadOnlyMicroprocessor {
 
     void resetRegisters();
     void resetMemory();
-
-    void push(int value);
-    int pop();
 }

@@ -27,13 +27,7 @@ public class EmulatorIntel8080 implements IEmulator {
 
     @Override
     public void run() {
-        while (step() && !breakpoints.contains(microprocessor.getValueByRegisterName("PC"))) {
-            if (Thread.interrupted()) {
-                System.gc();
-                break;
-            }
-        }
-        System.gc();
+        while (step() && !breakpoints.contains(microprocessor.getValueByRegisterName("PC"))) {}
     }
 
     @Override

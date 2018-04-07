@@ -1,6 +1,7 @@
 package kernel.cmd;
 
 import kernel.IMicroprocessor;
+import kernel._Byte;
 
 public class CMD_Intel8080_DCR implements ICommand {
 
@@ -43,7 +44,7 @@ public class CMD_Intel8080_DCR implements ICommand {
         }
 
         microprocessor.setValueByFlagName("P", (counter + 1) % 2);
-        value = microprocessor.getRoundedByte(value);
+        value = _Byte.getRoundedValue(value);
 
         if (arg.equals("M")) {
             int address = microprocessor.getValueByRegisterPairName("H");

@@ -14,7 +14,7 @@ public class CMD_Intel8080_CALL implements ICommand {
     public void execute(IMicroprocessor microprocessor) {
         int callAddress = Integer.valueOf(arg, 16);
         int pushAddress = microprocessor.getValueByRegisterName("PC");
-        microprocessor.push(pushAddress);
+        CMD_Intel8080_PUSH.push(microprocessor, pushAddress);
         microprocessor.setValueByRegisterName("PC", callAddress);
     }
 

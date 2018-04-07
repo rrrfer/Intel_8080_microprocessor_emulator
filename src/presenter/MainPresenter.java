@@ -8,26 +8,27 @@ import kernel.IReadOnlyMicroprocessor;
 import view.IMainView;
 import view.MainWindow;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.util.ArrayList;
 
 public class MainPresenter implements IMainPresenter_View, IMainPresenter_Model {
 
-    public static final int DEFAULT_MODE = 0;
-    public static final int RUN_MODE = 1;
-    public static final int IO_MODE = 2;
+    public static final int DEFAULT_ACTION_MODE = 0;
+    public static final int RUN_ACTION_MODE = 1;
+    public static final int IO_ACTION_MODE = 2;
 
-    private String currentFilePath;
+    private int currentActionMode;
 
-    private String dataSourceForCodeEditorPanel;
-    private String dataSourceForTranslateResultPanel;
+    private String openedFilePath;
+
     private String dataSourceForConsoleOutputPanel;
 
     private String[][] dataSourceForMemoryTable;
-    private String[][] dataSourceForRegistersAndFlagsTable;
+    private String[][] dataSourceForRegistersTable;
 
-    private int actionMode;
+    private int[][] dataSourceForPixelScreen;
+    private int[][] dataSourceForCharacterScreen_Color;
+    private int[][] dataSourceForCharacterScreen_Character;
 
     private IMainView mainView;
     private IEmulator emulator;
@@ -40,18 +41,20 @@ public class MainPresenter implements IMainPresenter_View, IMainPresenter_Model 
     public MainPresenter() {
         inputOutputSystem = new InputOutputSystem(this);
         emulator = new EmulatorIntel8080(inputOutputSystem);
-        dataSourceForMemoryTable = getDataSourceForMemoryTable(emulator);
-        dataSourceForRegistersAndFlagsTable = getDataSourceForRegistersAndFlagsTable(emulator);
-        dataSourceForConsoleOutputPanel = "";
-        actionMode = DEFAULT_MODE;
 
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                mainView = new MainWindow(MainPresenter.this,
-                        dataSourceForMemoryTable, dataSourceForRegistersAndFlagsTable);
-                mainView.setPermissionForActions(MainPresenter.DEFAULT_MODE);
-            }
-        });
+        dataSourceForMemoryTable = new String[65536][3];
+        dataSourceForRegistersTable = new String[13][4];
+
+        getDataSourceForMemoryTable(emulator, dataSourceForMemoryTable);
+        getDataSourceForRegistersTable(emulator, dataSourceForRegistersTable);
+        dataSourceForConsoleOutputPanel = "";
+
+        mainView = new MainWindow(this, dataSourceForMemoryTable, dataSourceForRegistersTable,
+                dataSourceForPixelScreen, dataSourceForCharacterScreen_Color,
+                dataSourceForCharacterScreen_Character);
+
+        currentActionMode = DEFAULT_ACTION_MODE;
+        mainView.setPermissionForActions(MainPresenter.DEFAULT_ACTION_MODE);
     }
 
     // For View
@@ -61,13 +64,13 @@ public class MainPresenter implements IMainPresenter_View, IMainPresenter_Model 
         emulator.resetMemory();
         emulator.translation(program);
 
-        dataSourceForMemoryTable = getDataSourceForMemoryTable(emulator);
-        dataSourceForRegistersAndFlagsTable = getDataSourceForRegistersAndFlagsTable(emulator);
-        dataSourceForTranslateResultPanel = emulator.getTranslationResult();
+        getDataSourceForMemoryTable(emulator, dataSourceForMemoryTable);
+        getDataSourceForRegistersTable(emulator, dataSourceForRegistersTable);
+        String dataSourceForTranslateResultPanel = emulator.getTranslationResult();
 
-        mainView.setMemoryDataTable(dataSourceForMemoryTable);
-        mainView.setRegistersAndFlagsDataTable(dataSourceForRegistersAndFlagsTable);
-        mainView.setTranslationResultText(dataSourceForTranslateResultPanel, true);
+        mainView.memoryTableUpdate();
+        mainView.registersTableUpdate();
+        mainView.setTranslationResult(dataSourceForTranslateResultPanel, true);
         mainView.setProgramCounterPosition(0);
     }
 
@@ -79,21 +82,20 @@ public class MainPresenter implements IMainPresenter_View, IMainPresenter_Model 
                 public void run() {
                     emulator.run();
 
-                    dataSourceForRegistersAndFlagsTable
-                            = getDataSourceForRegistersAndFlagsTable(emulator);
-                    dataSourceForMemoryTable = getDataSourceForMemoryTable(emulator);
+                    getDataSourceForRegistersTable(emulator, dataSourceForRegistersTable);
+                    getDataSourceForMemoryTable(emulator, dataSourceForMemoryTable);
                     int PC = emulator.getViewInterface().getValueByRegisterName("PC");
 
-                    mainView.setMemoryDataTable(dataSourceForMemoryTable);
-                    mainView.setRegistersAndFlagsDataTable(dataSourceForRegistersAndFlagsTable);
+                    mainView.memoryTableUpdate();
+                    mainView.registersTableUpdate();
                     mainView.setProgramCounterPosition(PC);
 
-                    mainView.setPermissionForActions(MainPresenter.DEFAULT_MODE);
-                    actionMode = DEFAULT_MODE;
+                    mainView.setPermissionForActions(MainPresenter.DEFAULT_ACTION_MODE);
+                    currentActionMode = DEFAULT_ACTION_MODE;
                 }
             });
-            mainView.setPermissionForActions(MainPresenter.RUN_MODE);
-            actionMode = RUN_MODE;
+            currentActionMode = RUN_ACTION_MODE;
+            mainView.setPermissionForActions(MainPresenter.RUN_ACTION_MODE);
             programRunThread.start();
         }
     }
@@ -103,64 +105,61 @@ public class MainPresenter implements IMainPresenter_View, IMainPresenter_Model 
         if (commandRunThread == null || !commandRunThread.isAlive()) {
             commandRunThread = new Thread(() -> {
                 emulator.step();
-
-                dataSourceForMemoryTable = getDataSourceForMemoryTable(emulator);
-                dataSourceForRegistersAndFlagsTable = getDataSourceForRegistersAndFlagsTable(emulator);
-                int PC = emulator.getViewInterface().getValueByRegisterName("PC");
-
-                mainView.setMemoryDataTable(dataSourceForMemoryTable);
-                mainView.setRegistersAndFlagsDataTable(dataSourceForRegistersAndFlagsTable);
-                mainView.setProgramCounterPosition(PC);
             });
             commandRunThread.start();
         }
 
         try {
-            Thread.sleep(25);
+            commandRunThread.join();
         } catch (InterruptedException ignored) {}
+
+        getDataSourceForMemoryTable(emulator, dataSourceForMemoryTable);
+        getDataSourceForRegistersTable(emulator, dataSourceForRegistersTable);
+        int PC = emulator.getViewInterface().getValueByRegisterName("PC");
+
+        mainView.memoryTableUpdate();
+        mainView.registersTableUpdate();
+        mainView.setProgramCounterPosition(PC);
     }
 
     @Override
     public void stop() {
         if (programRunThread != null && programRunThread.isAlive()) {
-            programRunThread.interrupt();
+            programRunThread.stop();
 
-            try {
-                programRunThread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            dataSourceForRegistersAndFlagsTable
-                    = getDataSourceForRegistersAndFlagsTable(emulator);
-            dataSourceForMemoryTable = getDataSourceForMemoryTable(emulator);
+            getDataSourceForRegistersTable(emulator, dataSourceForRegistersTable);
+            getDataSourceForMemoryTable(emulator, dataSourceForMemoryTable);
             int PC = emulator.getViewInterface().getValueByRegisterName("PC");
 
-            mainView.setMemoryDataTable(dataSourceForMemoryTable);
-            mainView.setRegistersAndFlagsDataTable(dataSourceForRegistersAndFlagsTable);
+            mainView.memoryTableUpdate();
+            mainView.registersTableUpdate();
             mainView.setProgramCounterPosition(PC);
+            mainView.clearInputConsole();
 
-            mainView.setPermissionForActions(MainPresenter.DEFAULT_MODE);
-            actionMode = DEFAULT_MODE;
+            currentActionMode = DEFAULT_ACTION_MODE;
+            mainView.setPermissionForActions(MainPresenter.DEFAULT_ACTION_MODE);
+            System.gc();
         }
     }
 
     @Override
     public void resetRegisters() {
         emulator.resetRegisters();
-        dataSourceForRegistersAndFlagsTable = getDataSourceForRegistersAndFlagsTable(emulator);
-        dataSourceForConsoleOutputPanel = "";
         inputOutputSystem.clearScreens();
-        mainView.setRegistersAndFlagsDataTable(dataSourceForRegistersAndFlagsTable);
-        mainView.setConsoleOutData(dataSourceForConsoleOutputPanel);
+
+        getDataSourceForRegistersTable(emulator, dataSourceForRegistersTable);
+        dataSourceForConsoleOutputPanel = "";
+
+        mainView.registersTableUpdate();
+        mainView.setConsoleOutputData(dataSourceForConsoleOutputPanel);
         mainView.setProgramCounterPosition(0);
     }
 
     @Override
     public void resetMemory() {
         emulator.resetMemory();
-        dataSourceForMemoryTable = getDataSourceForMemoryTable(emulator);
-        mainView.setMemoryDataTable(dataSourceForMemoryTable);
+        getDataSourceForMemoryTable(emulator, dataSourceForMemoryTable);
+        mainView.memoryTableUpdate();
         mainView.setProgramCounterPosition(0);
     }
 
@@ -174,24 +173,26 @@ public class MainPresenter implements IMainPresenter_View, IMainPresenter_Model 
         emulator.removeAllBreakpoints();
         ArrayList<Integer> breakpoints = emulator.getBreakpoints();
         int PC = emulator.getViewInterface().getValueByRegisterName("PC");
-        mainView.setBreakpointsData(breakpoints);
+        mainView.setBreakpoints(breakpoints);
         mainView.setProgramCounterPosition(PC);
     }
 
     @Override
     public void setProgramCounter(int address) {
         emulator.setProgramCounter(address);
-        dataSourceForRegistersAndFlagsTable = getDataSourceForRegistersAndFlagsTable(emulator);
-        mainView.setRegistersAndFlagsDataTable(dataSourceForRegistersAndFlagsTable);
+        getDataSourceForRegistersTable(emulator, dataSourceForRegistersTable);
+        mainView.registersTableUpdate();
     }
 
     @Override
     public void loadProgramFromFile(String path) throws IOException {
-        currentFilePath = path;
-        dataSourceForCodeEditorPanel = emulator.loadProgramFromFile(path);
-        mainView.setTranslationResultText("", false);
+        openedFilePath = path;
+
+        String dataSourceForCodeEditorPanel = emulator.loadProgramFromFile(path);
+
+        mainView.setTranslationResult("", false);
         mainView.setProgramText(dataSourceForCodeEditorPanel);
-        mainView.setEditableFileTitle(path);
+        mainView.setViewTitle(path);
     }
 
     @Override
@@ -200,19 +201,19 @@ public class MainPresenter implements IMainPresenter_View, IMainPresenter_Model 
             path = path + ".i8080";
         }
         emulator.saveProgramInFile(path, programText);
-        mainView.setEditableFileTitle(path);
+        mainView.setViewTitle(path);
     }
 
     @Override
     public boolean saveProgramInFile(String programText) throws IOException {
-        if (currentFilePath == null) {
+        if (openedFilePath == null) {
             return false;
         } else {
-            if (!currentFilePath.endsWith(".i8080")) {
-                currentFilePath = currentFilePath + ".i8080";
+            if (!openedFilePath.endsWith(".i8080")) {
+                openedFilePath = openedFilePath + ".i8080";
             }
-            emulator.saveProgramInFile(currentFilePath, programText);
-            mainView.setEditableFileTitle(currentFilePath);
+            emulator.saveProgramInFile(openedFilePath, programText);
+            mainView.setViewTitle(openedFilePath);
             return true;
         }
     }
@@ -222,131 +223,137 @@ public class MainPresenter implements IMainPresenter_View, IMainPresenter_Model 
     public void consoleOut(int value) {
         dataSourceForConsoleOutputPanel
                 = dataSourceForConsoleOutputPanel + " " + String.valueOf(value);
-        mainView.setConsoleOutData(dataSourceForConsoleOutputPanel);
+        mainView.setConsoleOutputData(dataSourceForConsoleOutputPanel);
     }
 
     @Override
     public int requestOfInput() {
-        mainView.setPermissionForActions(MainPresenter.IO_MODE);
+        mainView.setPermissionForActions(MainPresenter.IO_ACTION_MODE);
         int value = mainView.requestOfInput();
-        mainView.setPermissionForActions(actionMode);
-        mainView.setConsoleInData("");
+        mainView.setPermissionForActions(currentActionMode);
+        mainView.clearInputConsole();
         return value;
     }
 
     @Override
-    public void pixelScreenUpdate(int[][] memory) {
-        mainView.setPixelScreenData(memory);
+    public void setPixelScreenData(int[][] memory) {
+        dataSourceForPixelScreen = memory;
     }
 
     @Override
-    public void characterScreenUpdate(int[][] colorMemory, int[][] charMemory) {
-        mainView.setCharacterScreenData(colorMemory, charMemory);
+    public void setCharacterScreenData(int[][] colorMemory, int[][] characterMemory) {
+        dataSourceForCharacterScreen_Color = colorMemory;
+        dataSourceForCharacterScreen_Character = characterMemory;
+    }
+
+    @Override
+    public void pixelScreenUpdate() {
+        mainView.pixelScreenUpdate();
+    }
+
+    @Override
+    public void characterScreenUpdate() {
+        mainView.characterScreenUpdate();
     }
 
     // Help
-    private String[][] getDataSourceForMemoryTable(IEmulator emulator) {
+    private void getDataSourceForMemoryTable(IEmulator emulator, String[][] dataSourceForMemoryTable) {
         String[] commandsInMemory = emulator.getCommandsList();
         int length = emulator.getViewInterface().getReadOnlyMemory().getSize();
-        String[][] dataSource = new String[length][3];
         for (int i = 0; i < length; ++i) {
             StringBuilder address = new StringBuilder(Integer.toString(i, 16));
             while (address.length() != 4) {
                 address.insert(0, "0");
             }
-            dataSource[i][0] = address.toString();
-            dataSource[i][1] = commandsInMemory[i];
-            dataSource[i][2] =
-                    Integer.toString(emulator.getViewInterface().getReadOnlyMemory().getValueByIndex(i));
+            dataSourceForMemoryTable[i][0] = address.toString();
+            dataSourceForMemoryTable[i][1] = commandsInMemory[i];
+            dataSourceForMemoryTable[i][2] =
+                    Integer.toString(emulator.getViewInterface().getReadOnlyMemory().getValueByIndex(i), 16);
         }
-        return dataSource;
     }
 
-    private String[][] getDataSourceForRegistersAndFlagsTable(IEmulator emulator) {
-        String[][] dataSourceForRegistersAndFlagsTable = new String[13][4];
+    private void getDataSourceForRegistersTable(IEmulator emulator, String[][] dataSourceForRegistersTable) {
         IReadOnlyMicroprocessor microprocessor = emulator.getViewInterface();
 
-        dataSourceForRegistersAndFlagsTable[0][0] = "Register A";
-        dataSourceForRegistersAndFlagsTable[0][1]
+        dataSourceForRegistersTable[0][0] = "Register A";
+        dataSourceForRegistersTable[0][1]
                 = createString(microprocessor.getValueByRegisterName("A"), 16);
-        dataSourceForRegistersAndFlagsTable[0][2]
+        dataSourceForRegistersTable[0][2]
                 = createString(microprocessor.getValueByRegisterName("A"), 2);
-        dataSourceForRegistersAndFlagsTable[0][3]
+        dataSourceForRegistersTable[0][3]
                 = Integer.toString(microprocessor.getValueByRegisterName("A"));
 
-        dataSourceForRegistersAndFlagsTable[1][0] = "Register B";
-        dataSourceForRegistersAndFlagsTable[1][1]
+        dataSourceForRegistersTable[1][0] = "Register B";
+        dataSourceForRegistersTable[1][1]
                 = createString(microprocessor.getValueByRegisterName("B"), 16);
-        dataSourceForRegistersAndFlagsTable[1][2]
+        dataSourceForRegistersTable[1][2]
                 = createString(microprocessor.getValueByRegisterName("B"), 2);
-        dataSourceForRegistersAndFlagsTable[1][3]
+        dataSourceForRegistersTable[1][3]
                 = Integer.toString(microprocessor.getValueByRegisterName("B"));
 
-        dataSourceForRegistersAndFlagsTable[2][0] = "Register C";
-        dataSourceForRegistersAndFlagsTable[2][1]
+        dataSourceForRegistersTable[2][0] = "Register C";
+        dataSourceForRegistersTable[2][1]
                 = createString(microprocessor.getValueByRegisterName("C"), 16);
-        dataSourceForRegistersAndFlagsTable[2][2]
+        dataSourceForRegistersTable[2][2]
                 = createString(microprocessor.getValueByRegisterName("C"), 2);
-        dataSourceForRegistersAndFlagsTable[2][3]
+        dataSourceForRegistersTable[2][3]
                 = Integer.toString(microprocessor.getValueByRegisterName("C"));
 
-        dataSourceForRegistersAndFlagsTable[3][0] = "Register D";
-        dataSourceForRegistersAndFlagsTable[3][1]
+        dataSourceForRegistersTable[3][0] = "Register D";
+        dataSourceForRegistersTable[3][1]
                 = createString(microprocessor.getValueByRegisterName("D"), 16);
-        dataSourceForRegistersAndFlagsTable[3][2]
+        dataSourceForRegistersTable[3][2]
                 = createString(microprocessor.getValueByRegisterName("D"), 2);
-        dataSourceForRegistersAndFlagsTable[3][3]
+        dataSourceForRegistersTable[3][3]
                 = Integer.toString(microprocessor.getValueByRegisterName("D"));
 
-        dataSourceForRegistersAndFlagsTable[4][0] = "Register E";
-        dataSourceForRegistersAndFlagsTable[4][1]
+        dataSourceForRegistersTable[4][0] = "Register E";
+        dataSourceForRegistersTable[4][1]
                 = createString(microprocessor.getValueByRegisterName("E"), 16);
-        dataSourceForRegistersAndFlagsTable[4][2]
+        dataSourceForRegistersTable[4][2]
                 = createString(microprocessor.getValueByRegisterName("E"), 2);
-        dataSourceForRegistersAndFlagsTable[4][3]
+        dataSourceForRegistersTable[4][3]
                 = Integer.toString(microprocessor.getValueByRegisterName("E"));
 
-        dataSourceForRegistersAndFlagsTable[5][0] = "Register H";
-        dataSourceForRegistersAndFlagsTable[5][1]
+        dataSourceForRegistersTable[5][0] = "Register H";
+        dataSourceForRegistersTable[5][1]
                 = createString(microprocessor.getValueByRegisterName("H"), 16);
-        dataSourceForRegistersAndFlagsTable[5][2]
+        dataSourceForRegistersTable[5][2]
                 = createString(microprocessor.getValueByRegisterName("H"), 2);
-        dataSourceForRegistersAndFlagsTable[5][3]
+        dataSourceForRegistersTable[5][3]
                 = Integer.toString(microprocessor.getValueByRegisterName("H"));
 
-        dataSourceForRegistersAndFlagsTable[6][0] = "Register L";
-        dataSourceForRegistersAndFlagsTable[6][1]
+        dataSourceForRegistersTable[6][0] = "Register L";
+        dataSourceForRegistersTable[6][1]
                 = createString(microprocessor.getValueByRegisterName("L"), 16);
-        dataSourceForRegistersAndFlagsTable[6][2]
+        dataSourceForRegistersTable[6][2]
                 = createString(microprocessor.getValueByRegisterName("L"), 2);
-        dataSourceForRegistersAndFlagsTable[6][3]
+        dataSourceForRegistersTable[6][3]
                 = Integer.toString(microprocessor.getValueByRegisterName("L"));
 
-        dataSourceForRegistersAndFlagsTable[7][0] = "Register PC";
-        dataSourceForRegistersAndFlagsTable[7][1]
+        dataSourceForRegistersTable[7][0] = "Register PC";
+        dataSourceForRegistersTable[7][1]
                 = createString(microprocessor.getValueByRegisterName("PC"), 16);
 
-        dataSourceForRegistersAndFlagsTable[8][0] = "Register SP";
-        dataSourceForRegistersAndFlagsTable[8][1]
+        dataSourceForRegistersTable[8][0] = "Register SP";
+        dataSourceForRegistersTable[8][1]
                 = createString(microprocessor.getValueByRegisterName("SP"), 16);
 
-        dataSourceForRegistersAndFlagsTable[9][0] = "Flag Z";
-        dataSourceForRegistersAndFlagsTable[9][1]
+        dataSourceForRegistersTable[9][0] = "Flag Z";
+        dataSourceForRegistersTable[9][1]
                 = createString(microprocessor.getValueByFlagName("Z"), 16);
 
-        dataSourceForRegistersAndFlagsTable[10][0] = "Flag C";
-        dataSourceForRegistersAndFlagsTable[10][1]
+        dataSourceForRegistersTable[10][0] = "Flag C";
+        dataSourceForRegistersTable[10][1]
                 = createString(microprocessor.getValueByFlagName("C"), 16);
 
-        dataSourceForRegistersAndFlagsTable[11][0] = "Flag S";
-        dataSourceForRegistersAndFlagsTable[11][1]
+        dataSourceForRegistersTable[11][0] = "Flag S";
+        dataSourceForRegistersTable[11][1]
                 = createString(microprocessor.getValueByFlagName("S"), 16);
 
-        dataSourceForRegistersAndFlagsTable[12][0] = "Flag P";
-        dataSourceForRegistersAndFlagsTable[12][1]
+        dataSourceForRegistersTable[12][0] = "Flag P";
+        dataSourceForRegistersTable[12][1]
                 = createString(microprocessor.getValueByFlagName("P"), 16);
-
-        return dataSourceForRegistersAndFlagsTable;
     }
 
     private String createString(int value, int radix) {

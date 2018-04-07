@@ -15,23 +15,23 @@ public class Intel8080 implements IMicroprocessor {
     private IInputOutputSystem ioSystem;
 
     // Вспомогательные переменные
-    private HashMap<String, Integer> registerByName;
+    private HashMap<String, Integer> registerNumberByName;
 
     public Intel8080(IMemory memory) {
         this.registers = new int[9];
         this.flags = 0;
         this.memory = memory;
 
-        this.registerByName = new HashMap<>();
-        registerByName.put("A", 0);
-        registerByName.put("B", 1);
-        registerByName.put("C", 2);
-        registerByName.put("D", 3);
-        registerByName.put("E", 4);
-        registerByName.put("H", 5);
-        registerByName.put("L", 6);
-        registerByName.put("PC", 7);
-        registerByName.put("SP", 8);
+        this.registerNumberByName = new HashMap<>();
+        registerNumberByName.put("A", 0);
+        registerNumberByName.put("B", 1);
+        registerNumberByName.put("C", 2);
+        registerNumberByName.put("D", 3);
+        registerNumberByName.put("E", 4);
+        registerNumberByName.put("H", 5);
+        registerNumberByName.put("L", 6);
+        registerNumberByName.put("PC", 7);
+        registerNumberByName.put("SP", 8);
     }
 
     @Override
@@ -46,12 +46,12 @@ public class Intel8080 implements IMicroprocessor {
 
     @Override
     public int getValueByRegisterName(String registerName) {
-        return registers[registerByName.get(registerName)];
+        return registers[registerNumberByName.get(registerName)];
     }
 
     @Override
     public void setValueByRegisterName(String registerName, int value) {
-        registers[registerByName.get(registerName)] = value;
+        registers[registerNumberByName.get(registerName)] = value;
     }
 
     @Override
@@ -128,8 +128,8 @@ public class Intel8080 implements IMicroprocessor {
 
     @Override
     public void executeCommand(ICommand command) {
-        registers[registerByName.get("PC")]
-                = (registers[registerByName.get("PC")] + command.getSize()) % memory.getSize();
+        registers[registerNumberByName.get("PC")]
+                = (registers[registerNumberByName.get("PC")] + command.getSize()) % memory.getSize();
         command.execute(this);
     }
 
@@ -165,16 +165,6 @@ public class Intel8080 implements IMicroprocessor {
     }
 
     @Override
-    public int getRoundedByte(int value) {
-        return (value + 256) % 256;
-    }
-
-    @Override
-    public int getRoundedWord(int value) {
-        return (value + 65536) % 65536;
-    }
-
-    @Override
     public void resetRegisters() {
         for (int i = 0; i < registers.length; ++i) {
             registers[i] = 0;
@@ -193,21 +183,21 @@ public class Intel8080 implements IMicroprocessor {
         int value = 0;
         switch (registerPairName) {
             case "B": {
-                value = registers[registerByName.get("B")] * 256;
-                value += registers[registerByName.get("C")];
+                value = registers[registerNumberByName.get("B")] * 256;
+                value += registers[registerNumberByName.get("C")];
                 break;
             }
             case "D": {
-                value = registers[registerByName.get("D")] * 256;
-                value += registers[registerByName.get("E")];
+                value = registers[registerNumberByName.get("D")] * 256;
+                value += registers[registerNumberByName.get("E")];
                 break;
             }
             case "H": {
-                value = registers[registerByName.get("H")] * 256;
-                value += registers[registerByName.get("L")];
+                value = registers[registerNumberByName.get("H")] * 256;
+                value += registers[registerNumberByName.get("L")];
                 break;
             }case "PSW": {
-                value = registers[registerByName.get("A")] * 256;
+                value = registers[registerNumberByName.get("A")] * 256;
                 value += flags;
                 break;
             }
@@ -219,47 +209,26 @@ public class Intel8080 implements IMicroprocessor {
     public void setValueByRegisterPairName(String registerPairName, int value) {
         switch (registerPairName) {
             case "B": {
-                registers[registerByName.get("B")] = value / 256;
-                registers[registerByName.get("C")] = value % 256;
+                registers[registerNumberByName.get("B")] = value / 256;
+                registers[registerNumberByName.get("C")] = value % 256;
                 break;
             }
             case "D": {
-                registers[registerByName.get("D")] = value / 256;
-                registers[registerByName.get("E")] = value % 256;
+                registers[registerNumberByName.get("D")] = value / 256;
+                registers[registerNumberByName.get("E")] = value % 256;
                 break;
             }
             case "H": {
-                registers[registerByName.get("H")] = value / 256;
-                registers[registerByName.get("L")] = value % 256;
+                registers[registerNumberByName.get("H")] = value / 256;
+                registers[registerNumberByName.get("L")] = value % 256;
                 break;
             }
             case "PSW": {
-                registers[registerByName.get("A")] = value / 256;
+                registers[registerNumberByName.get("A")] = value / 256;
                 flags = value % 256;
                 break;
             }
         }
-    }
-
-    @Override
-    public void push(int value) {
-        int address = getValueByRegisterName("SP");
-        address = getRoundedWord(address - 1);
-        memory.setValueByIndex(address, value / 256);
-        address = getRoundedWord(address - 1);
-        memory.setValueByIndex(address, value % 256);
-        setValueByRegisterName("SP", address);
-    }
-
-    @Override
-    public int pop() {
-        int address = getValueByRegisterName("SP");
-        int value = memory.getValueByIndex(address);
-        address = getRoundedWord(address + 1);
-        value += memory.getValueByIndex(address) * 256;
-        address = getRoundedWord(address + 1);
-        setValueByRegisterName("SP", address);
-        return value;
     }
 
     @Override

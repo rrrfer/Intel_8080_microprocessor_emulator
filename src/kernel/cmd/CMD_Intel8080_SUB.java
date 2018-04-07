@@ -1,6 +1,7 @@
 package kernel.cmd;
 
 import kernel.IMicroprocessor;
+import kernel._Byte;
 
 public class CMD_Intel8080_SUB implements ICommand {
 
@@ -22,7 +23,7 @@ public class CMD_Intel8080_SUB implements ICommand {
         }
         firstValue = firstValue - secondValue;
         microprocessor.checkByteForSetFlags(firstValue);
-        firstValue = microprocessor.getRoundedByte(firstValue);
+        firstValue = _Byte.getRoundedValue(firstValue);
         microprocessor.setValueByRegisterName("A", firstValue);
     }
 

@@ -1,6 +1,7 @@
 package kernel.cmd;
 
 import kernel.IMicroprocessor;
+import kernel._Byte;
 
 public class CMD_Intel8080_RAL implements ICommand {
     @Override
@@ -15,7 +16,7 @@ public class CMD_Intel8080_RAL implements ICommand {
         } else {
             microprocessor.setValueByFlagName("C", 0);
         }
-        value = microprocessor.getRoundedByte(value);
+        value = _Byte.getRoundedValue(value);
         microprocessor.setValueByRegisterName("A", value);
     }
 

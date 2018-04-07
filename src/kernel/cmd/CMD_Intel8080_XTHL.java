@@ -7,9 +7,9 @@ public class CMD_Intel8080_XTHL implements ICommand {
     @Override
     public void execute(IMicroprocessor microprocessor) {
         int firstValue = microprocessor.getValueByRegisterPairName("H");
-        int secondValue = microprocessor.pop();
+        int secondValue = CMD_Intel8080_POP.pop(microprocessor);
         microprocessor.setValueByRegisterPairName("H", secondValue);
-        microprocessor.push(firstValue);
+        CMD_Intel8080_PUSH.push(microprocessor, firstValue);
     }
 
     @Override

@@ -1,8 +1,19 @@
 package kernel.cmd;
 
 import kernel.IMicroprocessor;
+import kernel._DByte;
 
 public class CMD_Intel8080_POP implements ICommand {
+
+    public static int pop(IMicroprocessor microprocessor) {
+        int address = microprocessor.getValueByRegisterName("SP");
+        int value = microprocessor.getMemory().getValueByIndex(address);
+        address = _DByte.getRoundedValue(address + 1);
+        value += microprocessor.getMemory().getValueByIndex(address) * 256;
+        address = _DByte.getRoundedValue(address + 1);
+        microprocessor.setValueByRegisterName("SP", address);
+        return value;
+    }
 
     private String arg;
 
@@ -12,7 +23,7 @@ public class CMD_Intel8080_POP implements ICommand {
 
     @Override
     public void execute(IMicroprocessor microprocessor) {
-        int value = microprocessor.pop();
+        int value = pop(microprocessor);
 
         if (!arg.equals("PSW")) {
             microprocessor.setValueByRegisterName(arg, value / 256);

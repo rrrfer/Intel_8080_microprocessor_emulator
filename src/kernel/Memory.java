@@ -19,11 +19,6 @@ public class Memory implements IMemory {
     }
 
     @Override
-    public int[] getAllMemory() {
-        return memory;
-    }
-
-    @Override
     public int getSize() {
         return memory.length;
     }

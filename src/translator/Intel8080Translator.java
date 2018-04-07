@@ -2,6 +2,7 @@ package translator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.function.BiConsumer;
 
 public class Intel8080Translator implements ITranslator {
 
@@ -66,10 +67,6 @@ public class Intel8080Translator implements ITranslator {
                     }
 
                     hasErrors = true;
-                    /*statusString.append("Ошибка в строке № " + (i + 1) + ". " +
-                            "Неизвестная или ошибочная директива: " + dividedProgramLines[i] +
-                            System.lineSeparator());*/
-
                 }
 
                 String labelName;
@@ -931,3 +928,4 @@ public class Intel8080Translator implements ITranslator {
         hashMap.put("XTHL", CommandsCodes.XTHL);
     }
 }
+
