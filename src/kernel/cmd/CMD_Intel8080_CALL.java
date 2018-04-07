@@ -1,6 +1,7 @@
 package kernel.cmd;
 
 import kernel.IMicroprocessor;
+import kernel.IMicroprocessorCommandsAdapter;
 
 public class CMD_Intel8080_CALL implements ICommand {
 
@@ -11,7 +12,7 @@ public class CMD_Intel8080_CALL implements ICommand {
     }
 
     @Override
-    public void execute(IMicroprocessor microprocessor) {
+    public void execute(IMicroprocessorCommandsAdapter microprocessor) {
         int callAddress = Integer.valueOf(arg, 16);
         int pushAddress = microprocessor.getValueByRegisterName("PC");
         CMD_Intel8080_PUSH.push(microprocessor, pushAddress);

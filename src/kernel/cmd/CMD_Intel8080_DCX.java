@@ -1,6 +1,7 @@
 package kernel.cmd;
 
 import kernel.IMicroprocessor;
+import kernel.IMicroprocessorCommandsAdapter;
 import kernel._DByte;
 
 public class CMD_Intel8080_DCX implements ICommand {
@@ -12,7 +13,7 @@ public class CMD_Intel8080_DCX implements ICommand {
     }
 
     @Override
-    public void execute(IMicroprocessor microprocessor) {
+    public void execute(IMicroprocessorCommandsAdapter microprocessor) {
         int value;
         if (!arg.equals("SP")) {
             value = microprocessor.getValueByRegisterPairName(arg);
@@ -22,6 +23,8 @@ public class CMD_Intel8080_DCX implements ICommand {
 
         value -= 1;
         value = _DByte.getRoundedValue(value);
+
+        // TODO Проверка на перенос
 
         if (!arg.equals("SP")) {
             microprocessor.setValueByRegisterPairName(arg, value);

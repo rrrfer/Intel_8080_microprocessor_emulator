@@ -1,10 +1,11 @@
 package kernel.cmd;
 
 import kernel.IMicroprocessor;
+import kernel.IMicroprocessorCommandsAdapter;
 
 public class CMD_Intel8080_RAR implements ICommand {
     @Override
-    public void execute(IMicroprocessor microprocessor) {
+    public void execute(IMicroprocessorCommandsAdapter microprocessor) {
         int value = microprocessor.getValueByRegisterName("A");
         if (microprocessor.getValueByFlagName("C") == 1) {
             value += 256;

@@ -1,6 +1,7 @@
 package kernel.cmd;
 
 import kernel.IMicroprocessor;
+import kernel.IMicroprocessorCommandsAdapter;
 
 public class CMD_Intel8080_STAX implements ICommand {
 
@@ -11,7 +12,7 @@ public class CMD_Intel8080_STAX implements ICommand {
     }
 
     @Override
-    public void execute(IMicroprocessor microprocessor) {
+    public void execute(IMicroprocessorCommandsAdapter microprocessor) {
         int value = microprocessor.getValueByRegisterName("A");
         int address = microprocessor.getValueByRegisterPairName(arg);
         microprocessor.getMemory().setValueByIndex(address, value);

@@ -1,6 +1,7 @@
 package kernel.cmd;
 
 import kernel.IMicroprocessor;
+import kernel.IMicroprocessorCommandsAdapter;
 
 public class CMD_Intel8080_LHLD implements ICommand {
 
@@ -11,11 +12,11 @@ public class CMD_Intel8080_LHLD implements ICommand {
     }
 
     @Override
-    public void execute(IMicroprocessor microprocessor) {
+    public void execute(IMicroprocessorCommandsAdapter microprocessor) {
         int address = Integer.valueOf(arg, 16);
-        int value = microprocessor.getReadOnlyMemory().getValueByIndex(address);
+        int value = microprocessor.getMemory().getValueByIndex(address);
         microprocessor.setValueByRegisterName("L", value);
-        value = microprocessor.getReadOnlyMemory().getValueByIndex(address + 1);
+        value = microprocessor.getMemory().getValueByIndex(address + 1);
         microprocessor.setValueByRegisterName("H", value);
     }
 

@@ -1,6 +1,7 @@
 package kernel.cmd;
 
 import kernel.IMicroprocessor;
+import kernel.IMicroprocessorCommandsAdapter;
 
 public class CMD_Intel8080_LXI implements ICommand {
 
@@ -13,7 +14,7 @@ public class CMD_Intel8080_LXI implements ICommand {
     }
 
     @Override
-    public void execute(IMicroprocessor microprocessor) {
+    public void execute(IMicroprocessorCommandsAdapter microprocessor) {
         int value = Integer.valueOf(secondArg, 16);
         if (!firstArg.equals("SP")) {
             microprocessor.setValueByRegisterName(firstArg, value / 256);

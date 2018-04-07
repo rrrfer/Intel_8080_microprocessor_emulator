@@ -13,14 +13,17 @@ import java.util.Date;
 
 public class EmulatorIntel8080 implements IEmulator {
 
-    private IMicroprocessor microprocessor;
+    private IMicroprocessorEmulatorAdapter microprocessor;
+    private IMicroprocessorPresenterAdapter microprocessorPresenterAdapter;
     private ITranslator translator;
 
     private ArrayList<Integer> breakpoints;
 
     public EmulatorIntel8080(IInputOutputSystem ioSystem) {
-        this.microprocessor = new Intel8080(new Memory(65536));
+        IMicroprocessor mp = new Intel8080(new Memory(_DByte.MAX_VALUE));
+        this.microprocessor = new MicroprocessorEmulatorAdapter(mp);
         this.microprocessor.setIOSystem(ioSystem);
+        this.microprocessorPresenterAdapter = new MicroprocessorPresenterAdapter(mp);
         this.translator = new Intel8080Translator();
         this.breakpoints = new ArrayList<>();
     }
@@ -33,7 +36,7 @@ public class EmulatorIntel8080 implements IEmulator {
     @Override
     public boolean step() {
         int address = microprocessor.getValueByRegisterName("PC");
-        ICommand command = CommandsBuilder.getCommand(microprocessor.getReadOnlyMemory(), address);
+        ICommand command = CommandsBuilder.getCommand(microprocessor.getMemory(), address);
         if (!command.getName().equals("HLT")) {
             microprocessor.executeCommand(command);
             return true;
@@ -42,7 +45,7 @@ public class EmulatorIntel8080 implements IEmulator {
     }
 
     @Override
-    public boolean translation(String program) {
+    public void translation(String program) {
         IMemory memory = microprocessor.getMemory();
         String[] lexemes = translator.getLexemes(program);
         if (lexemes != null) {
@@ -63,9 +66,7 @@ public class EmulatorIntel8080 implements IEmulator {
                     memory.setValueByIndex(address, code[3]);
                 }
             }
-            return true;
         }
-        return false;
     }
 
     @Override
@@ -97,8 +98,8 @@ public class EmulatorIntel8080 implements IEmulator {
     }
 
     @Override
-    public IReadOnlyMicroprocessor getViewInterface() {
-        return microprocessor;
+    public IMicroprocessorPresenterAdapter getMicroprocessor() {
+        return microprocessorPresenterAdapter;
     }
 
     @Override
@@ -140,7 +141,7 @@ public class EmulatorIntel8080 implements IEmulator {
         BufferedReader bufferedReader
                 = new BufferedReader(new FileReader(new File(path)));
         StringBuilder program = new StringBuilder();
-        String line = null;
+        String line;
         while ((line = bufferedReader.readLine()) != null) {
             program.append(line).append(System.lineSeparator());
         }

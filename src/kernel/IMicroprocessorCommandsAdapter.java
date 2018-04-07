@@ -1,9 +1,8 @@
 package kernel;
 
 import emulator.IInputOutputSystem;
-import kernel.cmd.ICommand;
 
-public interface IMicroprocessor {
+public interface IMicroprocessorCommandsAdapter {
 
     int getValueByRegisterName(String registerName);
     void setValueByRegisterName(String registerName, int value);
@@ -17,15 +16,10 @@ public interface IMicroprocessor {
     int getAllFlags();
     void setAllFlags(int flags);
 
-    IInputOutputSystem getIOSystem();
-    void setIOSystem(IInputOutputSystem ioSystem);
-
-    IReadOnlyMemory getReadOnlyMemory();
     IMemory getMemory();
 
-    void executeCommand(ICommand command);
+    IInputOutputSystem getIOSystem();
+
     void checkByteForSetFlags(int value);
 
-    void resetRegisters();
-    void resetMemory();
 }

@@ -4,7 +4,7 @@ import emulator.EmulatorIntel8080;
 import emulator.IEmulator;
 import emulator.IInputOutputSystem;
 import emulator.InputOutputSystem;
-import kernel.IReadOnlyMicroprocessor;
+import kernel.IMicroprocessorPresenterAdapter;
 import view.IMainView;
 import view.MainWindow;
 
@@ -84,7 +84,7 @@ public class MainPresenter implements IMainPresenter_View, IMainPresenter_Model 
 
                     getDataSourceForRegistersTable(emulator, dataSourceForRegistersTable);
                     getDataSourceForMemoryTable(emulator, dataSourceForMemoryTable);
-                    int PC = emulator.getViewInterface().getValueByRegisterName("PC");
+                    int PC = emulator.getMicroprocessor().getValueByRegisterName("PC");
 
                     mainView.memoryTableUpdate();
                     mainView.registersTableUpdate();
@@ -115,7 +115,7 @@ public class MainPresenter implements IMainPresenter_View, IMainPresenter_Model 
 
         getDataSourceForMemoryTable(emulator, dataSourceForMemoryTable);
         getDataSourceForRegistersTable(emulator, dataSourceForRegistersTable);
-        int PC = emulator.getViewInterface().getValueByRegisterName("PC");
+        int PC = emulator.getMicroprocessor().getValueByRegisterName("PC");
 
         mainView.memoryTableUpdate();
         mainView.registersTableUpdate();
@@ -129,7 +129,7 @@ public class MainPresenter implements IMainPresenter_View, IMainPresenter_Model 
 
             getDataSourceForRegistersTable(emulator, dataSourceForRegistersTable);
             getDataSourceForMemoryTable(emulator, dataSourceForMemoryTable);
-            int PC = emulator.getViewInterface().getValueByRegisterName("PC");
+            int PC = emulator.getMicroprocessor().getValueByRegisterName("PC");
 
             mainView.memoryTableUpdate();
             mainView.registersTableUpdate();
@@ -172,7 +172,7 @@ public class MainPresenter implements IMainPresenter_View, IMainPresenter_Model 
     public void removeAllBreakpoints() {
         emulator.removeAllBreakpoints();
         ArrayList<Integer> breakpoints = emulator.getBreakpoints();
-        int PC = emulator.getViewInterface().getValueByRegisterName("PC");
+        int PC = emulator.getMicroprocessor().getValueByRegisterName("PC");
         mainView.setBreakpoints(breakpoints);
         mainView.setProgramCounterPosition(PC);
     }
@@ -259,7 +259,7 @@ public class MainPresenter implements IMainPresenter_View, IMainPresenter_Model 
     // Help
     private void getDataSourceForMemoryTable(IEmulator emulator, String[][] dataSourceForMemoryTable) {
         String[] commandsInMemory = emulator.getCommandsList();
-        int length = emulator.getViewInterface().getReadOnlyMemory().getSize();
+        int length = emulator.getMicroprocessor().getReadOnlyMemory().getSize();
         for (int i = 0; i < length; ++i) {
             StringBuilder address = new StringBuilder(Integer.toString(i, 16));
             while (address.length() != 4) {
@@ -268,12 +268,15 @@ public class MainPresenter implements IMainPresenter_View, IMainPresenter_Model 
             dataSourceForMemoryTable[i][0] = address.toString();
             dataSourceForMemoryTable[i][1] = commandsInMemory[i];
             dataSourceForMemoryTable[i][2] =
-                    Integer.toString(emulator.getViewInterface().getReadOnlyMemory().getValueByIndex(i), 16);
+                    Integer.toString(emulator
+                            .getMicroprocessor()
+                            .getReadOnlyMemory().getValueByIndex(i), 16);
         }
     }
 
     private void getDataSourceForRegistersTable(IEmulator emulator, String[][] dataSourceForRegistersTable) {
-        IReadOnlyMicroprocessor microprocessor = emulator.getViewInterface();
+        IMicroprocessorPresenterAdapter microprocessor
+                = emulator.getMicroprocessor();
 
         dataSourceForRegistersTable[0][0] = "Register A";
         dataSourceForRegistersTable[0][1]

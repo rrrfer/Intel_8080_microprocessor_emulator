@@ -1,15 +1,12 @@
 package emulator;
 
-import kernel.IReadOnlyMicroprocessor;
+import kernel.IMicroprocessorPresenterAdapter;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
 public interface IEmulator {
-    boolean translation(String program);
-    String getTranslationResult();
-    String[] getCommandsList();
-    IReadOnlyMicroprocessor getViewInterface();
+    void translation(String program);
     void run();
     boolean step();
     void resetRegisters();
@@ -18,6 +15,9 @@ public interface IEmulator {
     void setBreakpoint(int address);
     void removeAllBreakpoints();
     ArrayList<Integer> getBreakpoints();
+    String getTranslationResult();
+    String[] getCommandsList();
+    IMicroprocessorPresenterAdapter getMicroprocessor();
     String loadProgramFromFile(String path) throws IOException;
     void saveProgramInFile(String path, String programText) throws IOException;
 }

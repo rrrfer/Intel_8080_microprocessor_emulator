@@ -1,6 +1,7 @@
 package kernel.cmd;
 
 import kernel.IMicroprocessor;
+import kernel.IMicroprocessorCommandsAdapter;
 import kernel._DByte;
 
 public class CMD_Intel8080_DAD implements ICommand {
@@ -12,7 +13,7 @@ public class CMD_Intel8080_DAD implements ICommand {
     }
 
     @Override
-    public void execute(IMicroprocessor microprocessor) {
+    public void execute(IMicroprocessorCommandsAdapter microprocessor) {
         int firstValue;
         if (!arg.equals("SP")) {
             firstValue = microprocessor.getValueByRegisterPairName(arg);

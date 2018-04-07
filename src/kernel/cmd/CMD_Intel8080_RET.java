@@ -1,10 +1,11 @@
 package kernel.cmd;
 
 import kernel.IMicroprocessor;
+import kernel.IMicroprocessorCommandsAdapter;
 
 public class CMD_Intel8080_RET implements ICommand {
     @Override
-    public void execute(IMicroprocessor microprocessor) {
+    public void execute(IMicroprocessorCommandsAdapter microprocessor) {
         int address = CMD_Intel8080_POP.pop(microprocessor);
         microprocessor.setValueByRegisterName("PC", address);
     }

@@ -1,6 +1,7 @@
 package kernel.cmd;
 
 import kernel.IMicroprocessor;
+import kernel.IMicroprocessorCommandsAdapter;
 import kernel._Byte;
 
 public class CMD_Intel8080_DCR implements ICommand {
@@ -12,11 +13,11 @@ public class CMD_Intel8080_DCR implements ICommand {
     }
 
     @Override
-    public void execute(IMicroprocessor microprocessor) {
+    public void execute(IMicroprocessorCommandsAdapter microprocessor) {
         int value;
         if (arg.equals("M")) {
             int address = microprocessor.getValueByRegisterPairName("H");
-            value = microprocessor.getReadOnlyMemory().getValueByIndex(address);
+            value = microprocessor.getMemory().getValueByIndex(address);
         } else {
             value = microprocessor.getValueByRegisterName(arg);
         }

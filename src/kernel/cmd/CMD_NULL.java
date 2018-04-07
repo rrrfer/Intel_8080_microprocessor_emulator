@@ -1,17 +1,11 @@
 package kernel.cmd;
 
 import kernel.IMicroprocessor;
+import kernel.IMicroprocessorCommandsAdapter;
 
 public class CMD_NULL implements ICommand {
-
-    private String arg;
-
-    public CMD_NULL(String arg) {
-        this.arg = arg.toUpperCase();
-    }
-
     @Override
-    public void execute(IMicroprocessor microprocessor) {
+    public void execute(IMicroprocessorCommandsAdapter microprocessor) {
 
     }
 

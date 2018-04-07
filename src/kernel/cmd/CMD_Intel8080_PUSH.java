@@ -1,11 +1,12 @@
 package kernel.cmd;
 
 import kernel.IMicroprocessor;
+import kernel.IMicroprocessorCommandsAdapter;
 import kernel._DByte;
 
 public class CMD_Intel8080_PUSH implements ICommand {
 
-    public static void push(IMicroprocessor microprocessor, int value) {
+    public static void push(IMicroprocessorCommandsAdapter microprocessor, int value) {
         int address = microprocessor.getValueByRegisterName("SP");
         address = _DByte.getRoundedValue(address - 1);
         microprocessor.getMemory().setValueByIndex(address, value / 256);
@@ -21,7 +22,7 @@ public class CMD_Intel8080_PUSH implements ICommand {
     }
 
     @Override
-    public void execute(IMicroprocessor microprocessor) {
+    public void execute(IMicroprocessorCommandsAdapter microprocessor) {
 
         int value;
         if (!arg.equals("PSW")) {

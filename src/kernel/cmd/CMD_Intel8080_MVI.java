@@ -1,6 +1,7 @@
 package kernel.cmd;
 
 import kernel.IMicroprocessor;
+import kernel.IMicroprocessorCommandsAdapter;
 
 public class CMD_Intel8080_MVI implements ICommand {
 
@@ -13,7 +14,7 @@ public class CMD_Intel8080_MVI implements ICommand {
     }
 
     @Override
-    public void execute(IMicroprocessor microprocessor) {
+    public void execute(IMicroprocessorCommandsAdapter microprocessor) {
         int value = Integer.valueOf(secondArg, 16);
         if (firstArg.equals("M")) {
             int address = microprocessor.getValueByRegisterPairName("H");

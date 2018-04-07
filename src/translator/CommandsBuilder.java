@@ -1059,7 +1059,7 @@ public class CommandsBuilder {
 
         }
 
-        return new CMD_NULL(Integer.toString(code, 16));
+        return new CMD_NULL();
     }
 
     private static String getValueFromNextWord(IReadOnlyMemory memory, int address) {

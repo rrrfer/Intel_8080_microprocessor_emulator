@@ -1,6 +1,7 @@
 package kernel.cmd;
 
 import kernel.IMicroprocessor;
+import kernel.IMicroprocessorCommandsAdapter;
 
 public class CMD_Intel8080_CM extends CMD_Intel8080_CALL {
 
@@ -9,7 +10,7 @@ public class CMD_Intel8080_CM extends CMD_Intel8080_CALL {
     }
 
     @Override
-    public void execute(IMicroprocessor microprocessor) {
+    public void execute(IMicroprocessorCommandsAdapter microprocessor) {
         if (microprocessor.getValueByFlagName("S") == 1) {
             super.execute(microprocessor);
         }

@@ -16,8 +16,11 @@ public class Intel8080 implements IMicroprocessor {
 
     // Вспомогательные переменные
     private HashMap<String, Integer> registerNumberByName;
+    private IMicroprocessorCommandsAdapter microprocessorCommandsAdapter;
 
     public Intel8080(IMemory memory) {
+        this.microprocessorCommandsAdapter = new MicroprocessorCommandsAdapter(this);
+
         this.registers = new int[9];
         this.flags = 0;
         this.memory = memory;
@@ -130,7 +133,7 @@ public class Intel8080 implements IMicroprocessor {
     public void executeCommand(ICommand command) {
         registers[registerNumberByName.get("PC")]
                 = (registers[registerNumberByName.get("PC")] + command.getSize()) % memory.getSize();
-        command.execute(this);
+        command.execute(microprocessorCommandsAdapter);
     }
 
     @Override

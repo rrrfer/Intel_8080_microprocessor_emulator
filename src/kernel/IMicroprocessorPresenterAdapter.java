@@ -1,7 +1,7 @@
 package kernel;
 
-public interface IReadOnlyMicroprocessor {
-    IReadOnlyMemory getReadOnlyMemory();
+public interface IMicroprocessorPresenterAdapter {
     int getValueByRegisterName(String registerName);
     int getValueByFlagName(String flagName);
+    IReadOnlyMemory getReadOnlyMemory();
 }

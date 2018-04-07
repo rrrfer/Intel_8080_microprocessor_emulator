@@ -2,6 +2,7 @@ package kernel.cmd;
 
 import com.sun.xml.internal.bind.v2.runtime.reflect.opt.FieldAccessor_Byte;
 import kernel.IMicroprocessor;
+import kernel.IMicroprocessorCommandsAdapter;
 import kernel._Byte;
 
 public class CMD_Intel8080_ADD implements ICommand {
@@ -13,12 +14,12 @@ public class CMD_Intel8080_ADD implements ICommand {
     }
 
     @Override
-    public void execute(IMicroprocessor microprocessor) {
+    public void execute(IMicroprocessorCommandsAdapter microprocessor) {
         int firstValue = microprocessor.getValueByRegisterName("A");
         int secondValue;
         if (arg.equals("M")) {
             int address = microprocessor.getValueByRegisterPairName("H");
-            secondValue = microprocessor.getReadOnlyMemory().getValueByIndex(address);
+            secondValue = microprocessor.getMemory().getValueByIndex(address);
         } else {
             secondValue = microprocessor.getValueByRegisterName(arg);
         }
