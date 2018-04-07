@@ -157,6 +157,7 @@ public class MainPresenter implements IMainPresenter_View, IMainPresenter_Model 
     @Override
     public void setBreakpoint(int address) {
         emulator.setBreakpoint(address);
+        mainView.setBreakpoints(emulator.getBreakpoints());
     }
 
     @Override

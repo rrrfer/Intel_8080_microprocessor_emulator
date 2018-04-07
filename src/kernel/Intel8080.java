@@ -118,7 +118,7 @@ public class Intel8080 implements IMicroprocessor {
     @Override
     public void executeCommand(ICommand command) {
         int PC = getValueFromRegister(Intel8080Registers.PC);
-        PC = PC + command.getSize() % memory.getSize();
+        PC = (PC + command.getSize()) % memory.getSize();
         setValueInRegister(Intel8080Registers.PC, PC);
         command.execute(microprocessorCommandsAdapter);
     }

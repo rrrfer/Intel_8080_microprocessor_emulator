@@ -7,8 +7,11 @@ import presenter.MainPresenter;
 import javax.swing.*;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
+import javax.swing.event.UndoableEditEvent;
+import javax.swing.event.UndoableEditListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.PlainDocument;
+import javax.swing.undo.UndoManager;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
@@ -72,6 +75,8 @@ public class MainWindow extends JFrame implements IMainView {
     public static final Font mainFont = new Font(Font.MONOSPACED, Font.PLAIN, 12);
     public static final Color greenColor = new Color(44, 192, 8);
     public static final Color redColor = new Color(122, 0, 6);
+
+    private UndoManager undoManager;
 
     public MainWindow(@NotNull IMainPresenter_View presenter, @NotNull String[][] dataSourceForMemoryTable,
                       @NotNull String[][] dataSourceForRegisterTable, @NotNull int[][] dataSourceForPixelScreen,
@@ -231,6 +236,18 @@ public class MainWindow extends JFrame implements IMainView {
                         showHideScreens();
                     }
                 }
+                if (e.isControlDown()) {
+                    if (e.getKeyCode() == KeyEvent.VK_Z) {
+                        if (undoManager.canUndo()) {
+                            undoManager.undo();
+                        }
+                    }
+                    if (e.getKeyCode() == KeyEvent.VK_Y) {
+                        if (undoManager.canRedo()) {
+                            undoManager.redo();
+                        }
+                    }
+                }
             }
         });
 
@@ -240,6 +257,13 @@ public class MainWindow extends JFrame implements IMainView {
                 setEditable();
                 translationResultTextPanel.setForeground(Color.BLACK);
                 translationResultTextPanel.setBackground(Color.ORANGE);
+            }
+        });
+
+        codeEditorTextPanel.getDocument().addUndoableEditListener(new UndoableEditListener() {
+            @Override
+            public void undoableEditHappened(UndoableEditEvent e) {
+                undoManager.addEdit(e.getEdit());
             }
         });
 
@@ -253,11 +277,6 @@ public class MainWindow extends JFrame implements IMainView {
                         int oldRowSelection = memoryTable.getSelectedRow();
                         int row = memoryTable.rowAtPoint(e.getPoint());
                         memoryTable.setRowSelectionInterval(row, row);
-                        if (breakpoints.contains(memoryTable.getSelectedRow())) {
-                            breakpoints.remove((Integer) memoryTable.getSelectedRow());
-                        } else {
-                            breakpoints.add(memoryTable.getSelectedRow());
-                        }
                         presenter.setBreakpoint(memoryTable.getSelectedRow());
                         memoryTable.setRowSelectionInterval(oldRowSelection, oldRowSelection);
                     }
@@ -516,6 +535,8 @@ public class MainWindow extends JFrame implements IMainView {
 
         codeEditorTextPanel.getDocument().putProperty(PlainDocument.tabSizeAttribute, 2);
         codeEditorTextPanel.setFont(mainFont);
+
+        this.undoManager = new UndoManager();
     }
 
     // Actions
