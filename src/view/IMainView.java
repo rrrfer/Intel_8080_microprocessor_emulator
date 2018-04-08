@@ -30,9 +30,9 @@ public interface IMainView {
     /**
      * Метод для установки строки статуса трансляции.
      * @param translationResult строка статуса трансляции.
-     * @param isErrorsSearch наличие ошибок в результате трансляции.
+     * @param hasTranslationErrors наличие ошибок в результате трансляции.
      */
-    void setTranslationResult(String translationResult, boolean isErrorsSearch);;
+    void setTranslationResult(String translationResult, boolean hasTranslationErrors);;
 
     /**
      * Метод для установки отображения точек остановки.

@@ -7,7 +7,7 @@ package presenter;
  * Класс, заинтересованный в обработке событий обновлений устройств ввода-вывода,
  * реализует этот интерфейс и объект этого класса передаётся в метод
  * setIOActionsListener(IIntraProgramIOUpdateListener actionsListener) класса-эмулятора,
- * реализующего интерфейс {@link emulator.IEmulator}.
+ * реализующего интерфейс {@link model.emulator.IEmulator}.
  * @author Maxim Rozhkov
  */
 public interface IIntraProgramIOUpdateListener {

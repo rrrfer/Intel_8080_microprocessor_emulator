@@ -1,8 +1,8 @@
 package presenter;
 
-import emulator.*;
-import kernel.Flags;
-import kernel.Registers;
+import model.emulator.*;
+import model.kernel.Flags;
+import model.kernel.Registers;
 import view.IMainView;
 import view.MainWindow;
 
@@ -69,10 +69,11 @@ public class MainPresenter implements IMainPresenter, IIntraProgramIOUpdateListe
         getDataSourceForMemoryTable(emulator, dataSourceForMemoryTable);
         getDataSourceForRegistersTable(dataSourceForRegistersTable);
         String dataSourceForTranslateResultPanel = emulator.getErrors();
+        boolean hasErrors = emulator.hasTranslationErrors();
 
         mainView.memoryTableUpdate();
         mainView.registersTableUpdate();
-        mainView.setTranslationResult(dataSourceForTranslateResultPanel, true);
+        mainView.setTranslationResult(dataSourceForTranslateResultPanel, hasErrors);
         mainView.setProgramCounterPosition(0);
     }
 

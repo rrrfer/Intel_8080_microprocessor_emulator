@@ -686,37 +686,32 @@ public class MainWindow extends JFrame implements IMainView {
     }
 
     @Override
-    public void setTranslationResult(String translationResult, boolean isErrorsSearch) {
+    public void setTranslationResult(String translationResult, boolean hasTranslationErrors) {
         translationResultTextPanel.setText(translationResult);
 
-        if (isErrorsSearch) {
+        if (hasTranslationErrors) {
             // Помощь в поиске ошибки в программе
-            if (translationResult.split(System.lineSeparator())[1].equals("OK")) {
-                translationResultTextPanel.setBackground(greenColor);
-                translationResultTextPanel.setForeground(Color.BLACK);
-            } else {
-                String rowNumberStr = translationResult
-                        .split(System.lineSeparator())[1]
-                        .split(" ")[4];
-                int errorRowNumber = Integer.valueOf(rowNumberStr) - 1;
-                String errorString = codeEditorTextPanel.getText()
-                        .split(System.lineSeparator())[errorRowNumber];
+            String rowNumberStr = translationResult
+                    .split(System.lineSeparator())[1]
+                    .split(" ")[4];
+            int errorRowNumber = Integer.valueOf(rowNumberStr) - 1;
+            String errorString = codeEditorTextPanel.getText()
+                    .split(System.lineSeparator())[errorRowNumber];
 
-                int startErrorIndex = 0;
-                String[] programRows = codeEditorTextPanel.getText()
-                        .split(System.lineSeparator());
-                for (int i = 0; i < errorRowNumber; ++i) {
-                        startErrorIndex += programRows[i].length() + 1;
-                }
-
-                codeEditorTextPanel
-                        .select(startErrorIndex, startErrorIndex + errorString.length());
-                translationResultTextPanel.setBackground(redColor);
-                translationResultTextPanel.setForeground(Color.WHITE);
+            int startErrorIndex = 0;
+            String[] programRows = codeEditorTextPanel.getText()
+                    .split(System.lineSeparator());
+            for (int i = 0; i < errorRowNumber; ++i) {
+                startErrorIndex += programRows[i].length() + 1;
             }
+
+            codeEditorTextPanel
+                    .select(startErrorIndex, startErrorIndex + errorString.length());
+            translationResultTextPanel.setBackground(redColor);
+            translationResultTextPanel.setForeground(Color.WHITE);
         } else {
+            translationResultTextPanel.setBackground(greenColor);
             translationResultTextPanel.setForeground(Color.BLACK);
-            translationResultTextPanel.setBackground(Color.WHITE);
         }
     }
 
