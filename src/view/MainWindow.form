@@ -11,7 +11,7 @@
       <tabbedpane id="79486" binding="emulatorTabbedPanel">
         <constraints>
           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false">
-            <preferred-size width="800" height="450"/>
+            <preferred-size width="650" height="450"/>
           </grid>
         </constraints>
         <properties/>
@@ -139,23 +139,49 @@
                       </component>
                     </children>
                   </scrollpane>
-                  <scrollpane id="d8de6">
+                  <splitpane id="cb94a">
                     <constraints>
                       <splitpane position="right"/>
                     </constraints>
                     <properties>
-                      <horizontalScrollBarPolicy value="31"/>
+                      <continuousLayout value="false"/>
+                      <dividerLocation value="500"/>
+                      <dividerSize value="5"/>
                     </properties>
                     <border type="none"/>
                     <children>
-                      <component id="b4c41" class="javax.swing.JEditorPane" binding="translationResultTextPanel">
-                        <constraints/>
+                      <scrollpane id="d8de6">
+                        <constraints>
+                          <splitpane position="left"/>
+                        </constraints>
                         <properties>
-                          <editable value="false"/>
+                          <horizontalScrollBarPolicy value="31"/>
                         </properties>
-                      </component>
+                        <border type="none"/>
+                        <children>
+                          <component id="b4c41" class="javax.swing.JEditorPane" binding="translationResultTextPanel">
+                            <constraints/>
+                            <properties>
+                              <editable value="false"/>
+                            </properties>
+                          </component>
+                        </children>
+                      </scrollpane>
+                      <scrollpane id="b6f2d">
+                        <constraints>
+                          <splitpane position="right"/>
+                        </constraints>
+                        <properties/>
+                        <border type="none" title="Lable -&gt; Address"/>
+                        <children>
+                          <component id="8dd71" class="javax.swing.JTable" binding="label2AddressTable">
+                            <constraints/>
+                            <properties/>
+                          </component>
+                        </children>
+                      </scrollpane>
                     </children>
-                  </scrollpane>
+                  </splitpane>
                 </children>
               </splitpane>
             </children>

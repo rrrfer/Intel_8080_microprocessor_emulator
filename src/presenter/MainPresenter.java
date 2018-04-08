@@ -51,7 +51,7 @@ public class MainPresenter implements IMainPresenter, IIntraProgramIOUpdateListe
         // Создание View
         mainView = new MainWindow(this, dataSourceForMemoryTable, dataSourceForRegistersTable,
                 dataSourceForPixelScreen, dataSourceForCharacterScreen_Color,
-                dataSourceForCharacterScreen_Character);
+                dataSourceForCharacterScreen_Character, emulator.getLabel2AddressList());
 
         // Установка режима работы эмулятора по умолчанию
         currentActionMode = DEFAULT_ACTION_MODE;
@@ -73,6 +73,7 @@ public class MainPresenter implements IMainPresenter, IIntraProgramIOUpdateListe
 
         mainView.memoryTableUpdate();
         mainView.registersTableUpdate();
+        mainView.label2AddressTableUpdate();
         mainView.setTranslationResult(dataSourceForTranslateResultPanel, hasErrors);
         mainView.setProgramCounterPosition(0);
     }

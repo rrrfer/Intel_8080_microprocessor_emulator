@@ -16,6 +16,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class MainWindow extends JFrame implements IMainView {
 
@@ -30,6 +32,7 @@ public class MainWindow extends JFrame implements IMainView {
     private JPanel rootPanel;
     private JTable memoryTable;
     private JTable registersAndFlagsTable;
+    private JTable label2AddressTable;
     private JTabbedPane emulatorTabbedPanel;
     private JEditorPane codeEditorTextPanel;
     private JEditorPane translationResultTextPanel;
@@ -64,6 +67,7 @@ public class MainWindow extends JFrame implements IMainView {
     // Data model components
     private MemoryTableModel memoryTableModel;
     private RegistersAndFlagsTableModel registersAndFlagsTableModel;
+    private Label2AddressTableModel label2AddressTableModel;
 
     // Input
     private String inputString;
@@ -81,14 +85,16 @@ public class MainWindow extends JFrame implements IMainView {
     public MainWindow(@NotNull IMainPresenter presenter, @NotNull String[][] dataSourceForMemoryTable,
                       @NotNull String[][] dataSourceForRegisterTable, @NotNull int[][] dataSourceForPixelScreen,
                       @NotNull int[][] dataSourceForCharacterScreen_Color,
-                      @NotNull int[][] dataSourceForCharacterScreen_Character) {
+                      @NotNull int[][] dataSourceForCharacterScreen_Character,
+                      @NotNull ArrayList<String> dataSourceForLabel2AddressTable) {
         this.presenter = presenter;
 
         setTitle("Intel 8080 Emulator");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         createUI(dataSourceForMemoryTable, dataSourceForRegisterTable, dataSourceForPixelScreen,
-                dataSourceForCharacterScreen_Color, dataSourceForCharacterScreen_Character);
+                dataSourceForCharacterScreen_Color, dataSourceForCharacterScreen_Character,
+                dataSourceForLabel2AddressTable);
 
         setContentPane(rootPanel);
 
@@ -104,11 +110,14 @@ public class MainWindow extends JFrame implements IMainView {
     private void createUI(String[][] dataSourceForMemoryTable,
                           String[][] dataSourceForRegisterTable, int[][] dataSourceForPixelScreen,
                           int[][] dataSourceForCharacterScreen_Color,
-                          int[][] dataSourceForCharacterScreen_Character) {
+                          int[][] dataSourceForCharacterScreen_Character,
+                          ArrayList<String> dataSourceForLabel2AddressTable) {
 
         createMenuBar();
         createMemoryTable(dataSourceForMemoryTable);
         createRegistersAndFlagsTable(dataSourceForRegisterTable);
+
+        createLabel2AddressTable(dataSourceForLabel2AddressTable);
 
         createScreens(dataSourceForPixelScreen,
                 dataSourceForCharacterScreen_Color,
@@ -487,6 +496,13 @@ public class MainWindow extends JFrame implements IMainView {
         registersAndFlagsTable.getColumnModel().getColumn(0).setPreferredWidth(90);
     }
 
+    private void createLabel2AddressTable(ArrayList<String> dataSourceForLabel2AddressTable) {
+        label2AddressTableModel = new Label2AddressTableModel(dataSourceForLabel2AddressTable);
+        label2AddressTable.setModel(label2AddressTableModel);
+        label2AddressTable.setFocusable(false);
+        label2AddressTable.setEnabled(false);
+    }
+
     private void createScreens(int[][] dataSourceForPixelScreen, int[][] dataSourceForCharacterScreen_Color,
                                int[][] dataSourceForCharacterScreen_Character) {
 
@@ -774,6 +790,11 @@ public class MainWindow extends JFrame implements IMainView {
     @Override
     public void registersTableUpdate() {
         registersAndFlagsTableModel.fireTableDataChanged();
+    }
+
+    @Override
+    public void label2AddressTableUpdate() {
+        label2AddressTableModel.fireTableDataChanged();
     }
 
     @Override

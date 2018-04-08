@@ -6,6 +6,8 @@ import presenter.IIntraProgramIOUpdateListener;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 /**
  * Интерфейс программного эмулятора микропроцессора Intel 8080. Класс, описывающий программный
@@ -155,4 +157,9 @@ public interface IEmulator {
      * @return true, при наличии синтаксических ошибок в коде программы, иначе false.
      */
     boolean hasTranslationErrors();
+
+    /**
+     * @return список пар значений: метка -> адрес.
+     */
+    ArrayList<String> getLabel2AddressList();
 }

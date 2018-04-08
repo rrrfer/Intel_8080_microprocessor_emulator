@@ -1,5 +1,9 @@
 package model.translator;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+
 /**
  * Интерфейс транслятора. Класс, который выполняет синтаксический анализ и трансляцию текста
  * программы в набор команд микропроцессора, реализует этот интерфейс.
@@ -35,4 +39,9 @@ public interface ITranslator {
      * @return true, при наличии синтаксических ошибок в коде программы, иначе false.
      */
     boolean hasTranslationErrors();
+
+    /**
+     * @return список пар значений: метка -> адрес.
+     */
+    ArrayList<String> getLabel2AddressList();
 }

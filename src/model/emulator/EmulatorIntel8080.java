@@ -11,6 +11,8 @@ import model.translator.Intel8080Translator;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class EmulatorIntel8080 implements IEmulator {
 
@@ -218,5 +220,10 @@ public class EmulatorIntel8080 implements IEmulator {
     @Override
     public boolean hasTranslationErrors() {
         return translator.hasTranslationErrors();
+    }
+
+    @Override
+    public ArrayList<String> getLabel2AddressList() {
+        return translator.getLabel2AddressList();
     }
 }

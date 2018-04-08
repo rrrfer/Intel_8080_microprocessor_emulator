@@ -52,6 +52,11 @@ public interface IMainView {
     void memoryTableUpdate();
 
     /**
+     * Метод для уведомления view-компонента об изменении таблицы соотношения меток и адресов.
+     */
+    void label2AddressTableUpdate();
+
+    /**
      * Метод для уведомления view-компонента об изменении данных модели пиксельного экрана.
      */
     void pixelScreenUpdate();

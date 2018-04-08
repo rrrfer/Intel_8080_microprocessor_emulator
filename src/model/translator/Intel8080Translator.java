@@ -2,13 +2,15 @@ package model.translator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class Intel8080Translator implements ITranslator {
 
     private StringBuilder statusString;
 
     private ArrayList<String> commands;
-    private HashMap<String, Integer> label2AddressMap;
+    private LinkedHashMap<String, Integer> label2AddressMap;
+    private ArrayList<String> label2AddressList;
     private ArrayList<String> commandsTemplateArray;
     private HashMap<String, Integer> commandsCodes;
 
@@ -19,7 +21,8 @@ public class Intel8080Translator implements ITranslator {
 
     public Intel8080Translator() {
         commands = new ArrayList<>();
-        label2AddressMap = new HashMap<>();
+        label2AddressMap = new LinkedHashMap<>();
+        label2AddressList = new ArrayList<>();
         statusString = new StringBuilder();
 
         commandsTemplateArray = new ArrayList<>();
@@ -36,6 +39,7 @@ public class Intel8080Translator implements ITranslator {
         currentAddress = 0;
         hasErrors = false;
         label2AddressMap.clear();
+        label2AddressList.clear();
         statusString.delete(0, statusString.length());
 
         String[] dividedProgramLines = programText.split(System.lineSeparator());
@@ -72,6 +76,8 @@ public class Intel8080Translator implements ITranslator {
                 if ((labelName = isLabel(dividedProgramLines[i])) != null) {
                     if (!label2AddressMap.containsKey(labelName)) {
                         label2AddressMap.put(labelName, currentAddress);
+                        label2AddressList.add(labelName);
+                        label2AddressList.add(Integer.toString(currentAddress, 16));
                         continue;
                     } else {
                         hasErrors = true;
@@ -192,6 +198,11 @@ public class Intel8080Translator implements ITranslator {
     @Override
     public boolean hasTranslationErrors() {
         return hasErrors;
+    }
+
+    @Override
+    public ArrayList<String> getLabel2AddressList() {
+        return label2AddressList;
     }
 
     private String cutComment(String lex) {
