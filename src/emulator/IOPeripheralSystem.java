@@ -7,7 +7,6 @@ import presenter.IIntraProgramIOUpdateListener;
  * @author Maxim Rozhkov
  */
 public class IOPeripheralSystem implements IIntraProgramIOActionsListener {
-
     private IIntraProgramIOUpdateListener intraProgramIOUpdateListener;
 
     private IScreen screenOnPort0x05;
@@ -15,7 +14,6 @@ public class IOPeripheralSystem implements IIntraProgramIOActionsListener {
 
     private Timer timer;
     private Thread timerThread;
-
     public IOPeripheralSystem(IIntraProgramIOUpdateListener intraProgramIOUpdateListener,
                               IScreen screenOnPort0x05, IScreen characterScreen) {
 
@@ -72,6 +70,5 @@ public class IOPeripheralSystem implements IIntraProgramIOActionsListener {
         if (screenOnPort0x07.putByte_Protocol(value)) {
             intraProgramIOUpdateListener.characterScreenUpdate();
         }
-
     }
 }
