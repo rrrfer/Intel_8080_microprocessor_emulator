@@ -13,7 +13,7 @@ class CharacterScreen implements IScreen {
     private int rowSelectedAddress;
     private int columnSelectedAddress;
 
-    public CharacterScreen(int rowCount, int columnCount) {
+    CharacterScreen(int rowCount, int columnCount) {
         this.rowCount = rowCount;
         this.columnCount = columnCount;
         this.colorMemory = new int[rowCount][columnCount];

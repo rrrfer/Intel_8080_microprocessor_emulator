@@ -1,35 +1,35 @@
 package kernel.cmd;
 
-import kernel.IMicroprocessorAdapterForCommands;
-import kernel.Intel8080RegisterPairs;
-import kernel.Intel8080Registers;
+import kernel.ICommandsExecuteListener;
+import kernel.RegisterPairs;
+import kernel.Registers;
 
 public class CMD_Intel8080_MOV implements ICommand {
 
-    private Intel8080Registers firstRegister;
-    private Intel8080Registers secondRegister;
+    private Registers firstRegister;
+    private Registers secondRegister;
 
-    public CMD_Intel8080_MOV(Intel8080Registers firstRegister, Intel8080Registers secondRegister) {
+    public CMD_Intel8080_MOV(Registers firstRegister, Registers secondRegister) {
         this.firstRegister = firstRegister;
         this.secondRegister = secondRegister;
     }
 
     @Override
-    public void execute(IMicroprocessorAdapterForCommands microprocessor) {
+    public void execute(ICommandsExecuteListener executeListener) {
         int value;
 
-        if (secondRegister == Intel8080Registers.M) {
-            int address = microprocessor.getValueFromRegisterPair(Intel8080RegisterPairs.H);
-            value = microprocessor.getMemory().getValueByIndex(address);
+        if (secondRegister == Registers.M) {
+            int address = executeListener.requestOnGetValueFromRegisterPair(RegisterPairs.H);
+            value = executeListener.requestOnGetValueFromMemoryByAddress(address);
         } else {
-            value = microprocessor.getValueFromRegister(secondRegister);
+            value = executeListener.requestOnGetValueFromRegister(secondRegister);
         }
 
-        if (firstRegister == Intel8080Registers.M) {
-           int address = microprocessor.getValueFromRegisterPair(Intel8080RegisterPairs.H);
-           microprocessor.getMemory().setValueByIndex(address, value);
+        if (firstRegister == Registers.M) {
+           int address = executeListener.requestOnGetValueFromRegisterPair(RegisterPairs.H);
+           executeListener.requestOnSetValueInMemoryByAddress(address, value);
         } else {
-            microprocessor.setValueInRegister(firstRegister, value);
+            executeListener.requestOnSetValueInRegister(firstRegister, value);
         }
     }
 

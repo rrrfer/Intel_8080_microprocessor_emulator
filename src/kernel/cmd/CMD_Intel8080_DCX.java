@@ -1,25 +1,25 @@
 package kernel.cmd;
 
-import kernel.IMicroprocessorAdapterForCommands;
-import kernel.Intel8080RegisterPairs;
-import kernel.Intel8080Registers;
+import kernel.ICommandsExecuteListener;
+import kernel.RegisterPairs;
+import kernel.Registers;
 import kernel._DByte;
 
 public class CMD_Intel8080_DCX implements ICommand {
 
-    private Intel8080RegisterPairs registerPair;
+    private RegisterPairs registerPair;
 
-    public CMD_Intel8080_DCX(Intel8080RegisterPairs registerPair) {
+    public CMD_Intel8080_DCX(RegisterPairs registerPair) {
         this.registerPair = registerPair;
     }
 
     @Override
-    public void execute(IMicroprocessorAdapterForCommands microprocessor) {
+    public void execute(ICommandsExecuteListener executeListener) {
         int value;
         if (registerPair != null) {
-            value = microprocessor.getValueFromRegisterPair(registerPair);
+            value = executeListener.requestOnGetValueFromRegisterPair(registerPair);
         } else {
-            value = microprocessor.getValueFromRegister(Intel8080Registers.SP);
+            value = executeListener.requestOnGetValueFromRegister(Registers.SP);
         }
 
         value -= 1;
@@ -28,9 +28,9 @@ public class CMD_Intel8080_DCX implements ICommand {
         // TODO Проверка на перенос
 
         if (!registerPair.equals("SP")) {
-            microprocessor.setValueInRegisterPair(registerPair, value);
+            executeListener.requestOnSetValueInRegisterPair(registerPair, value);
         } else {
-            microprocessor.setValueInRegister(Intel8080Registers.SP, value);
+            executeListener.requestOnSetValueInRegister(Registers.SP, value);
         }
     }
 

@@ -4,26 +4,26 @@ import kernel.*;
 
 public class CMD_Intel8080_ADC implements ICommand {
 
-    private Intel8080Registers register;
+    private Registers register;
 
-    public CMD_Intel8080_ADC(Intel8080Registers register) {
+    public CMD_Intel8080_ADC(Registers register) {
         this.register = register;
     }
 
     @Override
-    public void execute(IMicroprocessorAdapterForCommands microprocessor) {
-        int firstValue = microprocessor.getValueFromRegister(Intel8080Registers.A);
+    public void execute(ICommandsExecuteListener executeListener) {
+        int firstValue = executeListener.requestOnGetValueFromRegister(Registers.A);
         int secondValue;
-        if (register == Intel8080Registers.M) {
-            int address = microprocessor.getValueFromRegisterPair(Intel8080RegisterPairs.H);
-            secondValue = microprocessor.getMemory().getValueByIndex(address);
+        if (register == Registers.M) {
+            int address = executeListener.requestOnGetValueFromRegisterPair(RegisterPairs.H);
+            secondValue = executeListener.requestOnGetValueFromMemoryByAddress(address);
         } else {
-            secondValue = microprocessor.getValueFromRegister(register);
+            secondValue = executeListener.requestOnGetValueFromRegister(register);
         }
-        firstValue = firstValue + secondValue + microprocessor.getValueFromFlag(Intel8080Flags.C);
-        microprocessor.checkByteForSetFlags(firstValue);
+        firstValue = firstValue + secondValue + executeListener.requestOnGetValueFromFlag(Flags.C);
+        executeListener.requestOnCheckByteForSetFlags(firstValue);
         firstValue = _Byte.getRoundedValue(firstValue);
-        microprocessor.setValueInRegister(Intel8080Registers.A, firstValue);
+        executeListener.requestOnSetValueInRegister(Registers.A, firstValue);
     }
 
     @Override

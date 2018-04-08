@@ -1,50 +1,42 @@
 package kernel;
 
-import emulator.IInputOutputSystem;
+import emulator.IIntraProgramIOActionsListener;
 import kernel.cmd.ICommand;
 
-public class Intel8080 implements IMicroprocessor {
+/**
+ * Класс микропроцессора Intel 8080.
+ * Данный класс описывает внутреннюю реализацию микропроцессора Intel 8080.
+ * @author Maxim Rozhkov
+ */
+public class Microprocessor implements IMicroprocessor {
 
-    // Внутренние состояние микропроцессора
+    private int[] memory;
     private int[] registers;
     private int flags;
-    private IMemory memory;
 
-    private IInputOutputSystem ioSystem;
+    private IIntraProgramIOActionsListener ioSystem;
 
-    // Вспомогательные переменные
-    private IMicroprocessorAdapterForCommands microprocessorCommandsAdapter;
+    private ICommandsExecuteListener commandsExecuteListener;
 
-    public Intel8080(IMemory memory) {
-        this.microprocessorCommandsAdapter = new MicroprocessorAdapterForCommands(this);
-
-        this.registers = new int[9];
+    public Microprocessor(int memorySize) {
+        this.commandsExecuteListener = new CommandsExecuteListener(this);
         this.flags = 0;
-        this.memory = memory;
+        this.registers = new int[Registers.SIZE.ordinal()];
+        this.memory = new int[memorySize];
     }
 
     @Override
-    public IReadOnlyMemory getReadOnlyMemory() {
-        return memory;
-    }
-
-    @Override
-    public IMemory getMemory() {
-        return memory;
-    }
-
-    @Override
-    public int getValueFromRegister(Intel8080Registers register) {
+    public int getValueFromRegister(Registers register) {
         return registers[register.ordinal()];
     }
 
     @Override
-    public void setValueInRegister(Intel8080Registers register, int value) {
+    public void setValueInRegister(Registers register, int value) {
         registers[register.ordinal()] = value;
     }
 
     @Override
-    public int getValueFromFlag(Intel8080Flags flag) {
+    public int getValueFromFlag(Flags flag) {
         int value = 0;
         switch (flag) {
             case S: {
@@ -68,7 +60,7 @@ public class Intel8080 implements IMicroprocessor {
     }
 
     @Override
-    public void setValueInFlag(Intel8080Flags flag, int value) {
+    public void setValueInFlag(Flags flag, int value) {
         switch (flag) {
             case S: {
                 if (value > 0) {
@@ -115,32 +107,33 @@ public class Intel8080 implements IMicroprocessor {
         this.flags = flags;
     }
 
+
     @Override
     public void executeCommand(ICommand command) {
-        int PC = getValueFromRegister(Intel8080Registers.PC);
-        PC = (PC + command.getSize()) % memory.getSize();
-        setValueInRegister(Intel8080Registers.PC, PC);
-        command.execute(microprocessorCommandsAdapter);
+        int PC = getValueFromRegister(Registers.PC);
+        PC = (PC + command.getSize()) % memory.length;
+        setValueInRegister(Registers.PC, PC);
+        command.execute(commandsExecuteListener);
     }
 
     @Override
     public void checkValueForSetFlags(int value) {
         if (value % 256 == 0) {
-            setValueInFlag(Intel8080Flags.Z, 1);
+            setValueInFlag(Flags.Z, 1);
         } else {
-            setValueInFlag(Intel8080Flags.Z, 0);
+            setValueInFlag(Flags.Z, 0);
         }
 
         if (value < 0) {
-            setValueInFlag(Intel8080Flags.S, 1);
+            setValueInFlag(Flags.S, 1);
         } else {
-            setValueInFlag(Intel8080Flags.S, 0);
+            setValueInFlag(Flags.S, 0);
         }
 
         if (value > 255 || value < 0) {
-            setValueInFlag(Intel8080Flags.C, 1);
+            setValueInFlag(Flags.C, 1);
         } else {
-            setValueInFlag(Intel8080Flags.C, 0);
+            setValueInFlag(Flags.C, 0);
         }
 
         if (value < 0) value += 256;
@@ -151,7 +144,7 @@ public class Intel8080 implements IMicroprocessor {
             value = value >> 1;
         }
 
-        setValueInFlag(Intel8080Flags.P, (counter + 1) % 2);
+        setValueInFlag(Flags.P, (counter + 1) % 2);
     }
 
     @Override
@@ -165,29 +158,31 @@ public class Intel8080 implements IMicroprocessor {
 
     @Override
     public void resetMemory() {
-        memory.reset();
+        for (int i = 0; i < memory.length; ++i) {
+            memory[i] = 0;
+        }
     }
 
     @Override
-    public int getValueFromRegisterPair(Intel8080RegisterPairs registerPair) {
+    public int getValueFromRegisterPair(RegisterPairs registerPair) {
         int value = 0;
         switch (registerPair) {
             case B: {
-                value = getValueFromRegister(Intel8080Registers.B) * 256;
-                value += getValueFromRegister(Intel8080Registers.C);
+                value = getValueFromRegister(Registers.B) * 256;
+                value += getValueFromRegister(Registers.C);
                 break;
             }
             case D: {
-                value = getValueFromRegister(Intel8080Registers.D) * 256;
-                value += getValueFromRegister(Intel8080Registers.E);
+                value = getValueFromRegister(Registers.D) * 256;
+                value += getValueFromRegister(Registers.E);
                 break;
             }
             case H: {
-                value = getValueFromRegister(Intel8080Registers.H) * 256;
-                value += getValueFromRegister(Intel8080Registers.L);
+                value = getValueFromRegister(Registers.H) * 256;
+                value += getValueFromRegister(Registers.L);
                 break;
             }case PSW: {
-                value = getValueFromRegister(Intel8080Registers.A) * 256;
+                value = getValueFromRegister(Registers.A) * 256;
                 value += flags;
                 break;
             }
@@ -196,25 +191,25 @@ public class Intel8080 implements IMicroprocessor {
     }
 
     @Override
-    public void setValueInRegisterPair(Intel8080RegisterPairs registerPair, int value) {
+    public void setValueInRegisterPair(RegisterPairs registerPair, int value) {
         switch (registerPair) {
             case B: {
-                setValueInRegister(Intel8080Registers.B, value / 256);
-                setValueInRegister(Intel8080Registers.C, value % 256);
+                setValueInRegister(Registers.B, value / 256);
+                setValueInRegister(Registers.C, value % 256);
                 break;
             }
             case D: {
-                setValueInRegister(Intel8080Registers.D, value / 256);
-                setValueInRegister(Intel8080Registers.E, value % 256);
+                setValueInRegister(Registers.D, value / 256);
+                setValueInRegister(Registers.E, value % 256);
                 break;
             }
             case H: {
-                setValueInRegister(Intel8080Registers.H, value / 256);
-                setValueInRegister(Intel8080Registers.L, value % 256);
+                setValueInRegister(Registers.H, value / 256);
+                setValueInRegister(Registers.L, value % 256);
                 break;
             }
             case PSW: {
-                setValueInRegister(Intel8080Registers.A, value / 256);
+                setValueInRegister(Registers.A, value / 256);
                 flags = value % 256;
                 break;
             }
@@ -222,12 +217,27 @@ public class Intel8080 implements IMicroprocessor {
     }
 
     @Override
-    public void setIOSystem(IInputOutputSystem ioSystem) {
+    public void setIOActionListener(IIntraProgramIOActionsListener ioSystem) {
         this.ioSystem = ioSystem;
     }
 
     @Override
-    public IInputOutputSystem getIOSystem() {
+    public IIntraProgramIOActionsListener getInputOutputActionListener() {
         return ioSystem;
+    }
+
+    @Override
+    public int getValueFromMemoryByAddress(int address) {
+        return memory[address];
+    }
+
+    @Override
+    public void setValueInMemoryByAddress(int address, int value) {
+        memory[address] = value;
+    }
+
+    @Override
+    public int getMemorySize() {
+        return memory.length;
     }
 }

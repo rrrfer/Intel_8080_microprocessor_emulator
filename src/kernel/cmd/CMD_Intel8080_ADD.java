@@ -1,32 +1,32 @@
 package kernel.cmd;
 
-import kernel.IMicroprocessorAdapterForCommands;
-import kernel.Intel8080RegisterPairs;
-import kernel.Intel8080Registers;
+import kernel.ICommandsExecuteListener;
+import kernel.RegisterPairs;
+import kernel.Registers;
 import kernel._Byte;
 
 public class CMD_Intel8080_ADD implements ICommand {
 
-    private Intel8080Registers register;
+    private Registers register;
 
-    public CMD_Intel8080_ADD(Intel8080Registers register) {
+    public CMD_Intel8080_ADD(Registers register) {
         this.register = register;
     }
 
     @Override
-    public void execute(IMicroprocessorAdapterForCommands microprocessor) {
-        int firstValue = microprocessor.getValueFromRegister(Intel8080Registers.A);
+    public void execute(ICommandsExecuteListener executeListener) {
+        int firstValue = executeListener.requestOnGetValueFromRegister(Registers.A);
         int secondValue;
-        if (register == Intel8080Registers.M) {
-            int address = microprocessor.getValueFromRegisterPair(Intel8080RegisterPairs.H);
-            secondValue = microprocessor.getMemory().getValueByIndex(address);
+        if (register == Registers.M) {
+            int address = executeListener.requestOnGetValueFromRegisterPair(RegisterPairs.H);
+            secondValue = executeListener.requestOnGetValueFromMemoryByAddress(address);
         } else {
-            secondValue = microprocessor.getValueFromRegister(register);
+            secondValue = executeListener.requestOnGetValueFromRegister(register);
         }
         firstValue = firstValue + secondValue;
-        microprocessor.checkByteForSetFlags(firstValue);
+        executeListener.requestOnCheckByteForSetFlags(firstValue);
         firstValue = _Byte.getRoundedValue(firstValue);
-        microprocessor.setValueInRegister(Intel8080Registers.A, firstValue);
+        executeListener.requestOnSetValueInRegister(Registers.A, firstValue);
     }
 
     @Override

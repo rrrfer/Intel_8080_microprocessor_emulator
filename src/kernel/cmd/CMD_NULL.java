@@ -1,10 +1,10 @@
 package kernel.cmd;
 
-import kernel.IMicroprocessorAdapterForCommands;
+import kernel.ICommandsExecuteListener;
 
 public class CMD_NULL implements ICommand {
     @Override
-    public void execute(IMicroprocessorAdapterForCommands microprocessor) {
+    public void execute(ICommandsExecuteListener executeListener) {
 
     }
 

@@ -1,7 +1,7 @@
 package kernel.cmd;
 
-import kernel.IMicroprocessorAdapterForCommands;
-import kernel.Intel8080Registers;
+import kernel.ICommandsExecuteListener;
+import kernel.Registers;
 import kernel._Byte;
 
 public class CMD_Intel8080_SUI implements ICommand {
@@ -13,13 +13,13 @@ public class CMD_Intel8080_SUI implements ICommand {
     }
 
     @Override
-    public void execute(IMicroprocessorAdapterForCommands microprocessor) {
-        int firstValue = microprocessor.getValueFromRegister(Intel8080Registers.A);
+    public void execute(ICommandsExecuteListener executeListener) {
+        int firstValue = executeListener.requestOnGetValueFromRegister(Registers.A);
         int secondValue = Integer.valueOf(arg, 16);
         firstValue -= secondValue;
-        microprocessor.checkByteForSetFlags(firstValue);
+        executeListener.requestOnCheckByteForSetFlags(firstValue);
         firstValue = _Byte.getRoundedValue(firstValue);
-        microprocessor.setValueInRegister(Intel8080Registers.A, firstValue);
+        executeListener.requestOnSetValueInRegister(Registers.A, firstValue);
     }
 
     @Override

@@ -3,7 +3,7 @@ package view;
 import javax.swing.*;
 import java.awt.*;
 
-public class CharacterScreenView extends JPanel implements IScreenView {
+class CharacterScreenView extends JPanel implements IScreenView {
 
     private int pixelSize;
     private int[][] colorMemory;

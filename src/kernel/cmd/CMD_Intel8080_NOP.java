@@ -1,11 +1,11 @@
 package kernel.cmd;
 
-import kernel.IMicroprocessorAdapterForCommands;
+import kernel.ICommandsExecuteListener;
 
 public class CMD_Intel8080_NOP implements ICommand {
 
     @Override
-    public void execute(IMicroprocessorAdapterForCommands microprocessor) {}
+    public void execute(ICommandsExecuteListener executeListener) {}
 
     @Override
     public int getSize() {

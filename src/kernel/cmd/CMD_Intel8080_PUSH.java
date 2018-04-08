@@ -1,55 +1,55 @@
 package kernel.cmd;
 
-import kernel.IMicroprocessorAdapterForCommands;
-import kernel.Intel8080Registers;
+import kernel.ICommandsExecuteListener;
+import kernel.Registers;
 import kernel._DByte;
 
 public class CMD_Intel8080_PUSH implements ICommand {
 
-    public static void push(IMicroprocessorAdapterForCommands microprocessor, int value) {
-        int address = microprocessor.getValueFromRegister(Intel8080Registers.SP);
+    public static void push(ICommandsExecuteListener executeListener, int value) {
+        int address = executeListener.requestOnGetValueFromRegister(Registers.SP);
         address = _DByte.getRoundedValue(address - 1);
-        microprocessor.getMemory().setValueByIndex(address, value / 256);
+        executeListener.requestOnSetValueInMemoryByAddress(address, value / 256);
         address = _DByte.getRoundedValue(address - 1);
-        microprocessor.getMemory().setValueByIndex(address, value % 256);
-        microprocessor.setValueInRegister(Intel8080Registers.SP, address);
+        executeListener.requestOnSetValueInMemoryByAddress(address, value % 256);
+        executeListener.requestOnSetValueInRegister(Registers.SP, address);
     }
 
-    private Intel8080Registers register;
+    private Registers register;
 
-    public CMD_Intel8080_PUSH(Intel8080Registers register) {
+    public CMD_Intel8080_PUSH(Registers register) {
         this.register = register;
     }
 
     @Override
-    public void execute(IMicroprocessorAdapterForCommands microprocessor) {
+    public void execute(ICommandsExecuteListener executeListener) {
 
         int value;
         if (register != null) {
-            value = microprocessor.getValueFromRegister(register) * 256;
+            value = executeListener.requestOnGetValueFromRegister(register) * 256;
         } else {
-            value = microprocessor.getValueFromRegister(Intel8080Registers.A) * 256;
+            value = executeListener.requestOnGetValueFromRegister(Registers.A) * 256;
         }
 
         if (register != null) {
             switch (register) {
                 case B: {
-                    value += microprocessor.getValueFromRegister(Intel8080Registers.C);
+                    value += executeListener.requestOnGetValueFromRegister(Registers.C);
                     break;
                 }
                 case D: {
-                    value += microprocessor.getValueFromRegister(Intel8080Registers.E);
+                    value += executeListener.requestOnGetValueFromRegister(Registers.E);
                     break;
                 }
                 case H: {
-                    value += microprocessor.getValueFromRegister(Intel8080Registers.L);
+                    value += executeListener.requestOnGetValueFromRegister(Registers.L);
                     break;
                 }
             }
         } else {
-            value += microprocessor.getAllFlags();
+            value += executeListener.requestOnGerValueFromFlagsRegister();
         }
-        push(microprocessor, value);
+        push(executeListener, value);
     }
 
     @Override

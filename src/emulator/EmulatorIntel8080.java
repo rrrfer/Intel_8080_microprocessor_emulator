@@ -2,8 +2,9 @@ package emulator;
 
 import kernel.*;
 import kernel.cmd.ICommand;
-import translator.CommandsBuilder;
-import translator.CommandsCodes;
+import presenter.IIntraProgramIOUpdateListener;
+import translator.Intel8080CommandsBuilder;
+import translator.Intel8080CommandsCodes;
 import translator.ITranslator;
 import translator.Intel8080Translator;
 
@@ -12,43 +13,50 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class EmulatorIntel8080 implements IEmulator {
-    private IMicroprocessorAdapterForEmulator microprocessor;
-    private IMicroprocessorAdapterForPresenter microprocessorPresenterAdapter;
+
+    private IMicroprocessor microprocessor;
+
     private ITranslator translator;
-    private IInputOutputSystem ioSystem;
+
+    private IScreen pixelScreen;
+    private IScreen characterScreen;
 
     private ArrayList<Integer> breakpoints;
 
-    public EmulatorIntel8080(IInputOutputSystem ioSystem) {
-        IMicroprocessor mp = new Intel8080(new Memory(65536));
-        this.microprocessor = new MicroprocessorAdapterForEmulator(mp);
-        this.microprocessor.setIOSystem(ioSystem);
-        this.microprocessorPresenterAdapter = new MicroprocessorAdapterForPresenter(mp);
+    public EmulatorIntel8080() {
+
+        // Создание микропроцессора
+        microprocessor = new Microprocessor(65536);
+
+        // Создание экранов эмулятора
+        pixelScreen = new PixelScreen(256, 256);
+        characterScreen = new CharacterScreen(20, 20);
+
+        // Создание экземпляра транслятора.
         this.translator = new Intel8080Translator();
+        // Создание списка точек остановки
         this.breakpoints = new ArrayList<>();
-        this.ioSystem = ioSystem;
     }
 
     @Override
     public void translation(String program) {
-        IMemory memory = microprocessor.getMemory();
         String[] lexemes = translator.getLexemes(program);
         if (lexemes != null) {
             for (String lex : lexemes) {
                 int[] code = translator.getCode(lex);
                 int address = code[0];
-                if (code[2] != CommandsCodes.SET) {
-                    memory.setValueByIndex(address, code[2]);
+                if (code[2] != Intel8080CommandsCodes.SET) {
+                    microprocessor.setValueInMemoryByAddress(address, code[2]);
                     if (code[3] >= 0) {
                         if (code[1] == 2) {
-                            memory.setValueByIndex(address + 1, code[3]);
+                            microprocessor.setValueInMemoryByAddress(address + 1, code[3]);
                         } else {
-                            memory.setValueByIndex(address + 1, code[3] / 256);
-                            memory.setValueByIndex(address + 2, code[3] % 256);
+                            microprocessor.setValueInMemoryByAddress(address + 1, code[3] / 256);
+                            microprocessor.setValueInMemoryByAddress(address + 2, code[3] % 256);
                         }
                     }
                 } else {
-                    memory.setValueByIndex(address, code[3]);
+                    microprocessor.setValueInMemoryByAddress(address, code[3]);
                 }
             }
         }
@@ -56,27 +64,23 @@ public class EmulatorIntel8080 implements IEmulator {
 
     @Override
     public void run() {
-        while (step()
-                && !breakpoints
-                .contains(microprocessor.getValueFromRegister(Intel8080Registers.PC))) {}
+        while (!step() && !breakpoints.contains(
+                microprocessor.getValueFromRegister(Registers.PC))) {}
     }
 
     @Override
     public boolean step() {
-        int address = microprocessor.getValueFromRegister(Intel8080Registers.PC);
-        ICommand command = CommandsBuilder.getCommand(microprocessor.getMemory(), address);
-        if (!command.getName().equals("HLT")) {
-            microprocessor.executeCommand(command);
-            return true;
-        }
-        return false;
+        int address = microprocessor.getValueFromRegister(Registers.PC);
+        ICommand command = Intel8080CommandsBuilder.getCommand(microprocessor, address);
+        microprocessor.executeCommand(command);
+        return isEndProgram();
     }
 
     @Override
-    public String getTranslationResult() {
+    public String getErrors() {
         return new Date().toString()
                 + System.lineSeparator()
-                + translator.getStatusString();
+                + translator.getTranslationStatusString();
     }
 
     @Override
@@ -85,7 +89,7 @@ public class EmulatorIntel8080 implements IEmulator {
         int address = 0;
         while (address < 65536) {
             ICommand command
-                    = CommandsBuilder.getCommand(microprocessor.getMemory(), address);
+                    = Intel8080CommandsBuilder.getCommand(microprocessor, address);
             commands.add(command.getName());
             for (int i = 1; i < command.getSize(); ++i) {
                 address += 1;
@@ -101,11 +105,6 @@ public class EmulatorIntel8080 implements IEmulator {
     }
 
     @Override
-    public IMicroprocessorAdapterForPresenter getMicroprocessor() {
-        return microprocessorPresenterAdapter;
-    }
-
-    @Override
     public void resetRegisters() {
         microprocessor.resetRegisters();
     }
@@ -117,14 +116,17 @@ public class EmulatorIntel8080 implements IEmulator {
 
     @Override
     public void clearScreen() {
-        if (ioSystem != null) {
-            ioSystem.clearScreens();
+        if (pixelScreen != null) {
+            pixelScreen.clear();
+        }
+        if (characterScreen != null) {
+            characterScreen.clear();
         }
     }
 
     @Override
     public void setProgramCounter(int address) {
-        microprocessor.setValueInRegister(Intel8080Registers.PC, address);
+        microprocessor.setValueInRegister(Registers.PC, address);
     }
 
     @Override
@@ -163,5 +165,60 @@ public class EmulatorIntel8080 implements IEmulator {
         FileWriter fileWriter = new FileWriter(path);
         fileWriter.write(programText);
         fileWriter.close();
+    }
+
+    @Override
+    public int[][] getPixelScreenMemory() {
+        return pixelScreen.getColorMemory();
+    }
+
+    @Override
+    public int[][] getCharacterScreenColorMemory() {
+        return characterScreen.getColorMemory();
+    }
+
+    @Override
+    public int[][] getCharacterScreenCharMemory() {
+        return characterScreen.getCharMemory();
+    }
+
+    @Override
+    public int getValueFromRegister(Registers register) {
+        return microprocessor.getValueFromRegister(register);
+    }
+
+    @Override
+    public int getValueFromMemoryByAddress(int address) {
+        return microprocessor.getValueFromMemoryByAddress(address);
+    }
+
+    @Override
+    public int getValueFromFlag(Flags flag) {
+        return microprocessor.getValueFromFlag(flag);
+    }
+
+    @Override
+    public int getMemorySize() {
+        return microprocessor.getMemorySize();
+    }
+
+    @Override
+    public void setIOActionsListener
+            (IIntraProgramIOUpdateListener actionsUpdateListener) {
+        characterScreen = new CharacterScreen(20, 20);
+        pixelScreen = new PixelScreen(256, 256);
+        IIntraProgramIOActionsListener actionsListener
+                = new IOPeripheralSystem(actionsUpdateListener, pixelScreen, characterScreen);
+        microprocessor.setIOActionListener(actionsListener);
+    }
+
+    private boolean isEndProgram() {
+        int address = microprocessor.getValueFromRegister(Registers.PC);
+        int code = microprocessor.getValueFromMemoryByAddress(address);
+        if (code == Intel8080CommandsCodes.HLT) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
