@@ -72,8 +72,11 @@ public class EmulatorIntel8080 implements IEmulator {
     public boolean step() {
         int address = microprocessor.getValueFromRegister(Registers.PC);
         ICommand command = Intel8080CommandsBuilder.getCommand(microprocessor, address);
-        microprocessor.executeCommand(command);
-        return isEndProgram();
+        if (!command.getName().equals("HLT")) {
+            microprocessor.executeCommand(command);
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -215,15 +218,5 @@ public class EmulatorIntel8080 implements IEmulator {
     @Override
     public boolean hasTranslationErrors() {
         return translator.hasTranslationErrors();
-    }
-
-    private boolean isEndProgram() {
-        int address = microprocessor.getValueFromRegister(Registers.PC);
-        int code = microprocessor.getValueFromMemoryByAddress(address);
-        if (code == Intel8080CommandsCodes.HLT) {
-            return true;
-        } else {
-            return false;
-        }
     }
 }
