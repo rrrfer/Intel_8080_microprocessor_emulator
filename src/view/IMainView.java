@@ -17,7 +17,7 @@ public interface IMainView {
 
     /**
      * Метод для установки исходного текста программы в окно редактора кода.
-     * @param codeSource
+     * @param codeSource исходный текст программы.
      */
     void setProgramText(String codeSource);
 
@@ -68,7 +68,7 @@ public interface IMainView {
 
     /**
      * Метод для установки данных в консоль вывода.
-     * @param consoleOutData
+     * @param consoleOutData данные для консоли вывода.
      */
     void setConsoleOutputData(String consoleOutData);
 
@@ -80,13 +80,13 @@ public interface IMainView {
     /**
      * Метод для установки разрешений действий пользователю. Для различных состояний
      * работы эмулятора существуют различные комбинации доступных и недоступных действий.
-     * @param mode
+     * @param mode режим разрешений дейстий - константа из класса MainPresenter.
      */
     void setPermissionForActions(int mode);
 
     /**
      * Метод для запроса у view-компонента ввода значения в консоль ввода.
-     * @return
+     * @return введёное в консоль ввода значение.
      */
     int requestOfInput();
 }

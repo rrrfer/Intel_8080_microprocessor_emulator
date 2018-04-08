@@ -68,7 +68,10 @@
                     <preferred-size width="-1" height="200"/>
                   </grid>
                 </constraints>
-                <properties/>
+                <properties>
+                  <horizontalScrollBarPolicy value="31"/>
+                  <verticalScrollBarPolicy value="22"/>
+                </properties>
                 <border type="none" title="Output 0x02"/>
                 <children>
                   <component id="b71fe" class="javax.swing.JEditorPane" binding="consoleOutputTextPanel">

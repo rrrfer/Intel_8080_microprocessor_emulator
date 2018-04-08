@@ -14,7 +14,7 @@ public interface IScreenView {
 
     /**
      * Метод для установки во View-компонент видеопамяти кодов символа модели экрана.
-     * @param data
+     * @param data видеопамять (двумерный массив) символов.
      */
     void setCharData(int[][] data);
 

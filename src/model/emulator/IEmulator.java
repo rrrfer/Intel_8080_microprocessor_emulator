@@ -159,7 +159,7 @@ public interface IEmulator {
     boolean hasTranslationErrors();
 
     /**
-     * @return список пар значений: метка -> адрес.
+     * @return список пар значений: метка - адрес.
      */
     ArrayList<String> getLabel2AddressList();
 }
