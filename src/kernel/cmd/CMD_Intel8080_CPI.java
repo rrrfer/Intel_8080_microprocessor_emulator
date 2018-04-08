@@ -1,7 +1,7 @@
 package kernel.cmd;
 
-import kernel.IMicroprocessorAdapterForCommands;
-import kernel.Intel8080Registers;
+import kernel.ICommandsExecuteListener;
+import kernel.Registers;
 
 public class CMD_Intel8080_CPI implements ICommand {
 
@@ -12,11 +12,11 @@ public class CMD_Intel8080_CPI implements ICommand {
     }
 
     @Override
-    public void execute(IMicroprocessorAdapterForCommands microprocessor) {
-        int firstValue = microprocessor.getValueFromRegister(Intel8080Registers.A);
+    public void execute(ICommandsExecuteListener executeListener) {
+        int firstValue = executeListener.requestOnGetValueFromRegister(Registers.A);
         int secondValue = Integer.valueOf(arg, 16);
         firstValue -= secondValue;
-        microprocessor.checkByteForSetFlags(firstValue);
+        executeListener.requestOnCheckByteForSetFlags(firstValue);
     }
 
     @Override

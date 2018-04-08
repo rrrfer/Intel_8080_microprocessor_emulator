@@ -1,8 +1,8 @@
 package kernel.cmd;
 
-import emulator.IInputOutputSystem;
-import kernel.IMicroprocessorAdapterForCommands;
-import kernel.Intel8080Registers;
+import emulator.IIntraProgramIOActionsListener;
+import kernel.ICommandsExecuteListener;
+import kernel.Registers;
 
 public class CMD_Intel8080_IN implements ICommand {
 
@@ -13,30 +13,30 @@ public class CMD_Intel8080_IN implements ICommand {
     }
 
     @Override
-    public void execute(IMicroprocessorAdapterForCommands microprocessor) {
-        IInputOutputSystem ioSystem = microprocessor.getIOSystem();
+    public void execute(ICommandsExecuteListener executeListener) {
+        IIntraProgramIOActionsListener ioSystem = executeListener.requestOnGetInputOutputActionListener();
         if (ioSystem != null) {
             int inputValue = 0;
             int portNumber = Integer.valueOf(arg, 16);
             switch (portNumber) {
                 case 5: {
-                    inputValue = ioSystem.readValueFromOutputRegisterOfPixelScreen();
+                    inputValue = ioSystem.in_0x05();
                     break;
                 }
                 case 7: {
-                    inputValue = ioSystem.readValueFromOutputRegisterOfCharacterScreen();
+                    inputValue = ioSystem.in_0x07();
                     break;
                 }
                 case 8: {
-                    inputValue = ioSystem.requestOfStdInput();
+                    inputValue = ioSystem.in_0x08();
                     break;
                 }
                 case 22: {
-                    inputValue = ioSystem.readTimerValue();
+                    inputValue = ioSystem.in_0x16();
                     break;
                 }
             }
-            microprocessor.setValueInRegister(Intel8080Registers.A, inputValue);
+            executeListener.requestOnSetValueInRegister(Registers.A, inputValue);
         }
     }
 

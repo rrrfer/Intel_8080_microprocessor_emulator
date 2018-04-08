@@ -1,7 +1,7 @@
 package view;
 
 import com.sun.istack.internal.NotNull;
-import presenter.IMainPresenter_View;
+import presenter.IMainPresenter;
 import presenter.MainPresenter;
 
 import javax.swing.*;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 public class MainWindow extends JFrame implements IMainView {
 
     // Presenter
-    private IMainPresenter_View presenter;
+    private IMainPresenter presenter;
 
     // View components
     private ScreensWindow screensWindow;
@@ -78,7 +78,7 @@ public class MainWindow extends JFrame implements IMainView {
 
     private UndoManager undoManager;
 
-    public MainWindow(@NotNull IMainPresenter_View presenter, @NotNull String[][] dataSourceForMemoryTable,
+    public MainWindow(@NotNull IMainPresenter presenter, @NotNull String[][] dataSourceForMemoryTable,
                       @NotNull String[][] dataSourceForRegisterTable, @NotNull int[][] dataSourceForPixelScreen,
                       @NotNull int[][] dataSourceForCharacterScreen_Color,
                       @NotNull int[][] dataSourceForCharacterScreen_Character) {
@@ -549,6 +549,7 @@ public class MainWindow extends JFrame implements IMainView {
                 String path = fileChooser.getSelectedFile().getPath();
                 presenter.loadProgramFromFile(path);
                 emulatorTabbedPanel.setSelectedIndex(1);
+                undoManager.discardAllEdits();
             } catch (IOException e) {
                 JOptionPane.showMessageDialog(MainWindow.this,
                         "Opening failed", "Error!", JOptionPane.ERROR_MESSAGE);

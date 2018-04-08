@@ -4,33 +4,33 @@ import kernel.*;
 
 public class CMD_Intel8080_INR implements ICommand {
 
-    private Intel8080Registers register;
+    private Registers register;
 
-    public CMD_Intel8080_INR(Intel8080Registers register) {
+    public CMD_Intel8080_INR(Registers register) {
         this.register = register;
     }
 
     @Override
-    public void execute(IMicroprocessorAdapterForCommands microprocessor) {
+    public void execute(ICommandsExecuteListener executeListener) {
         int value;
-        if (register == Intel8080Registers.M) {
-            int address = microprocessor.getValueFromRegisterPair(Intel8080RegisterPairs.H);
-            value = microprocessor.getMemory().getValueByIndex(address);
+        if (register == Registers.M) {
+            int address = executeListener.requestOnGetValueFromRegisterPair(RegisterPairs.H);
+            value = executeListener.requestOnGetValueFromMemoryByAddress(address);
         } else {
-            value = microprocessor.getValueFromRegister(register);
+            value = executeListener.requestOnGetValueFromRegister(register);
         }
 
         value += 1;
         if (value % 256 == 0) {
-            microprocessor.setValueInFlag(Intel8080Flags.Z, 1);
+            executeListener.requestOnSetValueInFlag(Flags.Z, 1);
         } else {
-            microprocessor.setValueInFlag(Intel8080Flags.Z, 0);
+            executeListener.requestOnSetValueInFlag(Flags.Z, 0);
         }
 
         if (value < 0) {
-            microprocessor.setValueInFlag(Intel8080Flags.S, 1);
+            executeListener.requestOnSetValueInFlag(Flags.S, 1);
         } else {
-            microprocessor.setValueInFlag(Intel8080Flags.S, 0);
+            executeListener.requestOnSetValueInFlag(Flags.S, 0);
         }
 
         int tmpValue = value;
@@ -42,14 +42,14 @@ public class CMD_Intel8080_INR implements ICommand {
             tmpValue = tmpValue >> 1;
         }
 
-        microprocessor.setValueInFlag(Intel8080Flags.P, (counter + 1) % 2);
+        executeListener.requestOnSetValueInFlag(Flags.P, (counter + 1) % 2);
         value = _Byte.getRoundedValue(value);
 
-        if (register == Intel8080Registers.M) {
-            int address = microprocessor.getValueFromRegisterPair(Intel8080RegisterPairs.H);
-            microprocessor.getMemory().setValueByIndex(address, value);
+        if (register == Registers.M) {
+            int address = executeListener.requestOnGetValueFromRegisterPair(RegisterPairs.H);
+            executeListener.requestOnSetValueInMemoryByAddress(address, value);
         } else {
-            microprocessor.setValueInRegister(register, value);
+            executeListener.requestOnSetValueInRegister(register, value);
         }
     }
 

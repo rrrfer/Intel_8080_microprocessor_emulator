@@ -12,7 +12,7 @@ class PixelScreen implements IScreen {
     private int rowSelectedAddress;
     private int columnSelectedAddress;
 
-    public PixelScreen(int rowCount, int columtCount) {
+    PixelScreen(int rowCount, int columtCount) {
         this.rowCount = rowCount;
         this.columnCount = columtCount;
         this.memory = new int[rowCount][columtCount];

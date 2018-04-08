@@ -1,22 +1,22 @@
 package kernel.cmd;
 
-import kernel.IMicroprocessorAdapterForCommands;
-import kernel.Intel8080RegisterPairs;
-import kernel.Intel8080Registers;
+import kernel.ICommandsExecuteListener;
+import kernel.RegisterPairs;
+import kernel.Registers;
 
 public class CMD_Intel8080_LDAX implements ICommand {
 
-    private Intel8080RegisterPairs registePair;
+    private RegisterPairs registerPair;
 
-    public CMD_Intel8080_LDAX(Intel8080RegisterPairs registePair) {
-        this.registePair = registePair;
+    public CMD_Intel8080_LDAX(RegisterPairs registerPair) {
+        this.registerPair = registerPair;
     }
 
     @Override
-    public void execute(IMicroprocessorAdapterForCommands microprocessor) {
-        int address = microprocessor.getValueFromRegisterPair(registePair);
-        int value = microprocessor.getMemory().getValueByIndex(address);
-        microprocessor.setValueInRegister(Intel8080Registers.A, value);
+    public void execute(ICommandsExecuteListener executeListener) {
+        int address = executeListener.requestOnGetValueFromRegisterPair(registerPair);
+        int value = executeListener.requestOnGetValueFromMemoryByAddress(address);
+        executeListener.requestOnSetValueInRegister(Registers.A, value);
     }
 
     @Override
@@ -26,6 +26,6 @@ public class CMD_Intel8080_LDAX implements ICommand {
 
     @Override
     public String getName() {
-        return "LDAX " + registePair;
+        return "LDAX " + registerPair;
     }
 }

@@ -1,14 +1,14 @@
 package kernel.cmd;
 
-import kernel.IMicroprocessorAdapterForCommands;
-import kernel.Intel8080Flags;
+import kernel.ICommandsExecuteListener;
+import kernel.Flags;
 
 public class CMD_Intel8080_CMC implements ICommand {
     @Override
-    public void execute(IMicroprocessorAdapterForCommands microprocessor) {
-        int value = microprocessor.getValueFromFlag(Intel8080Flags.C);
+    public void execute(ICommandsExecuteListener executeListener) {
+        int value = executeListener.requestOnGetValueFromFlag(Flags.C);
         value = (value + 1) % 2;
-        microprocessor.setValueInFlag(Intel8080Flags.C, value);
+        executeListener.requestOnSetValueInFlag(Flags.C, value);
     }
 
     @Override

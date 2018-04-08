@@ -1,7 +1,7 @@
 package kernel.cmd;
 
-import kernel.IMicroprocessorAdapterForCommands;
-import kernel.Intel8080Registers;
+import kernel.ICommandsExecuteListener;
+import kernel.Registers;
 
 public class CMD_Intel8080_STA implements ICommand {
 
@@ -12,10 +12,10 @@ public class CMD_Intel8080_STA implements ICommand {
     }
 
     @Override
-    public void execute(IMicroprocessorAdapterForCommands microprocessor) {
-        int value = microprocessor.getValueFromRegister(Intel8080Registers.A);
+    public void execute(ICommandsExecuteListener executeListener) {
+        int value = executeListener.requestOnGetValueFromRegister(Registers.A);
         int address = Integer.valueOf(arg, 16);
-        microprocessor.getMemory().setValueByIndex(address, value);
+        executeListener.requestOnSetValueInMemoryByAddress(address, value);
     }
 
     @Override

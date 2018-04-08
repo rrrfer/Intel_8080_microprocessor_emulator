@@ -1,6 +1,10 @@
 package translator;
 
-public class CommandsCodes {
+/**
+ * Класс, содержащий описание кодов команд микропроцессора Microprocessor
+ * @author Maxim Rozhkov
+ */
+public class Intel8080CommandsCodes {
 
     static final int NOP = 0b0000_0000;
 
@@ -161,7 +165,7 @@ public class CommandsCodes {
     static final int DCX_H = 0b0010_1011;
     static final int DCX_SP = 0b0011_1011;
 
-    static final int HLT = 0b0111_0110;
+    public static final int HLT = 0b0111_0110;
 
     static final int JNZ = 0b1100_0010;
     static final int JZ = 0b1100_1010;
@@ -291,6 +295,11 @@ public class CommandsCodes {
 
     public static final int SET = 256;
 
+    /**
+     * Метод для определения размера команды по ей коду.
+     * @param cmd код команды.
+     * @return размер команды в байтах.
+     */
     static int countByteInCommand(int cmd) {
         if (cmd == JNZ || cmd == JZ || cmd == JNC || cmd == JC ||
                 cmd == JP || cmd == JM || cmd == JMP || cmd == JPO || cmd == JPE ||

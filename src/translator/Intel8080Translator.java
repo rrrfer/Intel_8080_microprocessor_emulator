@@ -2,7 +2,6 @@ package translator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.function.BiConsumer;
 
 public class Intel8080Translator implements ITranslator {
 
@@ -135,14 +134,8 @@ public class Intel8080Translator implements ITranslator {
             return null;
         }
     }
-
     @Override
-    public boolean getStatusFlag() {
-        return hasErrors;
-    }
-
-    @Override
-    public String getStatusString() {
+    public String getTranslationStatusString() {
         return statusString.toString();
     }
 
@@ -157,7 +150,7 @@ public class Intel8080Translator implements ITranslator {
         lex = lex.split(":")[1];
 
         if (lex.contains("set.")) {
-            cmdArr[2] = CommandsCodes.SET;
+            cmdArr[2] = Intel8080CommandsCodes.SET;
             cmdArr[1] = 1;
             cmdArr[3] = Integer.parseInt(lex.substring(4), 16);
             return cmdArr;
@@ -165,7 +158,7 @@ public class Intel8080Translator implements ITranslator {
 
         if (commandsCodes.containsKey(lex.toUpperCase())) {
             cmdArr[2] = commandsCodes.get(lex.toUpperCase());
-            cmdArr[1] = CommandsCodes.countByteInCommand(cmdArr[2]);
+            cmdArr[1] = Intel8080CommandsCodes.countByteInCommand(cmdArr[2]);
             return cmdArr;
         }
 
@@ -173,7 +166,7 @@ public class Intel8080Translator implements ITranslator {
             String arrCmd[] = lex.split(",");
             if (commandsCodes.containsKey(arrCmd[0].toUpperCase())) {
                 cmdArr[2] = commandsCodes.get(arrCmd[0].toUpperCase());
-                cmdArr[1] = CommandsCodes.countByteInCommand(cmdArr[2]);
+                cmdArr[1] = Intel8080CommandsCodes.countByteInCommand(cmdArr[2]);
                 try {
                     cmdArr[3] = Integer.parseInt(arrCmd[1], 16);
                 } catch (NumberFormatException e) {
@@ -188,7 +181,7 @@ public class Intel8080Translator implements ITranslator {
         if (commandsCodes.containsKey(arrCmd[0].toUpperCase())) {
             cmdArr[2] = commandsCodes.get(arrCmd[0].toUpperCase());
             cmdArr[3] = Integer.parseInt(arrCmd[1], 16);
-            cmdArr[1] = CommandsCodes.countByteInCommand(cmdArr[2]);
+            cmdArr[1] = Intel8080CommandsCodes.countByteInCommand(cmdArr[2]);
             return cmdArr;
         }
 
@@ -642,290 +635,290 @@ public class Intel8080Translator implements ITranslator {
 
     private void initCommandsCodes(HashMap<String, Integer> hashMap) {
 
-        hashMap.put("NOP", CommandsCodes.NOP);
+        hashMap.put("NOP", Intel8080CommandsCodes.NOP);
 
-        hashMap.put("MVI A", CommandsCodes.MVI_A);
-        hashMap.put("MVI B", CommandsCodes.MVI_B);
-        hashMap.put("MVI C", CommandsCodes.MVI_C);
-        hashMap.put("MVI D", CommandsCodes.MVI_D);
-        hashMap.put("MVI E", CommandsCodes.MVI_E);
-        hashMap.put("MVI H", CommandsCodes.MVI_H);
-        hashMap.put("MVI L", CommandsCodes.MVI_L);
-        hashMap.put("MVI M", CommandsCodes.MVI_M);
+        hashMap.put("MVI A", Intel8080CommandsCodes.MVI_A);
+        hashMap.put("MVI B", Intel8080CommandsCodes.MVI_B);
+        hashMap.put("MVI C", Intel8080CommandsCodes.MVI_C);
+        hashMap.put("MVI D", Intel8080CommandsCodes.MVI_D);
+        hashMap.put("MVI E", Intel8080CommandsCodes.MVI_E);
+        hashMap.put("MVI H", Intel8080CommandsCodes.MVI_H);
+        hashMap.put("MVI L", Intel8080CommandsCodes.MVI_L);
+        hashMap.put("MVI M", Intel8080CommandsCodes.MVI_M);
 
-        hashMap.put("LXI B", CommandsCodes.LXI_B_data);
-        hashMap.put("LXI D", CommandsCodes.LXI_D_data);
-        hashMap.put("LXI H", CommandsCodes.LXI_H_data);
-        hashMap.put("LXI SP", CommandsCodes.LXI_SP_data);
+        hashMap.put("LXI B", Intel8080CommandsCodes.LXI_B_data);
+        hashMap.put("LXI D", Intel8080CommandsCodes.LXI_D_data);
+        hashMap.put("LXI H", Intel8080CommandsCodes.LXI_H_data);
+        hashMap.put("LXI SP", Intel8080CommandsCodes.LXI_SP_data);
 
-        hashMap.put("MOV A,A", CommandsCodes.MOV_A_A);
-        hashMap.put("MOV A,B", CommandsCodes.MOV_A_B);
-        hashMap.put("MOV A,C", CommandsCodes.MOV_A_C);
-        hashMap.put("MOV A,D", CommandsCodes.MOV_A_D);
-        hashMap.put("MOV A,E", CommandsCodes.MOV_A_E);
-        hashMap.put("MOV A,H", CommandsCodes.MOV_A_H);
-        hashMap.put("MOV A,L", CommandsCodes.MOV_A_L);
-        hashMap.put("MOV A,M", CommandsCodes.MOV_A_M);
+        hashMap.put("MOV A,A", Intel8080CommandsCodes.MOV_A_A);
+        hashMap.put("MOV A,B", Intel8080CommandsCodes.MOV_A_B);
+        hashMap.put("MOV A,C", Intel8080CommandsCodes.MOV_A_C);
+        hashMap.put("MOV A,D", Intel8080CommandsCodes.MOV_A_D);
+        hashMap.put("MOV A,E", Intel8080CommandsCodes.MOV_A_E);
+        hashMap.put("MOV A,H", Intel8080CommandsCodes.MOV_A_H);
+        hashMap.put("MOV A,L", Intel8080CommandsCodes.MOV_A_L);
+        hashMap.put("MOV A,M", Intel8080CommandsCodes.MOV_A_M);
 
-        hashMap.put("MOV B,A", CommandsCodes.MOV_B_A);
-        hashMap.put("MOV B,B", CommandsCodes.MOV_B_B);
-        hashMap.put("MOV B,C", CommandsCodes.MOV_B_C);
-        hashMap.put("MOV B,D", CommandsCodes.MOV_B_D);
-        hashMap.put("MOV B,E", CommandsCodes.MOV_B_E);
-        hashMap.put("MOV B,H", CommandsCodes.MOV_B_H);
-        hashMap.put("MOV B,L", CommandsCodes.MOV_B_L);
-        hashMap.put("MOV B,M", CommandsCodes.MOV_B_M);
+        hashMap.put("MOV B,A", Intel8080CommandsCodes.MOV_B_A);
+        hashMap.put("MOV B,B", Intel8080CommandsCodes.MOV_B_B);
+        hashMap.put("MOV B,C", Intel8080CommandsCodes.MOV_B_C);
+        hashMap.put("MOV B,D", Intel8080CommandsCodes.MOV_B_D);
+        hashMap.put("MOV B,E", Intel8080CommandsCodes.MOV_B_E);
+        hashMap.put("MOV B,H", Intel8080CommandsCodes.MOV_B_H);
+        hashMap.put("MOV B,L", Intel8080CommandsCodes.MOV_B_L);
+        hashMap.put("MOV B,M", Intel8080CommandsCodes.MOV_B_M);
 
-        hashMap.put("MOV C,A", CommandsCodes.MOV_C_A);
-        hashMap.put("MOV C,B", CommandsCodes.MOV_C_B);
-        hashMap.put("MOV C,C", CommandsCodes.MOV_C_C);
-        hashMap.put("MOV C,D", CommandsCodes.MOV_C_D);
-        hashMap.put("MOV C,E", CommandsCodes.MOV_C_E);
-        hashMap.put("MOV C,H", CommandsCodes.MOV_C_H);
-        hashMap.put("MOV C,L", CommandsCodes.MOV_C_L);
-        hashMap.put("MOV C,M", CommandsCodes.MOV_C_M);
+        hashMap.put("MOV C,A", Intel8080CommandsCodes.MOV_C_A);
+        hashMap.put("MOV C,B", Intel8080CommandsCodes.MOV_C_B);
+        hashMap.put("MOV C,C", Intel8080CommandsCodes.MOV_C_C);
+        hashMap.put("MOV C,D", Intel8080CommandsCodes.MOV_C_D);
+        hashMap.put("MOV C,E", Intel8080CommandsCodes.MOV_C_E);
+        hashMap.put("MOV C,H", Intel8080CommandsCodes.MOV_C_H);
+        hashMap.put("MOV C,L", Intel8080CommandsCodes.MOV_C_L);
+        hashMap.put("MOV C,M", Intel8080CommandsCodes.MOV_C_M);
 
-        hashMap.put("MOV D,A", CommandsCodes.MOV_D_A);
-        hashMap.put("MOV D,B", CommandsCodes.MOV_D_B);
-        hashMap.put("MOV D,C", CommandsCodes.MOV_D_C);
-        hashMap.put("MOV D,D", CommandsCodes.MOV_D_D);
-        hashMap.put("MOV D,E", CommandsCodes.MOV_D_E);
-        hashMap.put("MOV D,H", CommandsCodes.MOV_D_H);
-        hashMap.put("MOV D,L", CommandsCodes.MOV_D_L);
-        hashMap.put("MOV D,M", CommandsCodes.MOV_D_M);
+        hashMap.put("MOV D,A", Intel8080CommandsCodes.MOV_D_A);
+        hashMap.put("MOV D,B", Intel8080CommandsCodes.MOV_D_B);
+        hashMap.put("MOV D,C", Intel8080CommandsCodes.MOV_D_C);
+        hashMap.put("MOV D,D", Intel8080CommandsCodes.MOV_D_D);
+        hashMap.put("MOV D,E", Intel8080CommandsCodes.MOV_D_E);
+        hashMap.put("MOV D,H", Intel8080CommandsCodes.MOV_D_H);
+        hashMap.put("MOV D,L", Intel8080CommandsCodes.MOV_D_L);
+        hashMap.put("MOV D,M", Intel8080CommandsCodes.MOV_D_M);
 
-        hashMap.put("MOV E,A", CommandsCodes.MOV_E_A);
-        hashMap.put("MOV E,B", CommandsCodes.MOV_E_B);
-        hashMap.put("MOV E,C", CommandsCodes.MOV_E_C);
-        hashMap.put("MOV E,D", CommandsCodes.MOV_E_D);
-        hashMap.put("MOV E,E", CommandsCodes.MOV_E_E);
-        hashMap.put("MOV E,H", CommandsCodes.MOV_E_H);
-        hashMap.put("MOV E,L", CommandsCodes.MOV_E_L);
-        hashMap.put("MOV E,M", CommandsCodes.MOV_E_M);
+        hashMap.put("MOV E,A", Intel8080CommandsCodes.MOV_E_A);
+        hashMap.put("MOV E,B", Intel8080CommandsCodes.MOV_E_B);
+        hashMap.put("MOV E,C", Intel8080CommandsCodes.MOV_E_C);
+        hashMap.put("MOV E,D", Intel8080CommandsCodes.MOV_E_D);
+        hashMap.put("MOV E,E", Intel8080CommandsCodes.MOV_E_E);
+        hashMap.put("MOV E,H", Intel8080CommandsCodes.MOV_E_H);
+        hashMap.put("MOV E,L", Intel8080CommandsCodes.MOV_E_L);
+        hashMap.put("MOV E,M", Intel8080CommandsCodes.MOV_E_M);
 
-        hashMap.put("MOV H,A", CommandsCodes.MOV_H_A);
-        hashMap.put("MOV H,B", CommandsCodes.MOV_H_B);
-        hashMap.put("MOV H,C", CommandsCodes.MOV_H_C);
-        hashMap.put("MOV H,D", CommandsCodes.MOV_H_D);
-        hashMap.put("MOV H,E", CommandsCodes.MOV_H_E);
-        hashMap.put("MOV H,H", CommandsCodes.MOV_H_H);
-        hashMap.put("MOV H,L", CommandsCodes.MOV_H_L);
-        hashMap.put("MOV H,M", CommandsCodes.MOV_H_M);
+        hashMap.put("MOV H,A", Intel8080CommandsCodes.MOV_H_A);
+        hashMap.put("MOV H,B", Intel8080CommandsCodes.MOV_H_B);
+        hashMap.put("MOV H,C", Intel8080CommandsCodes.MOV_H_C);
+        hashMap.put("MOV H,D", Intel8080CommandsCodes.MOV_H_D);
+        hashMap.put("MOV H,E", Intel8080CommandsCodes.MOV_H_E);
+        hashMap.put("MOV H,H", Intel8080CommandsCodes.MOV_H_H);
+        hashMap.put("MOV H,L", Intel8080CommandsCodes.MOV_H_L);
+        hashMap.put("MOV H,M", Intel8080CommandsCodes.MOV_H_M);
 
-        hashMap.put("MOV L,A", CommandsCodes.MOV_L_A);
-        hashMap.put("MOV L,B", CommandsCodes.MOV_L_B);
-        hashMap.put("MOV L,C", CommandsCodes.MOV_L_C);
-        hashMap.put("MOV L,D", CommandsCodes.MOV_L_D);
-        hashMap.put("MOV L,E", CommandsCodes.MOV_L_E);
-        hashMap.put("MOV L,H", CommandsCodes.MOV_L_H);
-        hashMap.put("MOV L,L", CommandsCodes.MOV_L_L);
-        hashMap.put("MOV L,M", CommandsCodes.MOV_L_M);
+        hashMap.put("MOV L,A", Intel8080CommandsCodes.MOV_L_A);
+        hashMap.put("MOV L,B", Intel8080CommandsCodes.MOV_L_B);
+        hashMap.put("MOV L,C", Intel8080CommandsCodes.MOV_L_C);
+        hashMap.put("MOV L,D", Intel8080CommandsCodes.MOV_L_D);
+        hashMap.put("MOV L,E", Intel8080CommandsCodes.MOV_L_E);
+        hashMap.put("MOV L,H", Intel8080CommandsCodes.MOV_L_H);
+        hashMap.put("MOV L,L", Intel8080CommandsCodes.MOV_L_L);
+        hashMap.put("MOV L,M", Intel8080CommandsCodes.MOV_L_M);
 
-        hashMap.put("MOV M,A", CommandsCodes.MOV_M_A);
-        hashMap.put("MOV M,B", CommandsCodes.MOV_M_B);
-        hashMap.put("MOV M,C", CommandsCodes.MOV_M_C);
-        hashMap.put("MOV M,D", CommandsCodes.MOV_M_D);
-        hashMap.put("MOV M,E", CommandsCodes.MOV_M_E);
-        hashMap.put("MOV M,H", CommandsCodes.MOV_M_H);
-        hashMap.put("MOV M,L", CommandsCodes.MOV_M_L);
+        hashMap.put("MOV M,A", Intel8080CommandsCodes.MOV_M_A);
+        hashMap.put("MOV M,B", Intel8080CommandsCodes.MOV_M_B);
+        hashMap.put("MOV M,C", Intel8080CommandsCodes.MOV_M_C);
+        hashMap.put("MOV M,D", Intel8080CommandsCodes.MOV_M_D);
+        hashMap.put("MOV M,E", Intel8080CommandsCodes.MOV_M_E);
+        hashMap.put("MOV M,H", Intel8080CommandsCodes.MOV_M_H);
+        hashMap.put("MOV M,L", Intel8080CommandsCodes.MOV_M_L);
 
-        hashMap.put("ADD A", CommandsCodes.ADD_A);
-        hashMap.put("ADD B", CommandsCodes.ADD_B);
-        hashMap.put("ADD C", CommandsCodes.ADD_C);
-        hashMap.put("ADD D", CommandsCodes.ADD_D);
-        hashMap.put("ADD E", CommandsCodes.ADD_E);
-        hashMap.put("ADD H", CommandsCodes.ADD_H);
-        hashMap.put("ADD L", CommandsCodes.ADD_L);
-        hashMap.put("ADD M", CommandsCodes.ADD_M);
+        hashMap.put("ADD A", Intel8080CommandsCodes.ADD_A);
+        hashMap.put("ADD B", Intel8080CommandsCodes.ADD_B);
+        hashMap.put("ADD C", Intel8080CommandsCodes.ADD_C);
+        hashMap.put("ADD D", Intel8080CommandsCodes.ADD_D);
+        hashMap.put("ADD E", Intel8080CommandsCodes.ADD_E);
+        hashMap.put("ADD H", Intel8080CommandsCodes.ADD_H);
+        hashMap.put("ADD L", Intel8080CommandsCodes.ADD_L);
+        hashMap.put("ADD M", Intel8080CommandsCodes.ADD_M);
 
-        hashMap.put("ADI", CommandsCodes.ADI);
+        hashMap.put("ADI", Intel8080CommandsCodes.ADI);
 
-        hashMap.put("ADC A", CommandsCodes.ADC_A);
-        hashMap.put("ADC B", CommandsCodes.ADC_B);
-        hashMap.put("ADC C", CommandsCodes.ADC_C);
-        hashMap.put("ADC D", CommandsCodes.ADC_D);
-        hashMap.put("ADC E", CommandsCodes.ADC_E);
-        hashMap.put("ADC H", CommandsCodes.ADC_H);
-        hashMap.put("ADC L", CommandsCodes.ADC_L);
-        hashMap.put("ADC M", CommandsCodes.ADC_M);
+        hashMap.put("ADC A", Intel8080CommandsCodes.ADC_A);
+        hashMap.put("ADC B", Intel8080CommandsCodes.ADC_B);
+        hashMap.put("ADC C", Intel8080CommandsCodes.ADC_C);
+        hashMap.put("ADC D", Intel8080CommandsCodes.ADC_D);
+        hashMap.put("ADC E", Intel8080CommandsCodes.ADC_E);
+        hashMap.put("ADC H", Intel8080CommandsCodes.ADC_H);
+        hashMap.put("ADC L", Intel8080CommandsCodes.ADC_L);
+        hashMap.put("ADC M", Intel8080CommandsCodes.ADC_M);
 
-        hashMap.put("ACI", CommandsCodes.ACI);
+        hashMap.put("ACI", Intel8080CommandsCodes.ACI);
 
-        hashMap.put("SUB A", CommandsCodes.SUB_A);
-        hashMap.put("SUB B", CommandsCodes.SUB_B);
-        hashMap.put("SUB C", CommandsCodes.SUB_C);
-        hashMap.put("SUB D", CommandsCodes.SUB_D);
-        hashMap.put("SUB E", CommandsCodes.SUB_E);
-        hashMap.put("SUB H", CommandsCodes.SUB_H);
-        hashMap.put("SUB L", CommandsCodes.SUB_L);
-        hashMap.put("SUB M", CommandsCodes.SUB_M);
+        hashMap.put("SUB A", Intel8080CommandsCodes.SUB_A);
+        hashMap.put("SUB B", Intel8080CommandsCodes.SUB_B);
+        hashMap.put("SUB C", Intel8080CommandsCodes.SUB_C);
+        hashMap.put("SUB D", Intel8080CommandsCodes.SUB_D);
+        hashMap.put("SUB E", Intel8080CommandsCodes.SUB_E);
+        hashMap.put("SUB H", Intel8080CommandsCodes.SUB_H);
+        hashMap.put("SUB L", Intel8080CommandsCodes.SUB_L);
+        hashMap.put("SUB M", Intel8080CommandsCodes.SUB_M);
 
-        hashMap.put("SUI", CommandsCodes.SUI);
+        hashMap.put("SUI", Intel8080CommandsCodes.SUI);
 
-        hashMap.put("SBB A", CommandsCodes.SBB_A);
-        hashMap.put("SBB B", CommandsCodes.SBB_B);
-        hashMap.put("SBB C", CommandsCodes.SBB_C);
-        hashMap.put("SBB D", CommandsCodes.SBB_D);
-        hashMap.put("SBB E", CommandsCodes.SBB_E);
-        hashMap.put("SBB H", CommandsCodes.SBB_H);
-        hashMap.put("SBB L", CommandsCodes.SBB_L);
-        hashMap.put("SBB M", CommandsCodes.SBB_M);
+        hashMap.put("SBB A", Intel8080CommandsCodes.SBB_A);
+        hashMap.put("SBB B", Intel8080CommandsCodes.SBB_B);
+        hashMap.put("SBB C", Intel8080CommandsCodes.SBB_C);
+        hashMap.put("SBB D", Intel8080CommandsCodes.SBB_D);
+        hashMap.put("SBB E", Intel8080CommandsCodes.SBB_E);
+        hashMap.put("SBB H", Intel8080CommandsCodes.SBB_H);
+        hashMap.put("SBB L", Intel8080CommandsCodes.SBB_L);
+        hashMap.put("SBB M", Intel8080CommandsCodes.SBB_M);
 
-        hashMap.put("SBI", CommandsCodes.SBI);
+        hashMap.put("SBI", Intel8080CommandsCodes.SBI);
 
-        hashMap.put("INR A", CommandsCodes.INR_A);
-        hashMap.put("INR B", CommandsCodes.INR_B);
-        hashMap.put("INR C", CommandsCodes.INR_C);
-        hashMap.put("INR D", CommandsCodes.INR_D);
-        hashMap.put("INR E", CommandsCodes.INR_E);
-        hashMap.put("INR H", CommandsCodes.INR_H);
-        hashMap.put("INR L", CommandsCodes.INR_L);
-        hashMap.put("INR M", CommandsCodes.INR_M);
+        hashMap.put("INR A", Intel8080CommandsCodes.INR_A);
+        hashMap.put("INR B", Intel8080CommandsCodes.INR_B);
+        hashMap.put("INR C", Intel8080CommandsCodes.INR_C);
+        hashMap.put("INR D", Intel8080CommandsCodes.INR_D);
+        hashMap.put("INR E", Intel8080CommandsCodes.INR_E);
+        hashMap.put("INR H", Intel8080CommandsCodes.INR_H);
+        hashMap.put("INR L", Intel8080CommandsCodes.INR_L);
+        hashMap.put("INR M", Intel8080CommandsCodes.INR_M);
 
-        hashMap.put("INX B", CommandsCodes.INX_B);
-        hashMap.put("INX D", CommandsCodes.INX_D);
-        hashMap.put("INX H", CommandsCodes.INX_H);
-        hashMap.put("INX SP", CommandsCodes.INX_SP);
+        hashMap.put("INX B", Intel8080CommandsCodes.INX_B);
+        hashMap.put("INX D", Intel8080CommandsCodes.INX_D);
+        hashMap.put("INX H", Intel8080CommandsCodes.INX_H);
+        hashMap.put("INX SP", Intel8080CommandsCodes.INX_SP);
 
-        hashMap.put("DCR A", CommandsCodes.DCR_A);
-        hashMap.put("DCR B", CommandsCodes.DCR_B);
-        hashMap.put("DCR C", CommandsCodes.DCR_C);
-        hashMap.put("DCR D", CommandsCodes.DCR_D);
-        hashMap.put("DCR E", CommandsCodes.DCR_E);
-        hashMap.put("DCR H", CommandsCodes.DCR_H);
-        hashMap.put("DCR L", CommandsCodes.DCR_L);
-        hashMap.put("DCR M", CommandsCodes.DCR_M);
+        hashMap.put("DCR A", Intel8080CommandsCodes.DCR_A);
+        hashMap.put("DCR B", Intel8080CommandsCodes.DCR_B);
+        hashMap.put("DCR C", Intel8080CommandsCodes.DCR_C);
+        hashMap.put("DCR D", Intel8080CommandsCodes.DCR_D);
+        hashMap.put("DCR E", Intel8080CommandsCodes.DCR_E);
+        hashMap.put("DCR H", Intel8080CommandsCodes.DCR_H);
+        hashMap.put("DCR L", Intel8080CommandsCodes.DCR_L);
+        hashMap.put("DCR M", Intel8080CommandsCodes.DCR_M);
 
-        hashMap.put("DCX B", CommandsCodes.DCX_B);
-        hashMap.put("DCX D", CommandsCodes.DCX_D);
-        hashMap.put("DCX H", CommandsCodes.DCX_H);
-        hashMap.put("DCX SP", CommandsCodes.DCX_SP);
+        hashMap.put("DCX B", Intel8080CommandsCodes.DCX_B);
+        hashMap.put("DCX D", Intel8080CommandsCodes.DCX_D);
+        hashMap.put("DCX H", Intel8080CommandsCodes.DCX_H);
+        hashMap.put("DCX SP", Intel8080CommandsCodes.DCX_SP);
 
-        hashMap.put("HLT", CommandsCodes.HLT);
+        hashMap.put("HLT", Intel8080CommandsCodes.HLT);
 
-        hashMap.put("JNZ", CommandsCodes.JNZ);
-        hashMap.put("JZ", CommandsCodes.JZ);
-        hashMap.put("JNC", CommandsCodes.JNC);
-        hashMap.put("JC", CommandsCodes.JC);
-        hashMap.put("JP", CommandsCodes.JP);
-        hashMap.put("JM", CommandsCodes.JM);
-        hashMap.put("JMP", CommandsCodes.JMP);
-        hashMap.put("JPO", CommandsCodes.JPO);
-        hashMap.put("JPE", CommandsCodes.JPE);
+        hashMap.put("JNZ", Intel8080CommandsCodes.JNZ);
+        hashMap.put("JZ", Intel8080CommandsCodes.JZ);
+        hashMap.put("JNC", Intel8080CommandsCodes.JNC);
+        hashMap.put("JC", Intel8080CommandsCodes.JC);
+        hashMap.put("JP", Intel8080CommandsCodes.JP);
+        hashMap.put("JM", Intel8080CommandsCodes.JM);
+        hashMap.put("JMP", Intel8080CommandsCodes.JMP);
+        hashMap.put("JPO", Intel8080CommandsCodes.JPO);
+        hashMap.put("JPE", Intel8080CommandsCodes.JPE);
 
-        hashMap.put("LDA", CommandsCodes.LDA);
+        hashMap.put("LDA", Intel8080CommandsCodes.LDA);
 
-        hashMap.put("STA", CommandsCodes.STA);
+        hashMap.put("STA", Intel8080CommandsCodes.STA);
 
-        hashMap.put("LHLD", CommandsCodes.LHLD);
+        hashMap.put("LHLD", Intel8080CommandsCodes.LHLD);
 
-        hashMap.put("SHLD", CommandsCodes.SHLD);
+        hashMap.put("SHLD", Intel8080CommandsCodes.SHLD);
 
-        hashMap.put("LDAX B", CommandsCodes.LDAX_B);
-        hashMap.put("LDAX D", CommandsCodes.LDAX_D);
+        hashMap.put("LDAX B", Intel8080CommandsCodes.LDAX_B);
+        hashMap.put("LDAX D", Intel8080CommandsCodes.LDAX_D);
 
-        hashMap.put("STAX B", CommandsCodes.STAX_B);
-        hashMap.put("STAX D", CommandsCodes.STAX_D);
+        hashMap.put("STAX B", Intel8080CommandsCodes.STAX_B);
+        hashMap.put("STAX D", Intel8080CommandsCodes.STAX_D);
 
-        hashMap.put("XCHG", CommandsCodes.XCHG);
+        hashMap.put("XCHG", Intel8080CommandsCodes.XCHG);
 
-        hashMap.put("RLC", CommandsCodes.RLC);
-        hashMap.put("RRC", CommandsCodes.RRC);
+        hashMap.put("RLC", Intel8080CommandsCodes.RLC);
+        hashMap.put("RRC", Intel8080CommandsCodes.RRC);
 
-        hashMap.put("RAL", CommandsCodes.RAL);
-        hashMap.put("RAR", CommandsCodes.RAR);
+        hashMap.put("RAL", Intel8080CommandsCodes.RAL);
+        hashMap.put("RAR", Intel8080CommandsCodes.RAR);
 
-        hashMap.put("DAD B", CommandsCodes.DAD_B);
-        hashMap.put("DAD D", CommandsCodes.DAD_D);
-        hashMap.put("DAD H", CommandsCodes.DAD_H);
-        hashMap.put("DAD SP", CommandsCodes.DAD_SP);
+        hashMap.put("DAD B", Intel8080CommandsCodes.DAD_B);
+        hashMap.put("DAD D", Intel8080CommandsCodes.DAD_D);
+        hashMap.put("DAD H", Intel8080CommandsCodes.DAD_H);
+        hashMap.put("DAD SP", Intel8080CommandsCodes.DAD_SP);
 
-        hashMap.put("ANA A", CommandsCodes.ANA_A);
-        hashMap.put("ANA B", CommandsCodes.ANA_B);
-        hashMap.put("ANA C", CommandsCodes.ANA_C);
-        hashMap.put("ANA D", CommandsCodes.ANA_D);
-        hashMap.put("ANA E", CommandsCodes.ANA_E);
-        hashMap.put("ANA H", CommandsCodes.ANA_H);
-        hashMap.put("ANA L", CommandsCodes.ANA_L);
-        hashMap.put("ANA M", CommandsCodes.ANA_M);
+        hashMap.put("ANA A", Intel8080CommandsCodes.ANA_A);
+        hashMap.put("ANA B", Intel8080CommandsCodes.ANA_B);
+        hashMap.put("ANA C", Intel8080CommandsCodes.ANA_C);
+        hashMap.put("ANA D", Intel8080CommandsCodes.ANA_D);
+        hashMap.put("ANA E", Intel8080CommandsCodes.ANA_E);
+        hashMap.put("ANA H", Intel8080CommandsCodes.ANA_H);
+        hashMap.put("ANA L", Intel8080CommandsCodes.ANA_L);
+        hashMap.put("ANA M", Intel8080CommandsCodes.ANA_M);
 
-        hashMap.put("ANI", CommandsCodes.ANI);
+        hashMap.put("ANI", Intel8080CommandsCodes.ANI);
 
-        hashMap.put("ORA A", CommandsCodes.ORA_A);
-        hashMap.put("ORA B", CommandsCodes.ORA_B);
-        hashMap.put("ORA C", CommandsCodes.ORA_C);
-        hashMap.put("ORA D", CommandsCodes.ORA_D);
-        hashMap.put("ORA E", CommandsCodes.ORA_E);
-        hashMap.put("ORA H", CommandsCodes.ORA_H);
-        hashMap.put("ORA L", CommandsCodes.ORA_L);
-        hashMap.put("ORA M", CommandsCodes.ORA_M);
+        hashMap.put("ORA A", Intel8080CommandsCodes.ORA_A);
+        hashMap.put("ORA B", Intel8080CommandsCodes.ORA_B);
+        hashMap.put("ORA C", Intel8080CommandsCodes.ORA_C);
+        hashMap.put("ORA D", Intel8080CommandsCodes.ORA_D);
+        hashMap.put("ORA E", Intel8080CommandsCodes.ORA_E);
+        hashMap.put("ORA H", Intel8080CommandsCodes.ORA_H);
+        hashMap.put("ORA L", Intel8080CommandsCodes.ORA_L);
+        hashMap.put("ORA M", Intel8080CommandsCodes.ORA_M);
 
-        hashMap.put("ORI", CommandsCodes.ORI);
+        hashMap.put("ORI", Intel8080CommandsCodes.ORI);
 
-        hashMap.put("XRA A", CommandsCodes.XRA_A);
-        hashMap.put("XRA B", CommandsCodes.XRA_B);
-        hashMap.put("XRA C", CommandsCodes.XRA_C);
-        hashMap.put("XRA D", CommandsCodes.XRA_D);
-        hashMap.put("XRA E", CommandsCodes.XRA_E);
-        hashMap.put("XRA H", CommandsCodes.XRA_H);
-        hashMap.put("XRA L", CommandsCodes.XRA_L);
-        hashMap.put("XRA M", CommandsCodes.XRA_M);
+        hashMap.put("XRA A", Intel8080CommandsCodes.XRA_A);
+        hashMap.put("XRA B", Intel8080CommandsCodes.XRA_B);
+        hashMap.put("XRA C", Intel8080CommandsCodes.XRA_C);
+        hashMap.put("XRA D", Intel8080CommandsCodes.XRA_D);
+        hashMap.put("XRA E", Intel8080CommandsCodes.XRA_E);
+        hashMap.put("XRA H", Intel8080CommandsCodes.XRA_H);
+        hashMap.put("XRA L", Intel8080CommandsCodes.XRA_L);
+        hashMap.put("XRA M", Intel8080CommandsCodes.XRA_M);
 
-        hashMap.put("XRI", CommandsCodes.XRI);
+        hashMap.put("XRI", Intel8080CommandsCodes.XRI);
 
-        hashMap.put("CMP A", CommandsCodes.CMP_A);
-        hashMap.put("CMP B", CommandsCodes.CMP_B);
-        hashMap.put("CMP C", CommandsCodes.CMP_C);
-        hashMap.put("CMP D", CommandsCodes.CMP_D);
-        hashMap.put("CMP E", CommandsCodes.CMP_E);
-        hashMap.put("CMP H", CommandsCodes.CMP_H);
-        hashMap.put("CMP L", CommandsCodes.CMP_L);
-        hashMap.put("CMP M", CommandsCodes.CMP_M);
+        hashMap.put("CMP A", Intel8080CommandsCodes.CMP_A);
+        hashMap.put("CMP B", Intel8080CommandsCodes.CMP_B);
+        hashMap.put("CMP C", Intel8080CommandsCodes.CMP_C);
+        hashMap.put("CMP D", Intel8080CommandsCodes.CMP_D);
+        hashMap.put("CMP E", Intel8080CommandsCodes.CMP_E);
+        hashMap.put("CMP H", Intel8080CommandsCodes.CMP_H);
+        hashMap.put("CMP L", Intel8080CommandsCodes.CMP_L);
+        hashMap.put("CMP M", Intel8080CommandsCodes.CMP_M);
 
-        hashMap.put("CPI", CommandsCodes.CPI);
+        hashMap.put("CPI", Intel8080CommandsCodes.CPI);
 
-        hashMap.put("IN", CommandsCodes.IN);
-        hashMap.put("OUT", CommandsCodes.OUT);
+        hashMap.put("IN", Intel8080CommandsCodes.IN);
+        hashMap.put("OUT", Intel8080CommandsCodes.OUT);
 
-        hashMap.put("STC", CommandsCodes.STC);
-        hashMap.put("CMC", CommandsCodes.CMC);
-        hashMap.put("CMA", CommandsCodes.CMA);
+        hashMap.put("STC", Intel8080CommandsCodes.STC);
+        hashMap.put("CMC", Intel8080CommandsCodes.CMC);
+        hashMap.put("CMA", Intel8080CommandsCodes.CMA);
 
-        hashMap.put("PCHL", CommandsCodes.PCHL);
-        hashMap.put("SPHL", CommandsCodes.SPHL);
+        hashMap.put("PCHL", Intel8080CommandsCodes.PCHL);
+        hashMap.put("SPHL", Intel8080CommandsCodes.SPHL);
 
-        hashMap.put("CALL", CommandsCodes.CALL);
-        hashMap.put("RET", CommandsCodes.RET);
+        hashMap.put("CALL", Intel8080CommandsCodes.CALL);
+        hashMap.put("RET", Intel8080CommandsCodes.RET);
 
-        hashMap.put("CNZ", CommandsCodes.CNZ);
-        hashMap.put("CZ", CommandsCodes.CZ);
-        hashMap.put("CNC", CommandsCodes.CNC);
-        hashMap.put("CC", CommandsCodes.CC);
-        hashMap.put("CPO", CommandsCodes.CPO);
-        hashMap.put("CPE", CommandsCodes.CPE);
-        hashMap.put("CP", CommandsCodes.CP);
-        hashMap.put("CM", CommandsCodes.CM);
+        hashMap.put("CNZ", Intel8080CommandsCodes.CNZ);
+        hashMap.put("CZ", Intel8080CommandsCodes.CZ);
+        hashMap.put("CNC", Intel8080CommandsCodes.CNC);
+        hashMap.put("CC", Intel8080CommandsCodes.CC);
+        hashMap.put("CPO", Intel8080CommandsCodes.CPO);
+        hashMap.put("CPE", Intel8080CommandsCodes.CPE);
+        hashMap.put("CP", Intel8080CommandsCodes.CP);
+        hashMap.put("CM", Intel8080CommandsCodes.CM);
 
-        hashMap.put("RNZ", CommandsCodes.RNZ);
-        hashMap.put("RZ", CommandsCodes.RZ);
-        hashMap.put("RNC", CommandsCodes.RNC);
-        hashMap.put("RC", CommandsCodes.RC);
-        hashMap.put("RPO", CommandsCodes.RPO);
-        hashMap.put("RPE", CommandsCodes.RPE);
-        hashMap.put("RP", CommandsCodes.RP);
-        hashMap.put("RM", CommandsCodes.RM);
+        hashMap.put("RNZ", Intel8080CommandsCodes.RNZ);
+        hashMap.put("RZ", Intel8080CommandsCodes.RZ);
+        hashMap.put("RNC", Intel8080CommandsCodes.RNC);
+        hashMap.put("RC", Intel8080CommandsCodes.RC);
+        hashMap.put("RPO", Intel8080CommandsCodes.RPO);
+        hashMap.put("RPE", Intel8080CommandsCodes.RPE);
+        hashMap.put("RP", Intel8080CommandsCodes.RP);
+        hashMap.put("RM", Intel8080CommandsCodes.RM);
 
-        hashMap.put("PUSH B", CommandsCodes.PUSH_B);
-        hashMap.put("PUSH D", CommandsCodes.PUSH_D);
-        hashMap.put("PUSH H", CommandsCodes.PUSH_H);
-        hashMap.put("PUSH PSW", CommandsCodes.PUSH_PSW);
+        hashMap.put("PUSH B", Intel8080CommandsCodes.PUSH_B);
+        hashMap.put("PUSH D", Intel8080CommandsCodes.PUSH_D);
+        hashMap.put("PUSH H", Intel8080CommandsCodes.PUSH_H);
+        hashMap.put("PUSH PSW", Intel8080CommandsCodes.PUSH_PSW);
 
-        hashMap.put("POP B", CommandsCodes.POP_B);
-        hashMap.put("POP D", CommandsCodes.POP_D);
-        hashMap.put("POP H", CommandsCodes.POP_H);
-        hashMap.put("POP PSW", CommandsCodes.POP_PSW);
+        hashMap.put("POP B", Intel8080CommandsCodes.POP_B);
+        hashMap.put("POP D", Intel8080CommandsCodes.POP_D);
+        hashMap.put("POP H", Intel8080CommandsCodes.POP_H);
+        hashMap.put("POP PSW", Intel8080CommandsCodes.POP_PSW);
 
-        hashMap.put("XTHL", CommandsCodes.XTHL);
+        hashMap.put("XTHL", Intel8080CommandsCodes.XTHL);
     }
 }
 

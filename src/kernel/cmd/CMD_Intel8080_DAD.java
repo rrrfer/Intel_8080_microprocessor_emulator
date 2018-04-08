@@ -4,33 +4,33 @@ import kernel.*;
 
 public class CMD_Intel8080_DAD implements ICommand {
 
-    private Intel8080RegisterPairs registerPair;
+    private RegisterPairs registerPair;
 
-    public CMD_Intel8080_DAD(Intel8080RegisterPairs registerPair) {
+    public CMD_Intel8080_DAD(RegisterPairs registerPair) {
         this.registerPair = registerPair;
     }
 
     @Override
-    public void execute(IMicroprocessorAdapterForCommands microprocessor) {
+    public void execute(ICommandsExecuteListener executeListener) {
 
         int firstValue;
         if (registerPair != null) {
-            firstValue = microprocessor.getValueFromRegisterPair(registerPair);
+            firstValue = executeListener.requestOnGetValueFromRegisterPair(registerPair);
         } else {
-            firstValue = microprocessor.getValueFromRegister(Intel8080Registers.SP);
+            firstValue = executeListener.requestOnGetValueFromRegister(Registers.SP);
         }
 
-        int secondValue = microprocessor.getValueFromRegisterPair(Intel8080RegisterPairs.H);
+        int secondValue = executeListener.requestOnGetValueFromRegisterPair(RegisterPairs.H);
 
         secondValue += firstValue;
         if (secondValue > 65535 || secondValue < 0) {
-            microprocessor.setValueInFlag(Intel8080Flags.C, 1);
+            executeListener.requestOnSetValueInFlag(Flags.C, 1);
         } else {
-           microprocessor.setValueInFlag(Intel8080Flags.C, 0);
+           executeListener.requestOnSetValueInFlag(Flags.C, 0);
         }
 
         secondValue = _DByte.getRoundedValue(secondValue);
-        microprocessor.setValueInRegisterPair(Intel8080RegisterPairs.H, secondValue);
+        executeListener.requestOnSetValueInRegisterPair(RegisterPairs.H, secondValue);
     }
 
     @Override

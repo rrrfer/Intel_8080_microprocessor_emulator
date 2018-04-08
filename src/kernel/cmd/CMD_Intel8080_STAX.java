@@ -1,22 +1,22 @@
 package kernel.cmd;
 
-import kernel.IMicroprocessorAdapterForCommands;
-import kernel.Intel8080RegisterPairs;
-import kernel.Intel8080Registers;
+import kernel.ICommandsExecuteListener;
+import kernel.RegisterPairs;
+import kernel.Registers;
 
 public class CMD_Intel8080_STAX implements ICommand {
 
-    private Intel8080RegisterPairs registerPair;
+    private RegisterPairs registerPair;
 
-    public CMD_Intel8080_STAX(Intel8080RegisterPairs registerPair) {
+    public CMD_Intel8080_STAX(RegisterPairs registerPair) {
         this.registerPair = registerPair;
     }
 
     @Override
-    public void execute(IMicroprocessorAdapterForCommands microprocessor) {
-        int value = microprocessor.getValueFromRegister(Intel8080Registers.A);
-        int address = microprocessor.getValueFromRegisterPair(registerPair);
-        microprocessor.getMemory().setValueByIndex(address, value);
+    public void execute(ICommandsExecuteListener executeListener) {
+        int value = executeListener.requestOnGetValueFromRegister(Registers.A);
+        int address = executeListener.requestOnGetValueFromRegisterPair(registerPair);
+        executeListener.requestOnSetValueInMemoryByAddress(address, value);
     }
 
     @Override

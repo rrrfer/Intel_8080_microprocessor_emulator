@@ -1,18 +1,18 @@
 package presenter;
 
-import emulator.EmulatorIntel8080;
-import emulator.IEmulator;
-import emulator.InputOutputSystem;
-import kernel.IMicroprocessorAdapterForPresenter;
-import kernel.Intel8080Flags;
-import kernel.Intel8080Registers;
+import emulator.*;
+import kernel.Flags;
+import kernel.Registers;
 import view.IMainView;
 import view.MainWindow;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class MainPresenter implements IMainPresenter_View, IMainPresenter_Model {
+public class MainPresenter implements IMainPresenter, IIntraProgramIOUpdateListener {
+
+    private IMainView mainView;
+    private IEmulator emulator;
 
     public static final int DEFAULT_ACTION_MODE = 0;
     public static final int RUN_ACTION_MODE = 1;
@@ -27,35 +27,39 @@ public class MainPresenter implements IMainPresenter_View, IMainPresenter_Model 
     private String[][] dataSourceForMemoryTable;
     private String[][] dataSourceForRegistersTable;
 
-    private int[][] dataSourceForPixelScreen;
-    private int[][] dataSourceForCharacterScreen_Color;
-    private int[][] dataSourceForCharacterScreen_Character;
-
-    private IMainView mainView;
-    private IEmulator emulator;
-
     private Thread commandRunThread;
     private Thread programRunThread;
 
     public MainPresenter() {
-        emulator = new EmulatorIntel8080(new InputOutputSystem(this));
 
+        // Экземпляр эмулятора.
+        emulator = new EmulatorIntel8080();
+        emulator.setIOActionsListener(this);
+
+        // Источники данных для View
         dataSourceForMemoryTable = new String[65536][3];
         dataSourceForRegistersTable = new String[13][4];
-
-        getDataSourceForMemoryTable(emulator, dataSourceForMemoryTable);
-        getDataSourceForRegistersTable(emulator, dataSourceForRegistersTable);
         dataSourceForConsoleOutputPanel = "";
 
+        // Получение данных для View с эмулятора
+        getDataSourceForMemoryTable(emulator, dataSourceForMemoryTable);
+        getDataSourceForRegistersTable(dataSourceForRegistersTable);
+        int[][] dataSourceForPixelScreen = emulator.getPixelScreenMemory();
+        int[][] dataSourceForCharacterScreen_Color = emulator.getCharacterScreenColorMemory();
+        int[][] dataSourceForCharacterScreen_Character = emulator.getCharacterScreenCharMemory();
+
+        // Создание View
         mainView = new MainWindow(this, dataSourceForMemoryTable, dataSourceForRegistersTable,
                 dataSourceForPixelScreen, dataSourceForCharacterScreen_Color,
                 dataSourceForCharacterScreen_Character);
 
+        // Установка режима работы эмулятора по умолчанию
         currentActionMode = DEFAULT_ACTION_MODE;
+        // Установка режима работы эмулятора по умолчанию
+        // Режим работы эмулятора влияет на доступные пользователю действия во View
         mainView.setPermissionForActions(MainPresenter.DEFAULT_ACTION_MODE);
     }
 
-    // For View
     @Override
     public void translation(String program) {
         emulator.resetRegisters();
@@ -63,8 +67,8 @@ public class MainPresenter implements IMainPresenter_View, IMainPresenter_Model 
         emulator.translation(program);
 
         getDataSourceForMemoryTable(emulator, dataSourceForMemoryTable);
-        getDataSourceForRegistersTable(emulator, dataSourceForRegistersTable);
-        String dataSourceForTranslateResultPanel = emulator.getTranslationResult();
+        getDataSourceForRegistersTable(dataSourceForRegistersTable);
+        String dataSourceForTranslateResultPanel = emulator.getErrors();
 
         mainView.memoryTableUpdate();
         mainView.registersTableUpdate();
@@ -78,9 +82,9 @@ public class MainPresenter implements IMainPresenter_View, IMainPresenter_Model 
             programRunThread = new Thread(() -> {
                 emulator.run();
 
-                getDataSourceForRegistersTable(emulator, dataSourceForRegistersTable);
+                getDataSourceForRegistersTable(dataSourceForRegistersTable);
                 getDataSourceForMemoryTable(emulator, dataSourceForMemoryTable);
-                int PC = emulator.getMicroprocessor().getValueFromRegister(Intel8080Registers.PC);
+                int PC = emulator.getValueFromRegister(Registers.PC);
 
                 mainView.memoryTableUpdate();
                 mainView.registersTableUpdate();
@@ -102,8 +106,8 @@ public class MainPresenter implements IMainPresenter_View, IMainPresenter_Model 
                 emulator.step();
 
                 getDataSourceForMemoryTable(emulator, dataSourceForMemoryTable);
-                getDataSourceForRegistersTable(emulator, dataSourceForRegistersTable);
-                int PC = emulator.getMicroprocessor().getValueFromRegister(Intel8080Registers.PC);
+                getDataSourceForRegistersTable(dataSourceForRegistersTable);
+                int PC = emulator.getValueFromRegister(Registers.PC);
 
                 mainView.memoryTableUpdate();
                 mainView.registersTableUpdate();
@@ -118,9 +122,9 @@ public class MainPresenter implements IMainPresenter_View, IMainPresenter_Model 
         if (programRunThread != null && programRunThread.isAlive()) {
             programRunThread.stop();
 
-            getDataSourceForRegistersTable(emulator, dataSourceForRegistersTable);
+            getDataSourceForRegistersTable(dataSourceForRegistersTable);
             getDataSourceForMemoryTable(emulator, dataSourceForMemoryTable);
-            int PC = emulator.getMicroprocessor().getValueFromRegister(Intel8080Registers.PC);
+            int PC = emulator.getValueFromRegister(Registers.PC);
 
             mainView.memoryTableUpdate();
             mainView.registersTableUpdate();
@@ -138,10 +142,12 @@ public class MainPresenter implements IMainPresenter_View, IMainPresenter_Model 
         emulator.resetRegisters();
         emulator.clearScreen();
 
-        getDataSourceForRegistersTable(emulator, dataSourceForRegistersTable);
+        getDataSourceForRegistersTable(dataSourceForRegistersTable);
         dataSourceForConsoleOutputPanel = "";
 
         mainView.registersTableUpdate();
+        mainView.pixelScreenUpdate();
+        mainView.characterScreenUpdate();
         mainView.setConsoleOutputData(dataSourceForConsoleOutputPanel);
         mainView.setProgramCounterPosition(0);
     }
@@ -164,7 +170,7 @@ public class MainPresenter implements IMainPresenter_View, IMainPresenter_Model 
     public void removeAllBreakpoints() {
         emulator.removeAllBreakpoints();
         ArrayList<Integer> breakpoints = emulator.getBreakpoints();
-        int PC = emulator.getMicroprocessor().getValueFromRegister(Intel8080Registers.PC);
+        int PC = emulator.getValueFromRegister(Registers.PC);
         mainView.setBreakpoints(breakpoints);
         mainView.setProgramCounterPosition(PC);
     }
@@ -172,7 +178,7 @@ public class MainPresenter implements IMainPresenter_View, IMainPresenter_Model 
     @Override
     public void setProgramCounter(int address) {
         emulator.setProgramCounter(address);
-        getDataSourceForRegistersTable(emulator, dataSourceForRegistersTable);
+        getDataSourceForRegistersTable(dataSourceForRegistersTable);
         mainView.registersTableUpdate();
     }
 
@@ -210,7 +216,6 @@ public class MainPresenter implements IMainPresenter_View, IMainPresenter_Model 
         }
     }
 
-    // For Model
     @Override
     public void consoleOut(int value) {
         dataSourceForConsoleOutputPanel
@@ -220,22 +225,12 @@ public class MainPresenter implements IMainPresenter_View, IMainPresenter_Model 
 
     @Override
     public int requestOfInput() {
+        mainView.setProgramCounterPosition(emulator.getValueFromRegister(Registers.PC) - 2);
         mainView.setPermissionForActions(MainPresenter.IO_ACTION_MODE);
         int value = mainView.requestOfInput();
         mainView.setPermissionForActions(currentActionMode);
         mainView.clearInputConsole();
         return value;
-    }
-
-    @Override
-    public void setPixelScreenData(int[][] memory) {
-        dataSourceForPixelScreen = memory;
-    }
-
-    @Override
-    public void setCharacterScreenData(int[][] colorMemory, int[][] characterMemory) {
-        dataSourceForCharacterScreen_Color = colorMemory;
-        dataSourceForCharacterScreen_Character = characterMemory;
     }
 
     @Override
@@ -248,10 +243,10 @@ public class MainPresenter implements IMainPresenter_View, IMainPresenter_Model 
         mainView.characterScreenUpdate();
     }
 
-    // Help
+    // Helps Methods
     private void getDataSourceForMemoryTable(IEmulator emulator, String[][] dataSourceForMemoryTable) {
         String[] commandsInMemory = emulator.getCommandsList();
-        int length = emulator.getMicroprocessor().getReadOnlyMemory().getSize();
+        int length = emulator.getMemorySize();
         for (int i = 0; i < length; ++i) {
             StringBuilder address = new StringBuilder(Integer.toString(i, 16));
             while (address.length() != 4) {
@@ -261,94 +256,90 @@ public class MainPresenter implements IMainPresenter_View, IMainPresenter_Model 
             dataSourceForMemoryTable[i][1] = commandsInMemory[i];
             dataSourceForMemoryTable[i][2] =
                     Integer.toString(emulator
-                            .getMicroprocessor()
-                            .getReadOnlyMemory().getValueByIndex(i), 16);
+                            .getValueFromMemoryByAddress(i), 16);
         }
     }
 
-    private void getDataSourceForRegistersTable(IEmulator emulator, String[][] dataSourceForRegistersTable) {
-        IMicroprocessorAdapterForPresenter microprocessor
-                = emulator.getMicroprocessor();
-
+    private void getDataSourceForRegistersTable(String[][] dataSourceForRegistersTable) {
         dataSourceForRegistersTable[0][0] = "Register A";
         dataSourceForRegistersTable[0][1]
-                = createString(microprocessor.getValueFromRegister(Intel8080Registers.A), 16);
+                = createString(emulator.getValueFromRegister(Registers.A), 16);
         dataSourceForRegistersTable[0][2]
-                = createString(microprocessor.getValueFromRegister(Intel8080Registers.A), 2);
+                = createString(emulator.getValueFromRegister(Registers.A), 2);
         dataSourceForRegistersTable[0][3]
-                = Integer.toString(microprocessor.getValueFromRegister(Intel8080Registers.A));
+                = Integer.toString(emulator.getValueFromRegister(Registers.A));
 
         dataSourceForRegistersTable[1][0] = "Register B";
         dataSourceForRegistersTable[1][1]
-                = createString(microprocessor.getValueFromRegister(Intel8080Registers.B), 16);
+                = createString(emulator.getValueFromRegister(Registers.B), 16);
         dataSourceForRegistersTable[1][2]
-                = createString(microprocessor.getValueFromRegister(Intel8080Registers.B), 2);
+                = createString(emulator.getValueFromRegister(Registers.B), 2);
         dataSourceForRegistersTable[1][3]
-                = Integer.toString(microprocessor.getValueFromRegister(Intel8080Registers.B));
+                = Integer.toString(emulator.getValueFromRegister(Registers.B));
 
         dataSourceForRegistersTable[2][0] = "Register C";
         dataSourceForRegistersTable[2][1]
-                = createString(microprocessor.getValueFromRegister(Intel8080Registers.C), 16);
+                = createString(emulator.getValueFromRegister(Registers.C), 16);
         dataSourceForRegistersTable[2][2]
-                = createString(microprocessor.getValueFromRegister(Intel8080Registers.C), 2);
+                = createString(emulator.getValueFromRegister(Registers.C), 2);
         dataSourceForRegistersTable[2][3]
-                = Integer.toString(microprocessor.getValueFromRegister(Intel8080Registers.C));
+                = Integer.toString(emulator.getValueFromRegister(Registers.C));
 
         dataSourceForRegistersTable[3][0] = "Register D";
         dataSourceForRegistersTable[3][1]
-                = createString(microprocessor.getValueFromRegister(Intel8080Registers.D), 16);
+                = createString(emulator.getValueFromRegister(Registers.D), 16);
         dataSourceForRegistersTable[3][2]
-                = createString(microprocessor.getValueFromRegister(Intel8080Registers.D), 2);
+                = createString(emulator.getValueFromRegister(Registers.D), 2);
         dataSourceForRegistersTable[3][3]
-                = Integer.toString(microprocessor.getValueFromRegister(Intel8080Registers.D));
+                = Integer.toString(emulator.getValueFromRegister(Registers.D));
 
         dataSourceForRegistersTable[4][0] = "Register E";
         dataSourceForRegistersTable[4][1]
-                = createString(microprocessor.getValueFromRegister(Intel8080Registers.E), 16);
+                = createString(emulator.getValueFromRegister(Registers.E), 16);
         dataSourceForRegistersTable[4][2]
-                = createString(microprocessor.getValueFromRegister(Intel8080Registers.E), 2);
+                = createString(emulator.getValueFromRegister(Registers.E), 2);
         dataSourceForRegistersTable[4][3]
-                = Integer.toString(microprocessor.getValueFromRegister(Intel8080Registers.E));
+                = Integer.toString(emulator.getValueFromRegister(Registers.E));
 
         dataSourceForRegistersTable[5][0] = "Register H";
         dataSourceForRegistersTable[5][1]
-                = createString(microprocessor.getValueFromRegister(Intel8080Registers.H), 16);
+                = createString(emulator.getValueFromRegister(Registers.H), 16);
         dataSourceForRegistersTable[5][2]
-                = createString(microprocessor.getValueFromRegister(Intel8080Registers.H), 2);
+                = createString(emulator.getValueFromRegister(Registers.H), 2);
         dataSourceForRegistersTable[5][3]
-                = Integer.toString(microprocessor.getValueFromRegister(Intel8080Registers.H));
+                = Integer.toString(emulator.getValueFromRegister(Registers.H));
 
         dataSourceForRegistersTable[6][0] = "Register L";
         dataSourceForRegistersTable[6][1]
-                = createString(microprocessor.getValueFromRegister(Intel8080Registers.L), 16);
+                = createString(emulator.getValueFromRegister(Registers.L), 16);
         dataSourceForRegistersTable[6][2]
-                = createString(microprocessor.getValueFromRegister(Intel8080Registers.L), 2);
+                = createString(emulator.getValueFromRegister(Registers.L), 2);
         dataSourceForRegistersTable[6][3]
-                = Integer.toString(microprocessor.getValueFromRegister(Intel8080Registers.L));
+                = Integer.toString(emulator.getValueFromRegister(Registers.L));
 
         dataSourceForRegistersTable[7][0] = "Register PC";
         dataSourceForRegistersTable[7][1]
-                = createString(microprocessor.getValueFromRegister(Intel8080Registers.PC), 16);
+                = createString(emulator.getValueFromRegister(Registers.PC), 16);
 
         dataSourceForRegistersTable[8][0] = "Register SP";
         dataSourceForRegistersTable[8][1]
-                = createString(microprocessor.getValueFromRegister(Intel8080Registers.SP), 16);
+                = createString(emulator.getValueFromRegister(Registers.SP), 16);
 
         dataSourceForRegistersTable[9][0] = "Flag Z";
         dataSourceForRegistersTable[9][1]
-                = createString(microprocessor.getValueByFlag(Intel8080Flags.Z), 16);
+                = createString(emulator.getValueFromFlag(Flags.Z), 16);
 
         dataSourceForRegistersTable[10][0] = "Flag C";
         dataSourceForRegistersTable[10][1]
-                = createString(microprocessor.getValueByFlag(Intel8080Flags.C), 16);
+                = createString(emulator.getValueFromFlag(Flags.C), 16);
 
         dataSourceForRegistersTable[11][0] = "Flag S";
         dataSourceForRegistersTable[11][1]
-                = createString(microprocessor.getValueByFlag(Intel8080Flags.S), 16);
+                = createString(emulator.getValueFromFlag(Flags.S), 16);
 
         dataSourceForRegistersTable[12][0] = "Flag P";
         dataSourceForRegistersTable[12][1]
-                = createString(microprocessor.getValueByFlag(Intel8080Flags.P), 16);
+                = createString(emulator.getValueFromFlag(Flags.P), 16);
     }
 
     private String createString(int value, int radix) {
