@@ -1,13 +1,13 @@
 package model.kernel.cmd;
 
-import model.kernel.ICommandExecuteEventsListener;
+import model.kernel.IExecutableCommandEventsListener;
 import model.kernel.Flags;
 import model.kernel.Registers;
 import model.kernel._Byte;
 
 public class CMD_Intel8080_RAL implements ICommand {
     @Override
-    public void execute(ICommandExecuteEventsListener executeListener) {
+    public void execute(IExecutableCommandEventsListener executeListener) {
         int value = executeListener.requestOnGetValueFromRegister(Registers.A);
         value = value << 1;
         if (executeListener.requestOnGetValueFromFlag(Flags.C) == 1) {

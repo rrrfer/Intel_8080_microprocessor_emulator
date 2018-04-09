@@ -1,12 +1,12 @@
 package model.kernel.cmd;
 
-import model.kernel.ICommandExecuteEventsListener;
+import model.kernel.IExecutableCommandEventsListener;
 import model.kernel.RegisterPairs;
 
 public class CMD_Intel8080_XTHL implements ICommand {
 
     @Override
-    public void execute(ICommandExecuteEventsListener executeListener) {
+    public void execute(IExecutableCommandEventsListener executeListener) {
         int firstValue = executeListener.requestOnGetValueFromRegisterPair(RegisterPairs.H);
         int secondValue = CMD_Intel8080_POP.pop(executeListener);
         executeListener.requestOnSetValueInRegisterPair(RegisterPairs.H, secondValue);

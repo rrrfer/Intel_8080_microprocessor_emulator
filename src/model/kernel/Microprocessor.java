@@ -1,6 +1,6 @@
 package model.kernel;
 
-import model.emulator.IIntraProgramIOActionsListener;
+import model.emulator.IIntraProgramIOEventsListener;
 import model.kernel.cmd.ICommand;
 
 /**
@@ -14,12 +14,12 @@ public class Microprocessor implements IMicroprocessor {
     private int[] registers;
     private int flags;
 
-    private IIntraProgramIOActionsListener ioSystem;
+    private IIntraProgramIOEventsListener ioSystem;
 
-    private ICommandExecuteEventsListener commandsExecuteListener;
+    private IExecutableCommandEventsListener commandsExecuteListener;
 
     public Microprocessor(int memorySize) {
-        this.commandsExecuteListener = new CommandExecuteEventsListener(this);
+        this.commandsExecuteListener = new ExecutableCommandEventsListener(this);
         this.flags = 0;
         this.registers = new int[Registers.SIZE.ordinal()];
         this.memory = new int[memorySize];
@@ -217,12 +217,12 @@ public class Microprocessor implements IMicroprocessor {
     }
 
     @Override
-    public void setIOActionListener(IIntraProgramIOActionsListener ioSystem) {
+    public void setIntraProgramIOEventsListener(IIntraProgramIOEventsListener ioSystem) {
         this.ioSystem = ioSystem;
     }
 
     @Override
-    public IIntraProgramIOActionsListener getInputOutputActionListener() {
+    public IIntraProgramIOEventsListener getIntraProgramIOEventsListener() {
         return ioSystem;
     }
 

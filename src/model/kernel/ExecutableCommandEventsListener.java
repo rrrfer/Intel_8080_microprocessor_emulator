@@ -1,16 +1,16 @@
 package model.kernel;
 
-import model.emulator.IIntraProgramIOActionsListener;
+import model.emulator.IIntraProgramIOEventsListener;
 
 /**
  * Класс отслеживающий действия исполняемой команды и взаимодействующий с микропроцессором.
  * @author Maxim Rozhkov
  */
-public class CommandExecuteEventsListener implements ICommandExecuteEventsListener {
+public class ExecutableCommandEventsListener implements IExecutableCommandEventsListener {
 
     private IMicroprocessor microprocessor;
 
-    CommandExecuteEventsListener(IMicroprocessor microprocessor) {
+    ExecutableCommandEventsListener(IMicroprocessor microprocessor) {
         this.microprocessor = microprocessor;
     }
 
@@ -65,8 +65,8 @@ public class CommandExecuteEventsListener implements ICommandExecuteEventsListen
     }
 
     @Override
-    public IIntraProgramIOActionsListener requestOnGetInputOutputActionListener() {
-        return microprocessor.getInputOutputActionListener();
+    public IIntraProgramIOEventsListener requestOnGetInputOutputActionListener() {
+        return microprocessor.getIntraProgramIOEventsListener();
     }
 
     @Override

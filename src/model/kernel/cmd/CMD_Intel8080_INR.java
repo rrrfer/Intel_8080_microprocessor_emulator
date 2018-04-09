@@ -11,7 +11,7 @@ public class CMD_Intel8080_INR implements ICommand {
     }
 
     @Override
-    public void execute(ICommandExecuteEventsListener executeListener) {
+    public void execute(IExecutableCommandEventsListener executeListener) {
         int value;
         if (register == Registers.M) {
             int address = executeListener.requestOnGetValueFromRegisterPair(RegisterPairs.H);

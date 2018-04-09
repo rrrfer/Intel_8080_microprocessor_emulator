@@ -26,6 +26,7 @@ public class MainWindow extends JFrame implements IMainView {
 
     // View components
     private ScreensWindow screensWindow;
+    private AboutWindow aboutWindow;
     private IScreenView pixelScreenView;
     private IScreenView characterScreenView;
 
@@ -122,6 +123,8 @@ public class MainWindow extends JFrame implements IMainView {
         createScreens(dataSourceForPixelScreen,
                 dataSourceForCharacterScreen_Color,
                 dataSourceForCharacterScreen_Character);
+
+        createAboutWindow();
 
         applySettingUI();
         setActionsListeners();
@@ -517,6 +520,10 @@ public class MainWindow extends JFrame implements IMainView {
                 (CharacterScreenView) characterScreenView, this);
     }
 
+    private void createAboutWindow() {
+        aboutWindow = new AboutWindow(this);
+    }
+
 
     private void applySettingUI() {
 
@@ -666,7 +673,7 @@ public class MainWindow extends JFrame implements IMainView {
     }
 
     private void about() {
-        // TODO Написать о программе
+        aboutWindow.setVisible(!aboutWindow.isVisible());
     }
 
     // IMainView

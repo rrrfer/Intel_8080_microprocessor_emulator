@@ -24,17 +24,8 @@ public class EmulatorIntel8080 implements IEmulator {
     private ArrayList<Integer> breakpoints;
 
     public EmulatorIntel8080() {
-
-        // Создание микропроцессора
-        microprocessor = new Microprocessor(65536);
-
-        // Создание экранов эмулятора
-        pixelScreen = new PixelScreen(256, 256);
-        characterScreen = new CharacterScreen(20, 20);
-
-        // Создание экземпляра транслятора.
+        this.microprocessor = new Microprocessor(65536);
         this.translator = new Intel8080Translator();
-        // Создание списка точек остановки
         this.breakpoints = new ArrayList<>();
     }
 
@@ -206,13 +197,16 @@ public class EmulatorIntel8080 implements IEmulator {
     }
 
     @Override
-    public void setIOActionsListener
-            (IIntraProgramIOUpdateEventsListener actionsUpdateListener) {
+    public void setIntraProgramIOUpdateEventsListener
+            (IIntraProgramIOUpdateEventsListener listener) {
+
         characterScreen = new CharacterScreen(20, 20);
         pixelScreen = new PixelScreen(256, 256);
-        IIntraProgramIOActionsListener actionsListener
-                = new IOPeripheralSystem(actionsUpdateListener, pixelScreen, characterScreen);
-        microprocessor.setIOActionListener(actionsListener);
+
+        IIntraProgramIOEventsListener actionsListener
+                = new IOPeripheralSystem(listener, pixelScreen, characterScreen);
+
+        microprocessor.setIntraProgramIOEventsListener(actionsListener);
     }
 
     @Override

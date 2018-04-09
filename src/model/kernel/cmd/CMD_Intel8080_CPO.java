@@ -1,6 +1,6 @@
 package model.kernel.cmd;
 
-import model.kernel.ICommandExecuteEventsListener;
+import model.kernel.IExecutableCommandEventsListener;
 import model.kernel.Flags;
 
 public class CMD_Intel8080_CPO  extends CMD_Intel8080_CALL {
@@ -10,7 +10,7 @@ public class CMD_Intel8080_CPO  extends CMD_Intel8080_CALL {
     }
 
     @Override
-    public void execute(ICommandExecuteEventsListener executeListener) {
+    public void execute(IExecutableCommandEventsListener executeListener) {
         if (executeListener.requestOnGetValueFromFlag(Flags.P) == 0) {
             super.execute(executeListener);
         }

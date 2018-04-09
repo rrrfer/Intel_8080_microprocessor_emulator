@@ -11,7 +11,7 @@ public class CMD_Intel8080_SBB implements ICommand {
     }
 
     @Override
-    public void execute(ICommandExecuteEventsListener executeListener) {
+    public void execute(IExecutableCommandEventsListener executeListener) {
         int firstValue = executeListener.requestOnGetValueFromRegister(Registers.A);
         int secondValue;
         if (register == Registers.M) {

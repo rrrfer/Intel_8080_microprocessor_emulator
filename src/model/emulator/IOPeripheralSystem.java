@@ -6,7 +6,7 @@ import presenter.IIntraProgramIOUpdateEventsListener;
  * Класс, реализующий систему ввода-вывода эмулятора.
  * @author Maxim Rozhkov
  */
-public class IOPeripheralSystem implements IIntraProgramIOActionsListener {
+public class IOPeripheralSystem implements IIntraProgramIOEventsListener {
     private IIntraProgramIOUpdateEventsListener intraProgramIOUpdateListener;
 
     private IScreen screenOnPort0x05;

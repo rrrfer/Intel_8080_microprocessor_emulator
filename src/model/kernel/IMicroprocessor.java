@@ -1,6 +1,6 @@
 package model.kernel;
 
-import model.emulator.IIntraProgramIOActionsListener;
+import model.emulator.IIntraProgramIOEventsListener;
 import model.kernel.cmd.ICommand;
 
 /**
@@ -75,19 +75,19 @@ public interface IMicroprocessor {
     void setAllFlags(int flags);
 
     /**
-     * Метод для получения экземпляра класса, реализующего интерфейс {@link IIntraProgramIOActionsListener},
+     * Метод для получения экземпляра класса, реализующего интерфейс {@link IIntraProgramIOEventsListener},
      * используемого микропроцессором.
-     * @return возвращает экземпляр класса, реализующего интерфейс {@link IIntraProgramIOActionsListener},
+     * @return возвращает экземпляр класса, реализующего интерфейс {@link IIntraProgramIOEventsListener},
      * используемого микропроцессором.
      */
-    IIntraProgramIOActionsListener getInputOutputActionListener();
+    IIntraProgramIOEventsListener getIntraProgramIOEventsListener();
 
     /**
-     * Метод для установки экземпляра класса, реализующего интерфейс {@link IIntraProgramIOActionsListener},
+     * Метод для установки экземпляра класса, реализующего интерфейс {@link IIntraProgramIOEventsListener},
      * в микропроцессор.
-     * @param ioSystem класс, реализующий интерфейс {@link IIntraProgramIOActionsListener}.
+     * @param ioSystem класс, реализующий интерфейс {@link IIntraProgramIOEventsListener}.
      */
-    void setIOActionListener(IIntraProgramIOActionsListener ioSystem);
+    void setIntraProgramIOEventsListener(IIntraProgramIOEventsListener ioSystem);
 
     /**
      * Метод для выполнения команды микропроцессором.

@@ -34,7 +34,7 @@ public class MainPresenter implements IMainPresenter, IIntraProgramIOUpdateEvent
 
         // Экземпляр эмулятора.
         emulator = new EmulatorIntel8080();
-        emulator.setIOActionsListener(this);
+        emulator.setIntraProgramIOUpdateEventsListener(this);
 
         // Источники данных для View
         dataSourceForMemoryTable = new String[65536][3];
@@ -124,20 +124,24 @@ public class MainPresenter implements IMainPresenter, IIntraProgramIOUpdateEvent
     public void stop() {
         if (programRunThread != null && programRunThread.isAlive()) {
             programRunThread.stop();
-
-            getDataSourceForRegistersTable(dataSourceForRegistersTable);
-            getDataSourceForMemoryTable(emulator, dataSourceForMemoryTable);
-            int PC = emulator.getValueFromRegister(Registers.PC);
-
-            mainView.memoryTableUpdate();
-            mainView.registersTableUpdate();
-            mainView.setProgramCounterPosition(PC);
-            mainView.clearInputConsole();
-
-            currentActionMode = DEFAULT_ACTION_MODE;
-            mainView.setPermissionForActions(MainPresenter.DEFAULT_ACTION_MODE);
-            System.gc();
         }
+
+        if (commandRunThread != null && commandRunThread.isAlive()) {
+            commandRunThread.stop();
+        }
+
+        getDataSourceForRegistersTable(dataSourceForRegistersTable);
+        getDataSourceForMemoryTable(emulator, dataSourceForMemoryTable);
+        int PC = emulator.getValueFromRegister(Registers.PC);
+
+        mainView.memoryTableUpdate();
+        mainView.registersTableUpdate();
+        mainView.setProgramCounterPosition(PC);
+        mainView.clearInputConsole();
+
+        currentActionMode = DEFAULT_ACTION_MODE;
+        mainView.setPermissionForActions(MainPresenter.DEFAULT_ACTION_MODE);
+        System.gc();
     }
 
     @Override
@@ -202,6 +206,7 @@ public class MainPresenter implements IMainPresenter, IIntraProgramIOUpdateEvent
             path = path + ".i8080";
         }
         emulator.saveProgramInFile(path, programText);
+        openedFilePath = path;
         mainView.setViewTitle(path);
     }
 

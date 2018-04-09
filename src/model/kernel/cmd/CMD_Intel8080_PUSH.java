@@ -1,12 +1,12 @@
 package model.kernel.cmd;
 
-import model.kernel.ICommandExecuteEventsListener;
+import model.kernel.IExecutableCommandEventsListener;
 import model.kernel.Registers;
 import model.kernel._DByte;
 
 public class CMD_Intel8080_PUSH implements ICommand {
 
-    public static void push(ICommandExecuteEventsListener executeListener, int value) {
+    public static void push(IExecutableCommandEventsListener executeListener, int value) {
         int address = executeListener.requestOnGetValueFromRegister(Registers.SP);
         address = _DByte.getRoundedValue(address - 1);
         executeListener.requestOnSetValueInMemoryByAddress(address, value / 256);
@@ -22,7 +22,7 @@ public class CMD_Intel8080_PUSH implements ICommand {
     }
 
     @Override
-    public void execute(ICommandExecuteEventsListener executeListener) {
+    public void execute(IExecutableCommandEventsListener executeListener) {
 
         int value;
         if (register != null) {

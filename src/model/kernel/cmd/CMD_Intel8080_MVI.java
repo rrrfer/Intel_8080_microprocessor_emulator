@@ -1,6 +1,6 @@
 package model.kernel.cmd;
 
-import model.kernel.ICommandExecuteEventsListener;
+import model.kernel.IExecutableCommandEventsListener;
 import model.kernel.RegisterPairs;
 import model.kernel.Registers;
 
@@ -15,7 +15,7 @@ public class CMD_Intel8080_MVI implements ICommand {
     }
 
     @Override
-    public void execute(ICommandExecuteEventsListener executeListener) {
+    public void execute(IExecutableCommandEventsListener executeListener) {
         int value = Integer.valueOf(arg, 16);
         if (firstRegister == Registers.M) {
             int address = executeListener.requestOnGetValueFromRegisterPair(RegisterPairs.H);

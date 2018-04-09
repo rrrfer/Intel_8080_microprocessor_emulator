@@ -11,7 +11,7 @@ public class CMD_Intel8080_DAD implements ICommand {
     }
 
     @Override
-    public void execute(ICommandExecuteEventsListener executeListener) {
+    public void execute(IExecutableCommandEventsListener executeListener) {
 
         int firstValue;
         if (registerPair != null) {

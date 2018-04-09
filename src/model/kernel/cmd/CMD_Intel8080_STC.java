@@ -1,11 +1,11 @@
 package model.kernel.cmd;
 
-import model.kernel.ICommandExecuteEventsListener;
+import model.kernel.IExecutableCommandEventsListener;
 import model.kernel.Flags;
 
 public class CMD_Intel8080_STC implements ICommand {
     @Override
-    public void execute(ICommandExecuteEventsListener executeListener) {
+    public void execute(IExecutableCommandEventsListener executeListener) {
         executeListener.requestOnSetValueInFlag(Flags.C, 1);
     }
 

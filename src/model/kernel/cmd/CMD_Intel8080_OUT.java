@@ -1,7 +1,7 @@
 package model.kernel.cmd;
 
-import model.emulator.IIntraProgramIOActionsListener;
-import model.kernel.ICommandExecuteEventsListener;
+import model.emulator.IIntraProgramIOEventsListener;
+import model.kernel.IExecutableCommandEventsListener;
 import model.kernel.Registers;
 
 public class CMD_Intel8080_OUT implements ICommand {
@@ -13,8 +13,8 @@ public class CMD_Intel8080_OUT implements ICommand {
     }
 
     @Override
-    public void execute(ICommandExecuteEventsListener executeListener) {
-        IIntraProgramIOActionsListener ioSystem = executeListener.requestOnGetInputOutputActionListener();
+    public void execute(IExecutableCommandEventsListener executeListener) {
+        IIntraProgramIOEventsListener ioSystem = executeListener.requestOnGetInputOutputActionListener();
         if (ioSystem != null) {
             int outputValue = executeListener.requestOnGetValueFromRegister(Registers.A);
             int portNumber = Integer.valueOf(arg, 16);

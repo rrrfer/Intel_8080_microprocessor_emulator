@@ -1,16 +1,16 @@
 package model.kernel;
 
-import model.emulator.IIntraProgramIOActionsListener;
+import model.emulator.IIntraProgramIOEventsListener;
 
 /**
- * Интерфейс прослушивания действий исполняемой команды.
- * Класс, заинтересованный в обработке событий, сгенерированых выполняемой командой,
+ * Интерфейс слушателя событий исполняемой команды.
+ * Класс, заинтересованный в обработке событий, генерируемых выполняемой командой,
  * реализует этот интерфейс, и объект этого класса передаётся в метод
- * execute(ICommandExecuteEventsListener executeListener) класса-команды,
+ * execute(IExecutableCommandEventsListener executeListener) класса-команды,
  * реализующего интерфейс {@link model.kernel.cmd.ICommand}.
  * @author Maxim Rozhkov
  */
-public interface ICommandExecuteEventsListener {
+public interface IExecutableCommandEventsListener {
 
     /**
      * Вызыватся, когда исполняемая команда отправляет запрос на чтение значения из регистра
@@ -94,9 +94,9 @@ public interface ICommandExecuteEventsListener {
      * Вызывается, когда исполняемая команда отправляет запрос на подготовку
      * операций ввода-вывода.
      * @return экземпляр класса, реализующий интерфейс
-     * {@link IIntraProgramIOActionsListener} или null.
+     * {@link IIntraProgramIOEventsListener} или null.
      */
-    IIntraProgramIOActionsListener requestOnGetInputOutputActionListener();
+    IIntraProgramIOEventsListener requestOnGetInputOutputActionListener();
 
     /**
      * Вызывается, когда исполняемая команда отправляет запрос на проверку результата

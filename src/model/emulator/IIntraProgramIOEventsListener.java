@@ -4,11 +4,11 @@ package model.emulator;
  * Интерфейс слушателя внутрипрограммных командных событий ввода-вывода.
  * Класс, заинтересованный в обработке внутрипрограммных командных событий ввода-вывода,
  * реализует этот интерфейс и объект этого класса передаётся в метод
- * setIOActionListener(IIntraProgramIOActionsListener ioSystem) класса-микропроцессора,
+ * setIntraProgramIOEventsListener(IIntraProgramIOEventsListener ioSystem) класса-микропроцессора,
  * реализующего интерфейс {@link model.kernel.IMicroprocessor}.
  * @author Maxim Rozhkov
  */
-public interface IIntraProgramIOActionsListener {
+public interface IIntraProgramIOEventsListener {
 
     /**
      * Метод вызывается, когда исполняемая микропроцессором команда OUT

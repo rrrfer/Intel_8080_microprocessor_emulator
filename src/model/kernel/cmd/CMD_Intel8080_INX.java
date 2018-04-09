@@ -11,7 +11,7 @@ public class CMD_Intel8080_INX implements ICommand {
     }
 
     @Override
-    public void execute(ICommandExecuteEventsListener executeListener) {
+    public void execute(IExecutableCommandEventsListener executeListener) {
         int value;
         if (registerPair != null) {
             value = executeListener.requestOnGetValueFromRegisterPair(registerPair);

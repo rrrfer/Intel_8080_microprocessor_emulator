@@ -1,6 +1,6 @@
 package model.kernel.cmd;
 
-import model.kernel.ICommandExecuteEventsListener;
+import model.kernel.IExecutableCommandEventsListener;
 import model.kernel.Registers;
 
 public class CMD_Intel8080_CALL implements ICommand {
@@ -12,7 +12,7 @@ public class CMD_Intel8080_CALL implements ICommand {
     }
 
     @Override
-    public void execute(ICommandExecuteEventsListener executeListener) {
+    public void execute(IExecutableCommandEventsListener executeListener) {
         int callAddress = Integer.valueOf(arg, 16);
         int pushAddress = executeListener.requestOnGetValueFromRegister(Registers.PC);
         CMD_Intel8080_PUSH.push(executeListener, pushAddress);

@@ -1,6 +1,6 @@
 package model.kernel.cmd;
 
-import model.kernel.ICommandExecuteEventsListener;
+import model.kernel.IExecutableCommandEventsListener;
 import model.kernel.RegisterPairs;
 import model.kernel.Registers;
 import model.kernel._Byte;
@@ -14,7 +14,7 @@ public class CMD_Intel8080_SUB implements ICommand {
     }
 
     @Override
-    public void execute(ICommandExecuteEventsListener executeListener) {
+    public void execute(IExecutableCommandEventsListener executeListener) {
         int firstValue = executeListener.requestOnGetValueFromRegister(Registers.A);
         int secondValue;
         if (register == Registers.M) {

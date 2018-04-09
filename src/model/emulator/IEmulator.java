@@ -149,7 +149,7 @@ public interface IEmulator {
      * @param actionsListener экземпляр класса, реализующий интрфейс
      * {@link IIntraProgramIOUpdateEventsListener}.
      */
-    void setIOActionsListener(IIntraProgramIOUpdateEventsListener actionsListener);
+    void setIntraProgramIOUpdateEventsListener(IIntraProgramIOUpdateEventsListener actionsListener);
 
     /**
      * @return true, при наличии синтаксических ошибок в коде программы, иначе false.

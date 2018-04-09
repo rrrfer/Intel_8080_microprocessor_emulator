@@ -1,6 +1,6 @@
 package model.kernel.cmd;
 
-import model.kernel.ICommandExecuteEventsListener;
+import model.kernel.IExecutableCommandEventsListener;
 
 /**
  * Интерфейс команды микропроцессора. Класс, описывающий команду микропроцессора,
@@ -12,10 +12,10 @@ public interface ICommand {
     /**
      * Метод, в котором описывает логика выполнения команды. Вызов данного метода приводит к
      * выполнению команды.
-     * @param executeListener экземпляр класса {@link ICommandExecuteEventsListener},
+     * @param executeListener экземпляр класса {@link IExecutableCommandEventsListener},
      * слушающий действия исполняемой команды.
      */
-    void execute(ICommandExecuteEventsListener executeListener);
+    void execute(IExecutableCommandEventsListener executeListener);
 
     /**
      * Метод для получения размера команды в байтах.
