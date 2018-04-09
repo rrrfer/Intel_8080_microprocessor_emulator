@@ -1,6 +1,6 @@
 package model.kernel.cmd;
 
-import model.kernel.ICommandsExecuteListener;
+import model.kernel.ICommandExecuteEventsListener;
 import model.kernel.Registers;
 import model.kernel._DByte;
 
@@ -13,7 +13,7 @@ public class CMD_Intel8080_SHLD implements ICommand {
     }
 
     @Override
-    public void execute(ICommandsExecuteListener executeListener) {
+    public void execute(ICommandExecuteEventsListener executeListener) {
         int address = Integer.valueOf(arg, 16);
         int value = executeListener.requestOnGetValueFromRegister(Registers.L);
         executeListener.requestOnSetValueInMemoryByAddress(address, value);

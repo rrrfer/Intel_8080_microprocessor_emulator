@@ -1,6 +1,6 @@
 package model.kernel.cmd;
 
-import model.kernel.ICommandsExecuteListener;
+import model.kernel.ICommandExecuteEventsListener;
 import model.kernel.Registers;
 import model.kernel._Byte;
 
@@ -13,7 +13,7 @@ public class CMD_Intel8080_SUI implements ICommand {
     }
 
     @Override
-    public void execute(ICommandsExecuteListener executeListener) {
+    public void execute(ICommandExecuteEventsListener executeListener) {
         int firstValue = executeListener.requestOnGetValueFromRegister(Registers.A);
         int secondValue = Integer.valueOf(arg, 16);
         firstValue -= secondValue;

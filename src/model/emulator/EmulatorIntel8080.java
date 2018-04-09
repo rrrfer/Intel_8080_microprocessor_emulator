@@ -2,7 +2,7 @@ package model.emulator;
 
 import model.kernel.*;
 import model.kernel.cmd.ICommand;
-import presenter.IIntraProgramIOUpdateListener;
+import presenter.IIntraProgramIOUpdateEventsListener;
 import model.translator.Intel8080CommandsBuilder;
 import model.translator.Intel8080CommandsCodes;
 import model.translator.ITranslator;
@@ -11,8 +11,6 @@ import model.translator.Intel8080Translator;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 
 public class EmulatorIntel8080 implements IEmulator {
 
@@ -209,7 +207,7 @@ public class EmulatorIntel8080 implements IEmulator {
 
     @Override
     public void setIOActionsListener
-            (IIntraProgramIOUpdateListener actionsUpdateListener) {
+            (IIntraProgramIOUpdateEventsListener actionsUpdateListener) {
         characterScreen = new CharacterScreen(20, 20);
         pixelScreen = new PixelScreen(256, 256);
         IIntraProgramIOActionsListener actionsListener

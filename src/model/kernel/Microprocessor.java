@@ -16,10 +16,10 @@ public class Microprocessor implements IMicroprocessor {
 
     private IIntraProgramIOActionsListener ioSystem;
 
-    private ICommandsExecuteListener commandsExecuteListener;
+    private ICommandExecuteEventsListener commandsExecuteListener;
 
     public Microprocessor(int memorySize) {
-        this.commandsExecuteListener = new CommandsExecuteListener(this);
+        this.commandsExecuteListener = new CommandExecuteEventsListener(this);
         this.flags = 0;
         this.registers = new int[Registers.SIZE.ordinal()];
         this.memory = new int[memorySize];

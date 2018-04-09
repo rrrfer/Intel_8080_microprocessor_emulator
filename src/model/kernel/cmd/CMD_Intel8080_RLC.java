@@ -1,13 +1,13 @@
 package model.kernel.cmd;
 
-import model.kernel.ICommandsExecuteListener;
+import model.kernel.ICommandExecuteEventsListener;
 import model.kernel.Flags;
 import model.kernel.Registers;
 import model.kernel._Byte;
 
 public class CMD_Intel8080_RLC implements ICommand {
     @Override
-    public void execute(ICommandsExecuteListener executeListener) {
+    public void execute(ICommandExecuteEventsListener executeListener) {
         int value = executeListener.requestOnGetValueFromRegister(Registers.A);
         value = value << 1;
         if (value > 255) {

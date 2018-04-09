@@ -1,6 +1,6 @@
 package model.kernel.cmd;
 
-import model.kernel.ICommandsExecuteListener;
+import model.kernel.ICommandExecuteEventsListener;
 import model.kernel.Flags;
 
 public class CMD_Intel8080_JP extends CMD_Intel8080_JMP {
@@ -10,7 +10,7 @@ public class CMD_Intel8080_JP extends CMD_Intel8080_JMP {
     }
 
     @Override
-    public void execute(ICommandsExecuteListener executeListener) {
+    public void execute(ICommandExecuteEventsListener executeListener) {
         if (executeListener.requestOnGetValueFromFlag(Flags.S) == 0) {
             super.execute(executeListener);
         }

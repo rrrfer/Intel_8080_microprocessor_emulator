@@ -1,12 +1,12 @@
 package model.kernel.cmd;
 
-import model.kernel.ICommandsExecuteListener;
+import model.kernel.ICommandExecuteEventsListener;
 import model.kernel.Registers;
 import model.kernel._DByte;
 
 public class CMD_Intel8080_POP implements ICommand {
 
-    public static int pop(ICommandsExecuteListener executeListener) {
+    public static int pop(ICommandExecuteEventsListener executeListener) {
         int address = executeListener.requestOnGetValueFromRegister(Registers.SP);
         int value = executeListener.requestOnGetValueFromMemoryByAddress(address);
         address = _DByte.getRoundedValue(address + 1);
@@ -23,7 +23,7 @@ public class CMD_Intel8080_POP implements ICommand {
     }
 
     @Override
-    public void execute(ICommandsExecuteListener executeListener) {
+    public void execute(ICommandExecuteEventsListener executeListener) {
         int value = pop(executeListener);
 
         if (register != null) {

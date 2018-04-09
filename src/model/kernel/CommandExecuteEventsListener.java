@@ -6,11 +6,11 @@ import model.emulator.IIntraProgramIOActionsListener;
  * Класс отслеживающий действия исполняемой команды и взаимодействующий с микропроцессором.
  * @author Maxim Rozhkov
  */
-public class CommandsExecuteListener implements ICommandsExecuteListener {
+public class CommandExecuteEventsListener implements ICommandExecuteEventsListener {
 
     private IMicroprocessor microprocessor;
 
-    CommandsExecuteListener(IMicroprocessor microprocessor) {
+    CommandExecuteEventsListener(IMicroprocessor microprocessor) {
         this.microprocessor = microprocessor;
     }
 

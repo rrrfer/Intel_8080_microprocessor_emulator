@@ -1,7 +1,7 @@
 package model.kernel.cmd;
 
 import model.emulator.IIntraProgramIOActionsListener;
-import model.kernel.ICommandsExecuteListener;
+import model.kernel.ICommandExecuteEventsListener;
 import model.kernel.Registers;
 
 public class CMD_Intel8080_IN implements ICommand {
@@ -13,7 +13,7 @@ public class CMD_Intel8080_IN implements ICommand {
     }
 
     @Override
-    public void execute(ICommandsExecuteListener executeListener) {
+    public void execute(ICommandExecuteEventsListener executeListener) {
         IIntraProgramIOActionsListener ioSystem = executeListener.requestOnGetInputOutputActionListener();
         if (ioSystem != null) {
             int inputValue = 0;

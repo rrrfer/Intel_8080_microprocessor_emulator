@@ -9,7 +9,7 @@ import view.MainWindow;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class MainPresenter implements IMainPresenter, IIntraProgramIOUpdateListener {
+public class MainPresenter implements IMainPresenter, IIntraProgramIOUpdateEventsListener {
 
     private IMainView mainView;
     private IEmulator emulator;
@@ -60,6 +60,7 @@ public class MainPresenter implements IMainPresenter, IIntraProgramIOUpdateListe
         mainView.setPermissionForActions(MainPresenter.DEFAULT_ACTION_MODE);
     }
 
+    // IMainPresenter
     @Override
     public void translation(String program) {
         emulator.resetRegisters();
@@ -218,6 +219,7 @@ public class MainPresenter implements IMainPresenter, IIntraProgramIOUpdateListe
         }
     }
 
+    // IIntraProgramIOUpdateEventsListener
     @Override
     public void consoleOut(int value) {
         dataSourceForConsoleOutputPanel
@@ -329,19 +331,19 @@ public class MainPresenter implements IMainPresenter, IIntraProgramIOUpdateListe
 
         dataSourceForRegistersTable[9][0] = "Flag Z";
         dataSourceForRegistersTable[9][1]
-                = createString(emulator.getValueFromFlag(Flags.Z), 16);
+                = String.valueOf(emulator.getValueFromFlag(Flags.Z));
 
         dataSourceForRegistersTable[10][0] = "Flag C";
         dataSourceForRegistersTable[10][1]
-                = createString(emulator.getValueFromFlag(Flags.C), 16);
+                = String.valueOf(emulator.getValueFromFlag(Flags.C));
 
         dataSourceForRegistersTable[11][0] = "Flag S";
         dataSourceForRegistersTable[11][1]
-                = createString(emulator.getValueFromFlag(Flags.S), 16);
+                = String.valueOf(emulator.getValueFromFlag(Flags.S));
 
         dataSourceForRegistersTable[12][0] = "Flag P";
         dataSourceForRegistersTable[12][1]
-                = createString(emulator.getValueFromFlag(Flags.P), 16);
+                = String.valueOf(emulator.getValueFromFlag(Flags.P));
     }
 
     private String createString(int value, int radix) {

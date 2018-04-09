@@ -605,7 +605,9 @@ public class Intel8080Translator implements ITranslator {
         arrayList.add("jnc");
         arrayList.add("jnz");
         arrayList.add("jp");
+        arrayList.add("jm");
         arrayList.add("jpe");
+        arrayList.add("jpo");
         arrayList.add("jz");
         arrayList.add("lda");
         arrayList.add("ldax");

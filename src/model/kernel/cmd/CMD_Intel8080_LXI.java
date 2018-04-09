@@ -1,6 +1,6 @@
 package model.kernel.cmd;
 
-import model.kernel.ICommandsExecuteListener;
+import model.kernel.ICommandExecuteEventsListener;
 import model.kernel.Registers;
 
 public class CMD_Intel8080_LXI implements ICommand {
@@ -14,7 +14,7 @@ public class CMD_Intel8080_LXI implements ICommand {
     }
 
     @Override
-    public void execute(ICommandsExecuteListener executeListener) {
+    public void execute(ICommandExecuteEventsListener executeListener) {
         int value = Integer.valueOf(secondArg, 16);
         if (register != Registers.SP) {
             executeListener.requestOnSetValueInRegister(register, value / 256);

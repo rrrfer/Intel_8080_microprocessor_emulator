@@ -2,12 +2,10 @@ package model.emulator;
 
 import model.kernel.Flags;
 import model.kernel.Registers;
-import presenter.IIntraProgramIOUpdateListener;
+import presenter.IIntraProgramIOUpdateEventsListener;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 
 /**
  * Интерфейс программного эмулятора микропроцессора Intel 8080. Класс, описывающий программный
@@ -149,9 +147,9 @@ public interface IEmulator {
     /**
      * Метод для установки сушателя действий ввода-вывода выполняемой эмулятором программы.
      * @param actionsListener экземпляр класса, реализующий интрфейс
-     * {@link presenter.IIntraProgramIOUpdateListener}.
+     * {@link IIntraProgramIOUpdateEventsListener}.
      */
-    void setIOActionsListener(IIntraProgramIOUpdateListener actionsListener);
+    void setIOActionsListener(IIntraProgramIOUpdateEventsListener actionsListener);
 
     /**
      * @return true, при наличии синтаксических ошибок в коде программы, иначе false.

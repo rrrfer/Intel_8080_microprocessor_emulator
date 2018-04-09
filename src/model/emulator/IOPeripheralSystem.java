@@ -1,20 +1,20 @@
 package model.emulator;
 
-import presenter.IIntraProgramIOUpdateListener;
+import presenter.IIntraProgramIOUpdateEventsListener;
 
 /**
  * Класс, реализующий систему ввода-вывода эмулятора.
  * @author Maxim Rozhkov
  */
 public class IOPeripheralSystem implements IIntraProgramIOActionsListener {
-    private IIntraProgramIOUpdateListener intraProgramIOUpdateListener;
+    private IIntraProgramIOUpdateEventsListener intraProgramIOUpdateListener;
 
     private IScreen screenOnPort0x05;
     private IScreen screenOnPort0x07;
 
     private Timer timer;
     private Thread timerThread;
-    public IOPeripheralSystem(IIntraProgramIOUpdateListener intraProgramIOUpdateListener,
+    public IOPeripheralSystem(IIntraProgramIOUpdateEventsListener intraProgramIOUpdateListener,
                               IScreen screenOnPort0x05, IScreen characterScreen) {
 
         this.intraProgramIOUpdateListener = intraProgramIOUpdateListener;

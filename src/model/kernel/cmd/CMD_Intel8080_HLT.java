@@ -1,10 +1,10 @@
 package model.kernel.cmd;
 
-import model.kernel.ICommandsExecuteListener;
+import model.kernel.ICommandExecuteEventsListener;
 
 public class CMD_Intel8080_HLT implements ICommand {
     @Override
-    public void execute(ICommandsExecuteListener executeListener) {}
+    public void execute(ICommandExecuteEventsListener executeListener) {}
 
     @Override
     public int getSize() {

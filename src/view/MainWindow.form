@@ -175,7 +175,7 @@
                           <splitpane position="right"/>
                         </constraints>
                         <properties/>
-                        <border type="none" title="Lable -&gt; Address"/>
+                        <border type="none" title="Label -&gt; Address"/>
                         <children>
                           <component id="8dd71" class="javax.swing.JTable" binding="label2AddressTable">
                             <constraints/>

@@ -1,6 +1,6 @@
 package model.kernel.cmd;
 
-import model.kernel.ICommandsExecuteListener;
+import model.kernel.ICommandExecuteEventsListener;
 import model.kernel.RegisterPairs;
 import model.kernel.Registers;
 
@@ -13,7 +13,7 @@ public class CMD_Intel8080_STAX implements ICommand {
     }
 
     @Override
-    public void execute(ICommandsExecuteListener executeListener) {
+    public void execute(ICommandExecuteEventsListener executeListener) {
         int value = executeListener.requestOnGetValueFromRegister(Registers.A);
         int address = executeListener.requestOnGetValueFromRegisterPair(registerPair);
         executeListener.requestOnSetValueInMemoryByAddress(address, value);

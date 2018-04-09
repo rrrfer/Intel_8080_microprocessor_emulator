@@ -1,12 +1,12 @@
 package model.kernel.cmd;
 
-import model.kernel.ICommandsExecuteListener;
+import model.kernel.ICommandExecuteEventsListener;
 import model.kernel.Flags;
 import model.kernel.Registers;
 
 public class CMD_Intel8080_RRC implements ICommand {
     @Override
-    public void execute(ICommandsExecuteListener executeListener) {
+    public void execute(ICommandExecuteEventsListener executeListener) {
         int value = executeListener.requestOnGetValueFromRegister(Registers.A);
         if (value % 2 == 1) {
             value += 256;

@@ -11,7 +11,7 @@ public class CMD_Intel8080_ADC implements ICommand {
     }
 
     @Override
-    public void execute(ICommandsExecuteListener executeListener) {
+    public void execute(ICommandExecuteEventsListener executeListener) {
         int firstValue = executeListener.requestOnGetValueFromRegister(Registers.A);
         int secondValue;
         if (register == Registers.M) {

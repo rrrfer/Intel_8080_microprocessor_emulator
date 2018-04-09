@@ -6,11 +6,11 @@ import model.emulator.IIntraProgramIOActionsListener;
  * Интерфейс прослушивания действий исполняемой команды.
  * Класс, заинтересованный в обработке событий, сгенерированых выполняемой командой,
  * реализует этот интерфейс, и объект этого класса передаётся в метод
- * execute(ICommandsExecuteListener executeListener) класса-команды,
+ * execute(ICommandExecuteEventsListener executeListener) класса-команды,
  * реализующего интерфейс {@link model.kernel.cmd.ICommand}.
  * @author Maxim Rozhkov
  */
-public interface ICommandsExecuteListener {
+public interface ICommandExecuteEventsListener {
 
     /**
      * Вызыватся, когда исполняемая команда отправляет запрос на чтение значения из регистра
