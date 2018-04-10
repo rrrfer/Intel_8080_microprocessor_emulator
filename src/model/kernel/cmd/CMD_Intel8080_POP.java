@@ -59,6 +59,10 @@ public class CMD_Intel8080_POP implements ICommand {
 
     @Override
     public String getName() {
-        return "POP " + register;
+        if (register != null) {
+            return "POP " + register;
+        } else {
+            return "POP PSW";
+        }
     }
 }

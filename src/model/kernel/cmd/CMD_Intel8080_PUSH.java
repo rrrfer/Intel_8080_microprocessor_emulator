@@ -59,6 +59,10 @@ public class CMD_Intel8080_PUSH implements ICommand {
 
     @Override
     public String getName() {
-        return "PUSH " + register;
+        if (register != null) {
+            return "PUSH " + register;
+        } else {
+            return "PUSH PSW";
+        }
     }
 }

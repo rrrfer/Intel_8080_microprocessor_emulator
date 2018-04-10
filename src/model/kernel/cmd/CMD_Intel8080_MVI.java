@@ -11,7 +11,7 @@ public class CMD_Intel8080_MVI implements ICommand {
 
     public CMD_Intel8080_MVI(Registers firstRegister, String arg) {
         this.firstRegister = firstRegister;
-        this.arg = arg;
+        this.arg = arg.toUpperCase();
     }
 
     @Override

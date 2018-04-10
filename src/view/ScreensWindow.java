@@ -20,7 +20,7 @@ public class ScreensWindow extends JFrame {
 
         setTitle("Screens");
         setContentPane(rootPanel);
-        setSize(265, 575);
+        setSize(267, 575);
         setResizable(false);
         setLocation(parent.getX() + parent.getSize().width, parent.getY() + 1);
         setUndecorated(true);

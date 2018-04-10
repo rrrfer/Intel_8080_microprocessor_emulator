@@ -40,6 +40,10 @@ public class CMD_Intel8080_DAD implements ICommand {
 
     @Override
     public String getName() {
-        return "DAD " + registerPair;
+        if (registerPair != null) {
+            return "DAD " + registerPair;
+        } else {
+            return "DAD SP";
+        }
     }
 }

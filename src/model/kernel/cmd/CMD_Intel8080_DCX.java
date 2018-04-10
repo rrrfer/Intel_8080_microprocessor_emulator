@@ -29,7 +29,7 @@ public class CMD_Intel8080_DCX implements ICommand {
 
         value = _DByte.getRoundedValue(value);
 
-        if (!registerPair.equals("SP")) {
+        if (registerPair != null) {
             executeListener.requestOnSetValueInRegisterPair(registerPair, value);
         } else {
             executeListener.requestOnSetValueInRegister(Registers.SP, value);
@@ -43,6 +43,10 @@ public class CMD_Intel8080_DCX implements ICommand {
 
     @Override
     public String getName() {
-        return "DCX " + registerPair;
+        if (registerPair != null) {
+            return "DCX " + registerPair;
+        } else {
+            return "DCX SP";
+        }
     }
 }

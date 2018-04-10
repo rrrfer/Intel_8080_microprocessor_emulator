@@ -27,6 +27,7 @@ public class MainWindow extends JFrame implements IMainView {
     // View components
     private ScreensWindow screensWindow;
     private AboutWindow aboutWindow;
+    private HelpWindow helpWindow;
     private IScreenView pixelScreenView;
     private IScreenView characterScreenView;
 
@@ -125,6 +126,7 @@ public class MainWindow extends JFrame implements IMainView {
                 dataSourceForCharacterScreen_Character);
 
         createAboutWindow();
+        createHelpWindow();
 
         applySettingUI();
         setActionsListeners();
@@ -218,6 +220,11 @@ public class MainWindow extends JFrame implements IMainView {
         codeEditorTextPanel.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_F1) {
+                    if (helpItem.isEnabled()) {
+                        help();
+                    }
+                }
                 if (e.getKeyCode() == KeyEvent.VK_F2) {
                     if (translationItem.isEnabled()) {
                         translation();
@@ -524,6 +531,9 @@ public class MainWindow extends JFrame implements IMainView {
         aboutWindow = new AboutWindow(this);
     }
 
+    private void createHelpWindow() {
+        helpWindow = new HelpWindow(this);
+    }
 
     private void applySettingUI() {
 
@@ -669,7 +679,7 @@ public class MainWindow extends JFrame implements IMainView {
     }
 
     private void help() {
-        // TODO Написать справку
+        helpWindow.setVisible(!helpWindow.isVisible());
     }
 
     private void about() {
