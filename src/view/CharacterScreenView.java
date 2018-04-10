@@ -48,40 +48,17 @@ class CharacterScreenView extends JPanel implements IScreenView {
     }
 
     private Color chooseColorByCode(int code) {
-        code = code & 0b01110000;
-        code = code >> 4;
-        switch (code) {
-            case 1: return Color.GREEN;
-            case 2: return Color.BLUE;
-            case 3: return Color.CYAN;
-            case 4: return Color.RED;
-            case 5: return Color.MAGENTA;
-            case 6: return Color.ORANGE;
-            case 7: return Color.DARK_GRAY;
-            default: return Color.BLACK;
-        }
+        int red = (code   & 0b00100000) >> 5;
+        int green = (code & 0b00010000) >> 4;
+        int blue = (code  & 0b00001000) >> 3;
+        return new Color(255 * red, 255 * green, 255 * blue);
     }
 
     private Color chooseCharColorByCode(int code) {
-        code = code & 0b00001111;
-        switch (code) {
-            case 1: return Color.WHITE;
-            case 2: return Color.LIGHT_GRAY;
-            case 3: return Color.GRAY;
-            case 4: return Color.DARK_GRAY;
-            case 5: return Color.GREEN;
-            case 6: return Color.ORANGE;
-            case 7: return Color.BLUE;
-            case 8: return Color.MAGENTA;
-            case 9: return Color.CYAN;
-            case 10: return Color.PINK;
-            case 11: return Color.RED;
-            case 12: return Color.YELLOW;
-            case 13: return Color.BLACK;
-            case 14: return Color.BLACK;
-            case 15: return Color.BLACK;
-            default: return Color.BLACK;
-        }
+        int red = (code   & 0b00000100) >> 2;
+        int green = (code & 0b00000010) >> 1;
+        int blue = code  & 0b00000001;
+        return new Color(255 * red, 255 * green, 255 * blue);
     }
 
     private int chooseCharacter(int numberAsc) {
