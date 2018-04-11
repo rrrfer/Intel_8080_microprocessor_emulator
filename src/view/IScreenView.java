@@ -4,7 +4,7 @@ package view;
  * Интерфейс для отображения модели экрана.
  * @author Maxim Rozhkov
  */
-public interface IScreenView {
+interface IScreenView {
 
     /**
      * Метод для установки во View-компонент видеопамяти цвета пикселей модели экрана.

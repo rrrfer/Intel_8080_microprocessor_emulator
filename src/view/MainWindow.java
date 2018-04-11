@@ -16,8 +16,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 
 public class MainWindow extends JFrame implements IMainView {
 
@@ -75,12 +73,13 @@ public class MainWindow extends JFrame implements IMainView {
     private String inputString;
 
     // Breakpoints
-    public static final ArrayList<Integer> breakpoints = new ArrayList<>();
+    static int[] breakpoints = new int[65536];
+    static int selectedRow = 0;
 
     // Resources
-    public static final Font mainFont = new Font(Font.MONOSPACED, Font.PLAIN, 12);
-    public static final Color greenColor = new Color(44, 192, 8);
-    public static final Color redColor = new Color(122, 0, 6);
+    static final Font mainFont = new Font(Font.MONOSPACED, Font.PLAIN, 12);
+    static final Color greenColor = new Color(44, 192, 8);
+    static final Color redColor = new Color(122, 0, 6);
 
     private UndoManager undoManager;
 
@@ -128,7 +127,7 @@ public class MainWindow extends JFrame implements IMainView {
         createAboutWindow();
         createHelpWindow();
 
-        applySettingUI();
+        settingUI();
         setActionsListeners();
     }
 
@@ -273,7 +272,7 @@ public class MainWindow extends JFrame implements IMainView {
         codeEditorTextPanel.addCaretListener(new CaretListener() {
             @Override
             public void caretUpdate(CaretEvent e) {
-                setEditable();
+                editable();
                 translationResultTextPanel.setForeground(Color.BLACK);
                 translationResultTextPanel.setBackground(Color.ORANGE);
             }
@@ -293,11 +292,11 @@ public class MainWindow extends JFrame implements IMainView {
                     if (e.getButton() == MouseEvent.BUTTON1) {
                         presenter.setProgramCounter(memoryTable.getSelectedRow());
                     } else if (e.getButton() == MouseEvent.BUTTON3) {
-                        int oldRowSelection = memoryTable.getSelectedRow();
+                        //int oldRowSelection = memoryTable.getSelectedRow();
                         int row = memoryTable.rowAtPoint(e.getPoint());
                         memoryTable.setRowSelectionInterval(row, row);
                         presenter.setBreakpoint(memoryTable.getSelectedRow());
-                        memoryTable.setRowSelectionInterval(oldRowSelection, oldRowSelection);
+                        //memoryTable.setRowSelectionInterval(oldRowSelection, oldRowSelection);
                     }
                 }
             }
@@ -485,8 +484,9 @@ public class MainWindow extends JFrame implements IMainView {
         memoryTableModel = new MemoryTableModel(dataSourceForMemoryTable);
         memoryTable.setModel(memoryTableModel);
         memoryTable.setAutoResizeMode(JTable.AUTO_RESIZE_NEXT_COLUMN);
-        memoryTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        memoryTable.setRowSelectionInterval(0, 0);
+        //memoryTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        //memoryTable.setRowSelectionInterval(0, 0);
+        memoryTable.setEnabled(false);
         memoryTable.setFocusable(false);
         memoryTable.setDefaultRenderer(memoryTable.getColumnClass(1), new MemoryTableCellRenderer());
         memoryTable.getColumnModel().getColumn(0).setPreferredWidth(50);
@@ -528,14 +528,14 @@ public class MainWindow extends JFrame implements IMainView {
     }
 
     private void createAboutWindow() {
-        aboutWindow = new AboutWindow(this);
+        aboutWindow = new AboutWindow();
     }
 
     private void createHelpWindow() {
-        helpWindow = new HelpWindow(this);
+        helpWindow = new HelpWindow();
     }
 
-    private void applySettingUI() {
+    private void settingUI() {
 
         consoleInputTextPanel.setEditable(false);
 
@@ -543,7 +543,6 @@ public class MainWindow extends JFrame implements IMainView {
         registersAndFlagsTable.setFocusable(false);
         memoryTable.setFocusable(false);
         emulatorTabbedPanel.setFocusable(false);
-
         menuBar.setFocusable(false);
         fileMenu.setFocusable(false);
         emulatorMenu.setFocusable(false);
@@ -666,7 +665,7 @@ public class MainWindow extends JFrame implements IMainView {
         }
     }
 
-    private void setEditable() {
+    private void editable() {
         if (!getTitle().equals("Intel 8080 Emulator")) {
             if (getTitle().charAt(getTitle().length() - 1) != '*') {
                 setTitle(getTitle() + "*");
@@ -688,29 +687,31 @@ public class MainWindow extends JFrame implements IMainView {
 
     // IMainView
     @Override
-    public void setProgramCounterPosition(int programCounterPosition) {
-        memoryTable.setRowSelectionInterval(programCounterPosition, programCounterPosition);
+    public void setProgramCounterPosition(int programCounterPosition, boolean isScroll) {
+        selectedRow = programCounterPosition;
 
-        int tableSize = memoryTable.getRowCount();
-        int scrollMax = memoryTableScrollPanel.getVerticalScrollBar().getMaximum();
-        if (programCounterPosition > 10) {
-            memoryTableScrollPanel.getVerticalScrollBar().setValue(scrollMax /
-                    tableSize * (programCounterPosition - 10));
-        } else {
-            memoryTableScrollPanel.getVerticalScrollBar().setValue(0);
+        if (isScroll) {
+            int tableSize = memoryTable.getRowCount();
+            int scrollMax = memoryTableScrollPanel.getVerticalScrollBar().getMaximum();
+            if (programCounterPosition > 10) {
+                memoryTableScrollPanel.getVerticalScrollBar().setValue(scrollMax /
+                        tableSize * (programCounterPosition - 10));
+            } else {
+                memoryTableScrollPanel.getVerticalScrollBar().setValue(0);
+            }
         }
 
-        if (programCounterPosition < 20) {
-            memoryTableModel.fireTableRowsUpdated(0, programCounterPosition + 20);
+        if (programCounterPosition < 30) {
+            memoryTableModel.fireTableRowsUpdated(0, programCounterPosition + 30);
         } else {
-            memoryTableModel.fireTableRowsUpdated(programCounterPosition - 20, programCounterPosition + 20);
+            memoryTableModel.fireTableRowsUpdated(programCounterPosition - 30, programCounterPosition + 30);
         }
     }
 
     @Override
-    public void setBreakpoints(ArrayList<Integer> breakpointsData) {
-        breakpoints.clear();
-        breakpoints.addAll(breakpointsData);
+    public void setBreakpoints(int[] breakpointsData) {
+        breakpoints = breakpointsData;
+        memoryTableModel.fireTableDataChanged();
     }
 
     @Override
@@ -722,6 +723,7 @@ public class MainWindow extends JFrame implements IMainView {
     public void setTranslationResult(String translationResult, boolean hasTranslationErrors) {
         translationResultTextPanel.setText(translationResult);
 
+        // TODO Поковыряться тут
         if (hasTranslationErrors) {
             // Помощь в поиске ошибки в программе
             String rowNumberStr = translationResult
@@ -778,8 +780,8 @@ public class MainWindow extends JFrame implements IMainView {
     }
 
     @Override
-    public void setViewTitle(String title) {
-        setTitle("Intel 8080 Emulator: " + title);
+    public void setNameEditedFileInTitle(String filename) {
+        setTitle("Intel 8080 Emulator: " + filename);
     }
 
     @Override
@@ -923,6 +925,7 @@ public class MainWindow extends JFrame implements IMainView {
         aboutItem.setEnabled(false);
     }
 
+    // TODO Поковыряться тут
     private int otherRadix2Dec(String number) {
         int address;
         if (number.charAt(0) == '0' && number.length() > 1) {

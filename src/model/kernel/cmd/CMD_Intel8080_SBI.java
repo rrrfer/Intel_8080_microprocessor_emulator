@@ -9,7 +9,12 @@ public class CMD_Intel8080_SBI implements ICommand {
 
     private String arg;
 
-    public CMD_Intel8080_SBI(String arg) {
+    public CMD_Intel8080_SBI() {
+        this.arg = "0x00";
+    }
+
+    @Override
+    public void setArgument(String arg) {
         this.arg = arg.toUpperCase();
     }
 

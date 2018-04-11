@@ -11,6 +11,9 @@ public class CMD_Intel8080_INR implements ICommand {
     }
 
     @Override
+    public void setArgument(String arg) {}
+
+    @Override
     public void execute(IExecutableCommandEventsListener executeListener) {
         int value;
         if (register == Registers.M) {

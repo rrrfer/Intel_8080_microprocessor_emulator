@@ -11,6 +11,9 @@ public class CMD_Intel8080_DCX implements ICommand {
     }
 
     @Override
+    public void setArgument(String arg) {}
+
+    @Override
     public void execute(IExecutableCommandEventsListener executeListener) {
         int value;
         if (registerPair != null) {

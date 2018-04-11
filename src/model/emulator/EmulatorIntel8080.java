@@ -3,7 +3,7 @@ package model.emulator;
 import model.kernel.*;
 import model.kernel.cmd.ICommand;
 import presenter.IIntraProgramIOUpdateEventsListener;
-import model.translator.Intel8080CommandsBuilder;
+import model.translator.ComandsFactory;
 import model.translator.Intel8080CommandsCodes;
 import model.translator.ITranslator;
 import model.translator.Intel8080Translator;
@@ -21,12 +21,12 @@ public class EmulatorIntel8080 implements IEmulator {
     private IScreen pixelScreen;
     private IScreen characterScreen;
 
-    private ArrayList<Integer> breakpoints;
+    private int[] breakpoints;
 
     public EmulatorIntel8080() {
         this.microprocessor = new Microprocessor(65536);
         this.translator = new Intel8080Translator();
-        this.breakpoints = new ArrayList<>();
+        this.breakpoints = new int[65536];
     }
 
     @Override
@@ -55,15 +55,18 @@ public class EmulatorIntel8080 implements IEmulator {
 
     @Override
     public void run() {
-        while (!step() && !breakpoints.contains(
-                microprocessor.getValueFromRegister(Registers.PC))) {}
+        while (!step()) {
+            if (isBreakpoint(microprocessor.getValueFromRegister(Registers.PC))) {
+                break;
+            }
+        }
     }
 
     @Override
     public boolean step() {
         int address = microprocessor.getValueFromRegister(Registers.PC);
-        ICommand command = Intel8080CommandsBuilder.getCommand(microprocessor, address);
-        if (!command.getName().equals("HLT")) {
+        if (microprocessor.getValueFromMemoryByAddress(address) != Intel8080CommandsCodes.HLT) {
+            ICommand command = ComandsFactory.createCommand(microprocessor, address);
             microprocessor.executeCommand(command);
             return false;
         }
@@ -83,7 +86,7 @@ public class EmulatorIntel8080 implements IEmulator {
         int address = 0;
         while (address < 65536) {
             ICommand command
-                    = Intel8080CommandsBuilder.getCommand(microprocessor, address);
+                    = ComandsFactory.createCommand(microprocessor, address);
             commands.add(command.getName());
             for (int i = 1; i < command.getSize(); ++i) {
                 address += 1;
@@ -125,21 +128,19 @@ public class EmulatorIntel8080 implements IEmulator {
 
     @Override
     public void setBreakpoint(int address) {
-        if (!breakpoints.contains(address)) {
-            breakpoints.add(address);
-        } else {
-            breakpoints.remove((Integer) address);
-        }
+        breakpoints[address] = (breakpoints[address] + 1) % 2;
     }
 
     @Override
-    public ArrayList<Integer> getBreakpoints() {
+    public int[] getBreakpoints() {
         return breakpoints;
     }
 
     @Override
     public void removeAllBreakpoints() {
-        breakpoints.clear();
+        for (int i = 0; i < 65536; ++i) {
+            breakpoints[i] = 0;
+        }
     }
 
     @Override
@@ -217,5 +218,9 @@ public class EmulatorIntel8080 implements IEmulator {
     @Override
     public ArrayList<String> getLabel2AddressList() {
         return translator.getLabel2AddressList();
+    }
+
+    private boolean isBreakpoint(int address) {
+        return breakpoints[address] == 1;
     }
 }

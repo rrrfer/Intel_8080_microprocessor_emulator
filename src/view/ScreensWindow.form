@@ -10,7 +10,7 @@
     </properties>
     <border type="none"/>
     <children>
-      <scrollpane id="b71db" binding="pixelScreenScrollPanel">
+      <scrollpane id="b71db">
         <constraints>
           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="0" indent="0" use-parent-layout="false">
             <minimum-size width="267" height="278"/>
@@ -31,7 +31,7 @@
           </grid>
         </children>
       </scrollpane>
-      <scrollpane id="5868f" binding="characterScreenScrollPanel">
+      <scrollpane id="5868f">
         <constraints>
           <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="0" indent="0" use-parent-layout="false">
             <minimum-size width="251" height="262"/>

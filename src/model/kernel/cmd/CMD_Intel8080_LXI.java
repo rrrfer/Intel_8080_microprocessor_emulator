@@ -8,9 +8,14 @@ public class CMD_Intel8080_LXI implements ICommand {
     private Registers register;
     private String secondArg;
 
-    public CMD_Intel8080_LXI(Registers register, String secondArg) {
+    public CMD_Intel8080_LXI(Registers register) {
         this.register = register;
-        this.secondArg = secondArg.toUpperCase();
+        this.secondArg = "0x0000";
+    }
+
+    @Override
+    public void setArgument(String arg) {
+        this.secondArg = arg.toUpperCase();
     }
 
     @Override

@@ -13,6 +13,9 @@ public class CMD_Intel8080_STAX implements ICommand {
     }
 
     @Override
+    public void setArgument(String arg) {}
+
+    @Override
     public void execute(IExecutableCommandEventsListener executeListener) {
         int value = executeListener.requestOnGetValueFromRegister(Registers.A);
         int address = executeListener.requestOnGetValueFromRegisterPair(registerPair);

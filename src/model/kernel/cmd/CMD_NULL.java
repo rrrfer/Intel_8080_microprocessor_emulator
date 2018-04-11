@@ -3,6 +3,10 @@ package model.kernel.cmd;
 import model.kernel.IExecutableCommandEventsListener;
 
 public class CMD_NULL implements ICommand {
+
+    @Override
+    public void setArgument(String arg) {}
+
     @Override
     public void execute(IExecutableCommandEventsListener executeListener) {
 

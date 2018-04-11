@@ -5,6 +5,9 @@ import model.kernel.IExecutableCommandEventsListener;
 public class CMD_Intel8080_NOP implements ICommand {
 
     @Override
+    public void setArgument(String arg) {}
+
+    @Override
     public void execute(IExecutableCommandEventsListener executeListener) {}
 
     @Override

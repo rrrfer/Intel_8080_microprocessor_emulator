@@ -5,8 +5,8 @@ import model.kernel.Flags;
 
 public class CMD_Intel8080_JNC extends CMD_Intel8080_JMP {
 
-    public CMD_Intel8080_JNC(String arg) {
-        super(arg);
+    public CMD_Intel8080_JNC() {
+        super();
     }
 
     @Override

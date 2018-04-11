@@ -23,6 +23,9 @@ public class CMD_Intel8080_POP implements ICommand {
     }
 
     @Override
+    public void setArgument(String arg) {}
+
+    @Override
     public void execute(IExecutableCommandEventsListener executeListener) {
         int value = pop(executeListener);
 

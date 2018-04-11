@@ -8,7 +8,7 @@ class PixelScreenView extends JPanel implements IScreenView {
     private int pixelSize;
     private int[][] memory;
 
-    public PixelScreenView(int weight, int height, int pixelSize) {
+    PixelScreenView(int weight, int height, int pixelSize) {
         this.pixelSize = pixelSize;
         this.memory = new int[256][256];
         setSize(weight * pixelSize, height * pixelSize);

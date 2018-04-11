@@ -7,7 +7,7 @@ class MemoryTableModel extends AbstractTableModel {
     private String[][] dataSourceForMemoryTable;
     private String[] columnName = {"Address", "Command", "Code"};
 
-    public MemoryTableModel(String[][] dataSourceForMemoryTable) {
+    MemoryTableModel(String[][] dataSourceForMemoryTable) {
         this.dataSourceForMemoryTable = dataSourceForMemoryTable;
     }
 

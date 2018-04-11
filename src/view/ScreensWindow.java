@@ -1,7 +1,6 @@
 package view;
 
 import javax.swing.*;
-import java.awt.*;
 
 public class ScreensWindow extends JFrame {
 
@@ -10,10 +9,7 @@ public class ScreensWindow extends JFrame {
     private JPanel characterScreenPanel;
     private JFrame parent;
 
-    private JScrollPane pixelScreenScrollPanel;
-    private JScrollPane characterScreenScrollPanel;
-
-    public ScreensWindow(PixelScreenView pixelScreenView, CharacterScreenView characterScreenView ,JFrame parent) {
+    ScreensWindow(PixelScreenView pixelScreenView, CharacterScreenView characterScreenView ,JFrame parent) {
         this.parent = parent;
         this.pixelScreenPanel = pixelScreenView;
         this.characterScreenPanel = characterScreenView;
@@ -22,7 +18,6 @@ public class ScreensWindow extends JFrame {
         setContentPane(rootPanel);
         setSize(267, 575);
         setResizable(false);
-        setLocation(parent.getX() + parent.getSize().width, parent.getY() + 1);
         setUndecorated(true);
         setFocusableWindowState(false);
     }
@@ -34,12 +29,12 @@ public class ScreensWindow extends JFrame {
         characterScreenView.update();
     }
 
-    public void _show() {
+    void _show() {
         setLocation(parent.getX() + parent.getSize().width, parent.getY() + 1);
         setVisible(true);
     }
 
-    public void _hide() {
+    void _hide() {
         setVisible(false);
     }
 }

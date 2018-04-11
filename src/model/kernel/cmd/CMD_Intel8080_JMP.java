@@ -7,7 +7,12 @@ public class CMD_Intel8080_JMP implements ICommand {
 
     protected String arg;
 
-    public CMD_Intel8080_JMP(String arg) {
+    public CMD_Intel8080_JMP() {
+        this.arg = "0x0000";
+    }
+
+    @Override
+    public void setArgument(String arg) {
         this.arg = arg.toUpperCase();
     }
 

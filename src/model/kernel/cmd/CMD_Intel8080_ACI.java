@@ -9,7 +9,10 @@ public class CMD_Intel8080_ACI implements ICommand {
 
     private String arg;
 
-    public CMD_Intel8080_ACI(String arg) {
+    public CMD_Intel8080_ACI() {}
+
+    @Override
+    public void setArgument(String arg) {
         this.arg = arg.toUpperCase();
     }
 

@@ -8,7 +8,7 @@ public class Label2AddressTableModel extends AbstractTableModel {
     private final String[] columnName = {"Label", "Address"};
     private ArrayList<String> dataSourceForLabel2AddressTable;
 
-    public Label2AddressTableModel(ArrayList<String> dataSourceForLabel2AddressTable) {
+    Label2AddressTableModel(ArrayList<String> dataSourceForLabel2AddressTable) {
         this.dataSourceForLabel2AddressTable = dataSourceForLabel2AddressTable;
     }
 

@@ -13,7 +13,6 @@ public class IOPeripheralSystem implements IIntraProgramIOEventsListener {
     private IScreen screenOnPort0x07;
 
     private Timer timer;
-    private Thread timerThread;
     public IOPeripheralSystem(IIntraProgramIOUpdateEventsListener intraProgramIOUpdateListener,
                               IScreen screenOnPort0x05, IScreen characterScreen) {
 
@@ -22,6 +21,7 @@ public class IOPeripheralSystem implements IIntraProgramIOEventsListener {
         this.screenOnPort0x07 = characterScreen;
 
         this.timer = new Timer();
+        this.timer.start();
     }
 
     @Override
@@ -37,10 +37,6 @@ public class IOPeripheralSystem implements IIntraProgramIOEventsListener {
     @Override
     public void out_0x16(int value) {
         timer.setValue(value);
-        if (timerThread == null) {
-            timerThread = new Thread(timer);
-            timerThread.start();
-        }
     }
 
     @Override

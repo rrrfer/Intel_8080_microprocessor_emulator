@@ -7,7 +7,7 @@ class RegistersAndFlagsTableModel extends AbstractTableModel {
     private String[][] dataSourceForRegistersAndFlagsTable;
     private String[] columnName = {"Name", "Hex", "Bin", "Dec"};
 
-    public RegistersAndFlagsTableModel(String[][] dataSourceForRegistersAndFlagsTable) {
+    RegistersAndFlagsTableModel(String[][] dataSourceForRegistersAndFlagsTable) {
         this.dataSourceForRegistersAndFlagsTable = dataSourceForRegistersAndFlagsTable;
     }
 

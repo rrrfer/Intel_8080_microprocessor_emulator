@@ -13,6 +13,9 @@ public class CMD_Intel8080_ANA implements ICommand {
     }
 
     @Override
+    public void setArgument(String arg) {}
+
+    @Override
     public void execute(IExecutableCommandEventsListener executeListener) {
         int firstValue = executeListener.requestOnGetValueFromRegister(Registers.A);
         int secondValue;

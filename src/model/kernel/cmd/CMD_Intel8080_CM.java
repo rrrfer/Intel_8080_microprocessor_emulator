@@ -5,8 +5,8 @@ import model.kernel.Flags;
 
 public class CMD_Intel8080_CM extends CMD_Intel8080_CALL {
 
-    public CMD_Intel8080_CM(String arg) {
-        super(arg);
+    public CMD_Intel8080_CM() {
+        super();
     }
 
     @Override

@@ -9,7 +9,7 @@ class CharacterScreenView extends JPanel implements IScreenView {
     private int[][] colorMemory;
     private int[][] charMemory;
 
-    public CharacterScreenView(int weight, int height, int pixelSize) {
+    CharacterScreenView(int weight, int height, int pixelSize) {
         this.pixelSize = pixelSize;
         colorMemory = new int[20][20];
         charMemory = new int[20][20];
@@ -38,29 +38,30 @@ class CharacterScreenView extends JPanel implements IScreenView {
         Graphics2D graphics2D = (Graphics2D) g;
         for (int i = 0; i < colorMemory.length; ++i) {
             for (int j = 0; j < colorMemory[i].length; ++j) {
-                graphics2D.setColor(chooseColorByCode(colorMemory[i][j]));
+                graphics2D.setColor(getBackgroundColorByColorCode(colorMemory[i][j]));
                 graphics2D.fillRect(j * pixelSize, i * pixelSize, pixelSize, pixelSize);
-                graphics2D.setColor(chooseCharColorByCode(colorMemory[i][j]));
+                graphics2D.setColor(getCharColorByColorCode(colorMemory[i][j]));
                 graphics2D.drawString(String.valueOf((char)chooseCharacter(charMemory[i][j])),
                         j * pixelSize, i *pixelSize + 12);
             }
         }
     }
 
-    private Color chooseColorByCode(int code) {
-        int red = (code   & 0b00100000) >> 5;
-        int green = (code & 0b00010000) >> 4;
-        int blue = (code  & 0b00001000) >> 3;
+    private Color getBackgroundColorByColorCode(int colorCode) {
+        int red = (colorCode   & 0b00100000) >> 5;
+        int green = (colorCode & 0b00010000) >> 4;
+        int blue = (colorCode  & 0b00001000) >> 3;
         return new Color(255 * red, 255 * green, 255 * blue);
     }
 
-    private Color chooseCharColorByCode(int code) {
-        int red = (code   & 0b00000100) >> 2;
-        int green = (code & 0b00000010) >> 1;
-        int blue = code  & 0b00000001;
+    private Color getCharColorByColorCode(int colorCode) {
+        int red = (colorCode   & 0b00000100) >> 2;
+        int green = (colorCode & 0b00000010) >> 1;
+        int blue = colorCode  & 0b00000001;
         return new Color(255 * red, 255 * green, 255 * blue);
     }
 
+    // TODO Поковырять тут
     private int chooseCharacter(int numberAsc) {
         if (numberAsc < 128) {
             return numberAsc;

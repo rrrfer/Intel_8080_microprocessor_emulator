@@ -6,6 +6,9 @@ import model.kernel.RegisterPairs;
 public class CMD_Intel8080_XTHL implements ICommand {
 
     @Override
+    public void setArgument(String arg) {}
+
+    @Override
     public void execute(IExecutableCommandEventsListener executeListener) {
         int firstValue = executeListener.requestOnGetValueFromRegisterPair(RegisterPairs.H);
         int secondValue = CMD_Intel8080_POP.pop(executeListener);

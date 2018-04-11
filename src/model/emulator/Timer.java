@@ -1,8 +1,11 @@
 package model.emulator;
 
-class Timer implements Runnable {
+import java.util.TimerTask;
+
+class Timer {
 
     private volatile int value;
+    private java.util.Timer timer = new java.util.Timer();
 
     public void setValue(int value) {
         this.value = value;
@@ -12,18 +15,26 @@ class Timer implements Runnable {
         return value;
     }
 
-    @Override
-    public void run() {
-        while (true) {
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException ignored) {
+    public void start() {
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (value > 0) {
+                    value = value - 1;
+                }
             }
-            if (value > 0) {
-                value -= 1;
-            } else {
-
-            }
-        }
+        }, 10, 10);
     }
+
+    /*@Override
+    public void run() {
+        try {
+            while (true) {
+                Thread.sleep(10);
+                if (value > 0) {
+                    value -= 1;
+                }
+            }
+        } catch (InterruptedException e) {}
+    }*/
 }

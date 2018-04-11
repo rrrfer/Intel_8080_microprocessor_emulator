@@ -6,6 +6,9 @@ import model.kernel.RegisterPairs;
 public class CMD_Intel8080_XCHG implements ICommand {
 
     @Override
+    public void setArgument(String arg) {}
+
+    @Override
     public void execute(IExecutableCommandEventsListener executeListener) {
         int fValue = executeListener.requestOnGetValueFromRegisterPair(RegisterPairs.H);
         int sValue = executeListener.requestOnGetValueFromRegisterPair(RegisterPairs.D);

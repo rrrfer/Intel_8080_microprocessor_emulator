@@ -4,6 +4,10 @@ import model.kernel.IExecutableCommandEventsListener;
 import model.kernel.Flags;
 
 public class CMD_Intel8080_CMC implements ICommand {
+
+    @Override
+    public void setArgument(String arg) {}
+
     @Override
     public void execute(IExecutableCommandEventsListener executeListener) {
         int value = executeListener.requestOnGetValueFromFlag(Flags.C);

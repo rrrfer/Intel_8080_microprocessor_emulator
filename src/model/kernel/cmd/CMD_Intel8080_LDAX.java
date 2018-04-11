@@ -13,6 +13,9 @@ public class CMD_Intel8080_LDAX implements ICommand {
     }
 
     @Override
+    public void setArgument(String arg) {}
+
+    @Override
     public void execute(IExecutableCommandEventsListener executeListener) {
         int address = executeListener.requestOnGetValueFromRegisterPair(registerPair);
         int value = executeListener.requestOnGetValueFromMemoryByAddress(address);

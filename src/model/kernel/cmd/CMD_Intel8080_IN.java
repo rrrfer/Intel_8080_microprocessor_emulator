@@ -8,7 +8,12 @@ public class CMD_Intel8080_IN implements ICommand {
 
     private String arg;
 
-    public CMD_Intel8080_IN(String arg) {
+    public CMD_Intel8080_IN() {
+        this.arg = "0x00";
+    }
+
+    @Override
+    public void setArgument(String arg) {
         this.arg = arg.toUpperCase();
     }
 

@@ -10,10 +10,10 @@ import java.util.ArrayList;
 public interface IMainView {
 
     /**
-     * Метод для установки зачения заголовка окна.
-     * @param title строка заголовка.
+     * Метод для установки имени открытого файла программы в заголовок окна.
+     * @param title имя (полный путь) окрытого файла.
      */
-    void setViewTitle(String title);
+    void setNameEditedFileInTitle(String title);
 
     /**
      * Метод для установки исходного текста программы в окно редактора кода.
@@ -25,7 +25,7 @@ public interface IMainView {
      * Метод для установки позиции отображения программного счётчика.
      * @param programCounterPosition позиция программного счётчика.
      */
-    void setProgramCounterPosition(int programCounterPosition);
+    void setProgramCounterPosition(int programCounterPosition, boolean isScroll);
 
     /**
      * Метод для установки строки статуса трансляции.
@@ -38,7 +38,7 @@ public interface IMainView {
      * Метод для установки отображения точек остановки.
      * @param breakpointsData список точек остановки.
      */
-    void setBreakpoints(ArrayList<Integer> breakpointsData);
+    void setBreakpoints(int[] breakpointsData);
 
     /**
      * Метод для уведомления view-компонента об изменении состояний регистров и флагов

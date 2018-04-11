@@ -94,7 +94,7 @@ public interface IEmulator {
      * Метод для получения списка всех точек остановки.
      * @return список точек остановки в программе.
      */
-    ArrayList<Integer> getBreakpoints();
+    int[] getBreakpoints();
 
     /**
      * Метод для получения строки с уведомлением о результате трансляции.

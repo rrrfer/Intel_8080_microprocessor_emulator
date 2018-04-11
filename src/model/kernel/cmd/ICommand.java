@@ -10,6 +10,13 @@ import model.kernel.IExecutableCommandEventsListener;
 public interface ICommand {
 
     /**
+     * Метод для установки аргумента (байта или двойного байта)
+     * ИСпользуется в командах, содержащих в себе непосредственно данные, или адрес.
+     * @param arg
+     */
+    void setArgument(String arg);
+
+    /**
      * Метод, в котором описывает логика выполнения команды. Вызов данного метода приводит к
      * выполнению команды.
      * @param executeListener экземпляр класса {@link IExecutableCommandEventsListener},

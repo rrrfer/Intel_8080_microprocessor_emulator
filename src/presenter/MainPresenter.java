@@ -76,7 +76,7 @@ public class MainPresenter implements IMainPresenter, IIntraProgramIOUpdateEvent
         mainView.registersTableUpdate();
         mainView.label2AddressTableUpdate();
         mainView.setTranslationResult(dataSourceForTranslateResultPanel, hasErrors);
-        mainView.setProgramCounterPosition(0);
+        mainView.setProgramCounterPosition(0, true);
     }
 
     @Override
@@ -91,7 +91,7 @@ public class MainPresenter implements IMainPresenter, IIntraProgramIOUpdateEvent
 
                 mainView.memoryTableUpdate();
                 mainView.registersTableUpdate();
-                mainView.setProgramCounterPosition(PC);
+                mainView.setProgramCounterPosition(PC, true);
 
                 mainView.setPermissionForActions(MainPresenter.DEFAULT_ACTION_MODE);
                 currentActionMode = DEFAULT_ACTION_MODE;
@@ -114,7 +114,7 @@ public class MainPresenter implements IMainPresenter, IIntraProgramIOUpdateEvent
 
                 mainView.memoryTableUpdate();
                 mainView.registersTableUpdate();
-                mainView.setProgramCounterPosition(PC);
+                mainView.setProgramCounterPosition(PC, true);
             });
             commandRunThread.start();
         }
@@ -136,7 +136,7 @@ public class MainPresenter implements IMainPresenter, IIntraProgramIOUpdateEvent
 
         mainView.memoryTableUpdate();
         mainView.registersTableUpdate();
-        mainView.setProgramCounterPosition(PC);
+        mainView.setProgramCounterPosition(PC, true);
         mainView.clearInputConsole();
 
         currentActionMode = DEFAULT_ACTION_MODE;
@@ -156,7 +156,7 @@ public class MainPresenter implements IMainPresenter, IIntraProgramIOUpdateEvent
         mainView.pixelScreenUpdate();
         mainView.characterScreenUpdate();
         mainView.setConsoleOutputData(dataSourceForConsoleOutputPanel);
-        mainView.setProgramCounterPosition(0);
+        mainView.setProgramCounterPosition(0, true);
     }
 
     @Override
@@ -164,7 +164,7 @@ public class MainPresenter implements IMainPresenter, IIntraProgramIOUpdateEvent
         emulator.resetMemory();
         getDataSourceForMemoryTable(emulator, dataSourceForMemoryTable);
         mainView.memoryTableUpdate();
-        mainView.setProgramCounterPosition(0);
+        mainView.setProgramCounterPosition(0, true);
     }
 
     @Override
@@ -176,10 +176,9 @@ public class MainPresenter implements IMainPresenter, IIntraProgramIOUpdateEvent
     @Override
     public void removeAllBreakpoints() {
         emulator.removeAllBreakpoints();
-        ArrayList<Integer> breakpoints = emulator.getBreakpoints();
+        int breakpoints[] = emulator.getBreakpoints();
         int PC = emulator.getValueFromRegister(Registers.PC);
         mainView.setBreakpoints(breakpoints);
-        mainView.setProgramCounterPosition(PC);
     }
 
     @Override
@@ -187,6 +186,7 @@ public class MainPresenter implements IMainPresenter, IIntraProgramIOUpdateEvent
         emulator.setProgramCounter(address);
         getDataSourceForRegistersTable(dataSourceForRegistersTable);
         mainView.registersTableUpdate();
+        mainView.setProgramCounterPosition(address, false);
     }
 
     @Override
@@ -197,7 +197,7 @@ public class MainPresenter implements IMainPresenter, IIntraProgramIOUpdateEvent
 
         mainView.setTranslationResult("", false);
         mainView.setProgramText(dataSourceForCodeEditorPanel);
-        mainView.setViewTitle(path);
+        mainView.setNameEditedFileInTitle(path);
     }
 
     @Override
@@ -207,7 +207,7 @@ public class MainPresenter implements IMainPresenter, IIntraProgramIOUpdateEvent
         }
         emulator.saveProgramInFile(path, programText);
         openedFilePath = path;
-        mainView.setViewTitle(path);
+        mainView.setNameEditedFileInTitle(path);
     }
 
     @Override
@@ -219,7 +219,7 @@ public class MainPresenter implements IMainPresenter, IIntraProgramIOUpdateEvent
                 openedFilePath = openedFilePath + ".i8080";
             }
             emulator.saveProgramInFile(openedFilePath, programText);
-            mainView.setViewTitle(openedFilePath);
+            mainView.setNameEditedFileInTitle(openedFilePath);
             return true;
         }
     }
@@ -234,7 +234,7 @@ public class MainPresenter implements IMainPresenter, IIntraProgramIOUpdateEvent
 
     @Override
     public int requestOfInput() {
-        mainView.setProgramCounterPosition(emulator.getValueFromRegister(Registers.PC) - 2);
+        mainView.setProgramCounterPosition(emulator.getValueFromRegister(Registers.PC) - 2, true);
         mainView.setPermissionForActions(MainPresenter.IO_ACTION_MODE);
         int value = mainView.requestOfInput();
         mainView.setPermissionForActions(currentActionMode);
@@ -351,6 +351,7 @@ public class MainPresenter implements IMainPresenter, IIntraProgramIOUpdateEvent
                 = String.valueOf(emulator.getValueFromFlag(Flags.P));
     }
 
+    // TODO Подумать над именем функции
     private String createString(int value, int radix) {
         StringBuilder outputString = new StringBuilder(Integer.toString(value, radix));
         switch (radix) {

@@ -6,10 +6,11 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 public class HelpWindow extends JFrame {
+
     private JPanel rootPanel;
     private JTextArea helpTextArea;
 
-    public HelpWindow(JFrame parent) {
+    HelpWindow() {
         setTitle("Help");
         setAlwaysOnTop(true);
         setSize(1000, 600);
@@ -17,7 +18,7 @@ public class HelpWindow extends JFrame {
         setDefaultCloseOperation(HIDE_ON_CLOSE);
         setContentPane(rootPanel);
 
-        setLocationRelativeTo(parent);
+        setLocationRelativeTo(null);
 
         helpTextArea.setFont(new Font(Font.MONOSPACED, Font.BOLD, 12));
         helpTextArea.requestFocus();
