@@ -327,7 +327,7 @@ public class Intel8080Translator implements ITranslator {
                 cmd.equals("inr") || cmd.equals("inx") || cmd.equals("dcr") ||
                 cmd.equals("dcx") || cmd.equals("dad") || cmd.equals("ana") ||
                 cmd.equals("ora") || cmd.equals("xra") || cmd.equals("cmp") ||
-                cmd.equals("") || cmd.equals("push") || cmd.equals("pop")) {
+                cmd.equals("push") || cmd.equals("pop")) {
             return 1;
         } else if (cmd.equals("mvi")) {
             return 2;
@@ -416,15 +416,17 @@ public class Intel8080Translator implements ITranslator {
                                 if (a != 'b' && a != 'd') {
                                     break;
                                 }
-                            }
-                            if (cmdName.equals("dad") || cmdName.equals("inx") || cmdName.equals("dcx")) {
+                            } else if (cmdName.equals("dad") || cmdName.equals("inx") || cmdName.equals("dcx")) {
                                 if (a != 'b' && a != 'd' && a != 'h' && !argument.equals("sp")) {
                                     break;
                                 }
-                            }
-
-                            if (cmdName.equals("push") || cmdName.equals("pop")) {
+                            } else if (cmdName.equals("push") || cmdName.equals("pop")) {
                                 if (a != 'b' && a != 'd' && a != 'h' && !argument.equals("psw")) {
+                                    break;
+                                }
+                            } else {
+                                if (a != 'a' && a != 'b' && a != 'c' && a != 'd' &&
+                                        a != 'e' && a != 'h' && a != 'l' && a != 'm') {
                                     break;
                                 }
                             }
@@ -648,7 +650,8 @@ public class Intel8080Translator implements ITranslator {
         arrayList.add("sui");
         arrayList.add("xchg");
         arrayList.add("xra");
-        arrayList.add("xhtl");
+        arrayList.add("xri");
+        arrayList.add("xthl");
     }
 
     private void initCommandsCodes(HashMap<String, Integer> hashMap) {
