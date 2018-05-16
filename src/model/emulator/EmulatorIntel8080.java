@@ -23,6 +23,8 @@ public class EmulatorIntel8080 implements IEmulator {
 
     private int[] breakpoints;
 
+    private ArrayList<IExternalPeripheral> externalPeripherals;
+
     public EmulatorIntel8080() {
         this.microprocessor = new Microprocessor(65536);
         this.translator = new Intel8080Translator();
@@ -204,8 +206,10 @@ public class EmulatorIntel8080 implements IEmulator {
         characterScreen = new CharacterScreen(20, 20);
         pixelScreen = new PixelScreen(256, 256);
 
+        this.externalPeripherals = new ArrayList<>();
+
         IIntraProgramIOEventsListener actionsListener
-                = new IOPeripheralSystem(listener, pixelScreen, characterScreen);
+                = new IOPeripheralSystem(listener, pixelScreen, characterScreen, externalPeripherals);
 
         microprocessor.setIntraProgramIOEventsListener(actionsListener);
     }
