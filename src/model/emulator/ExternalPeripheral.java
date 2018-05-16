@@ -24,8 +24,6 @@ public class ExternalPeripheral extends Thread implements IExternalPeripheral {
         input = new DataInputStream(socket.getInputStream());
         output = new DataOutputStream(socket.getOutputStream());
         description = input.readUTF();
-
-        System.out.println("new external - port: " + port + " dsc: " + description);
     }
 
     @Override

@@ -224,6 +224,11 @@ public class EmulatorIntel8080 implements IEmulator {
         return translator.getLabel2AddressList();
     }
 
+    @Override
+    public ArrayList<IExternalPeripheral> getExternalPeripheral() {
+        return externalPeripherals;
+    }
+
     private boolean isBreakpoint(int address) {
         return breakpoints[address] == 1;
     }

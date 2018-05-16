@@ -51,7 +51,8 @@ public class MainPresenter implements IMainPresenter, IIntraProgramIOUpdateEvent
         // Создание View
         mainView = new MainWindow(this, dataSourceForMemoryTable, dataSourceForRegistersTable,
                 dataSourceForPixelScreen, dataSourceForCharacterScreen_Color,
-                dataSourceForCharacterScreen_Character, emulator.getLabel2AddressList());
+                dataSourceForCharacterScreen_Character, emulator.getLabel2AddressList(),
+                emulator.getExternalPeripheral());
 
         // Установка режима работы эмулятора по умолчанию
         currentActionMode = DEFAULT_ACTION_MODE;
@@ -250,6 +251,11 @@ public class MainPresenter implements IMainPresenter, IIntraProgramIOUpdateEvent
     @Override
     public void characterScreenUpdate() {
         mainView.characterScreenUpdate();
+    }
+
+    @Override
+    public void externalPeripheralUpdate() {
+        mainView.externalPeripheralUpdate();
     }
 
     // Helps Methods

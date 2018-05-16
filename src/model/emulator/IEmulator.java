@@ -160,4 +160,6 @@ public interface IEmulator {
      * @return список пар значений: метка - адрес.
      */
     ArrayList<String> getLabel2AddressList();
+
+    ArrayList<IExternalPeripheral> getExternalPeripheral();
 }

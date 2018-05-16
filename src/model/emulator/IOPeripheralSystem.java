@@ -42,7 +42,11 @@ public class IOPeripheralSystem implements IIntraProgramIOEventsListener {
                     ServerSocket serverSocket = new ServerSocket(7070);
                     while (true) {
                         Socket socket = serverSocket.accept();
-                        IExternalPeripheral externalPeripheral = new ExternalPeripheral(socket, 100 + externalPeripherals.size());
+                        int port = 100;
+                        if (externalPeripherals.size() != 0) {
+                            port = externalPeripherals.get(externalPeripherals.size() - 1).getPort() + 1;
+                        }
+                        IExternalPeripheral externalPeripheral = new ExternalPeripheral(socket, port);
                         externalPeripheral._start();
                         externalPeripherals.add(externalPeripheral);
                     }
@@ -53,17 +57,16 @@ public class IOPeripheralSystem implements IIntraProgramIOEventsListener {
         new java.util.Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-
                 for (int i = 0; i < externalPeripherals.size();) {
                     if (!externalPeripherals.get(i).isActive()) {
                         externalPeripherals.remove(externalPeripherals.get(i));
-                        System.out.println("удалено!");
                     } else {
                         i++;
                     }
                 }
+                intraProgramIOUpdateListener.externalPeripheralUpdate();
             }
-        }, 0, 5000);
+        }, 5000, 5000);
     }
 
     @Override
