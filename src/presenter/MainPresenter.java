@@ -357,7 +357,6 @@ public class MainPresenter implements IMainPresenter, IIntraProgramIOUpdateEvent
                 = String.valueOf(emulator.getValueFromFlag(Flags.P));
     }
 
-    // TODO Подумать над именем функции
     private String createString(int value, int radix) {
         StringBuilder outputString = new StringBuilder(Integer.toString(value, radix));
         switch (radix) {

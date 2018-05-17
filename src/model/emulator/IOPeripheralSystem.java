@@ -98,6 +98,7 @@ public class IOPeripheralSystem implements IIntraProgramIOEventsListener {
                         current.write(value);
                     }
                 }
+                break;
             }
         }
     }
@@ -120,6 +121,7 @@ public class IOPeripheralSystem implements IIntraProgramIOEventsListener {
             default: {
                 for (IExternalPeripheral current : externalPeripherals) {
                     if (current.getPort() == port) {
+                        current.write(Integer.MAX_VALUE);
                         return current.read();
                     }
                 }

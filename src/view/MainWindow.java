@@ -129,10 +129,9 @@ public class MainWindow extends JFrame implements IMainView {
         createMenuBar();
         createMemoryTable(dataSourceForMemoryTable);
         createRegistersAndFlagsTable(dataSourceForRegisterTable);
+        createExternalPeripheralTable(externalPeripherals);
 
         createLabel2AddressTable(dataSourceForLabel2AddressTable);
-
-        createExternalPeripheralTable(externalPeripherals);
 
         createScreens(dataSourceForPixelScreen,
                 dataSourceForCharacterScreen_Color,
@@ -543,6 +542,7 @@ public class MainWindow extends JFrame implements IMainView {
         externalPeripheralTable.setDefaultRenderer(externalPeripheralTable.getColumnClass(1),
                 new ExternalPeripheralTableCellRenderer());
         externalPeripheralTable.setFocusable(false);
+        externalPeripheralTable.setEnabled(false);
         externalPeripheralTable.getColumnModel().getColumn(0).setMaxWidth(50);
         externalPeripheralTable.getColumnModel().getColumn(2).setMaxWidth(75);
     }
@@ -588,15 +588,30 @@ public class MainWindow extends JFrame implements IMainView {
             public void actionPerformed(ActionEvent e) {
                 try {
                     int value = Integer.valueOf(textField.getText());
-                    if (value >= 0 && value < 256) {
-                        externalPeripherals.get(rowIndex).setPort(value);
-                        externalPeripheralTableModel.fireTableDataChanged();
-                        cellEditorFrame.setVisible(false);
-                        textField.setText("");
-                    }
+                        if (isValidCellValue(value)) {
+                            externalPeripherals.get(rowIndex).setPort(value);
+                            externalPeripheralTableModel.fireTableDataChanged();
+                            cellEditorFrame.setVisible(false);
+                            textField.setText("");
+                        }
                 } catch (NumberFormatException ignored) {}
             }
         });
+    }
+
+    private boolean isValidCellValue(int value) {
+        if (value >= 0 && value < 256) {
+            if (value != 2 && value != 5 && value != 7 &&
+                    value != 8 && value != 22) {
+                for (IExternalPeripheral externalPeripheral : externalPeripherals) {
+                    if (value == externalPeripheral.getPort()) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+        return false;
     }
 
     private void settingUI() {
@@ -710,10 +725,6 @@ public class MainWindow extends JFrame implements IMainView {
         presenter.resetMemory();
     }
 
-    private void externalPeripheral() {
-        System.out.println("Click!");
-    }
-
     private void switchTab() {
         int currentTab = emulatorTabbedPanel.getSelectedIndex();
         int size = emulatorTabbedPanel.getTabCount();
@@ -791,7 +802,6 @@ public class MainWindow extends JFrame implements IMainView {
     public void setTranslationResult(String translationResult, boolean hasTranslationErrors) {
         translationResultTextPanel.setText(translationResult);
 
-        // TODO Поковыряться тут
         if (hasTranslationErrors) {
             // Помощь в поиске ошибки в программе
             String rowNumberStr = translationResult
@@ -998,7 +1008,6 @@ public class MainWindow extends JFrame implements IMainView {
         aboutItem.setEnabled(false);
     }
 
-    // TODO Поковыряться тут
     private int otherRadix2Dec(String number) {
         int address;
         if (number.charAt(0) == '0' && number.length() > 1) {
@@ -1032,9 +1041,5 @@ public class MainWindow extends JFrame implements IMainView {
                 return -1;
             }
         }
-    }
-
-    private void createUIComponents() {
-        // TODO: place custom component creation code here
     }
 }
