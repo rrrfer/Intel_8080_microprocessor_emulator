@@ -34,4 +34,6 @@ public interface IIntraProgramIOUpdateEventsListener {
      * Метод вызывается, когда видеопамять символьного экрана модифицируется.
      */
     void characterScreenUpdate();
+
+    void externalPeripheralUpdate();
 }

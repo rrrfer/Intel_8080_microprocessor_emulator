@@ -23,24 +23,7 @@ public class CMD_Intel8080_IN implements ICommand {
         if (ioSystem != null) {
             int inputValue = 0;
             int portNumber = Integer.valueOf(arg, 16);
-            switch (portNumber) {
-                case 5: {
-                    inputValue = ioSystem.in_0x05();
-                    break;
-                }
-                case 7: {
-                    inputValue = ioSystem.in_0x07();
-                    break;
-                }
-                case 8: {
-                    inputValue = ioSystem.in_0x08();
-                    break;
-                }
-                case 22: {
-                    inputValue = ioSystem.in_0x16();
-                    break;
-                }
-            }
+            inputValue = ioSystem.in(portNumber);
             executeListener.requestOnSetValueInRegister(Registers.A, inputValue);
         }
     }

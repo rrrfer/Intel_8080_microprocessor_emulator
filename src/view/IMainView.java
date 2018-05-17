@@ -66,6 +66,8 @@ public interface IMainView {
      */
     void characterScreenUpdate();
 
+    void externalPeripheralUpdate();
+
     /**
      * Метод для установки данных в консоль вывода.
      * @param consoleOutData данные для консоли вывода.

@@ -61,7 +61,6 @@ class CharacterScreenView extends JPanel implements IScreenView {
         return new Color(255 * red, 255 * green, 255 * blue);
     }
 
-    // TODO Поковырять тут
     private int chooseCharacter(int numberAsc) {
         if (numberAsc < 128) {
             return numberAsc;
