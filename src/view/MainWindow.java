@@ -1,6 +1,5 @@
 package view;
 
-import com.sun.istack.internal.NotNull;
 import model.emulator.IExternalPeripheral;
 import presenter.IMainPresenter;
 import presenter.MainPresenter;
@@ -93,12 +92,12 @@ public class MainWindow extends JFrame implements IMainView {
 
     private ArrayList<IExternalPeripheral> externalPeripherals;
 
-    public MainWindow(@NotNull IMainPresenter presenter, @NotNull String[][] dataSourceForMemoryTable,
-                      @NotNull String[][] dataSourceForRegisterTable, @NotNull int[][] dataSourceForPixelScreen,
-                      @NotNull int[][] dataSourceForCharacterScreen_Color,
-                      @NotNull int[][] dataSourceForCharacterScreen_Character,
-                      @NotNull ArrayList<String> dataSourceForLabel2AddressTable,
-                      @NotNull ArrayList<IExternalPeripheral> externalPeripherals) {
+    public MainWindow(IMainPresenter presenter, String[][] dataSourceForMemoryTable,
+                      String[][] dataSourceForRegisterTable, int[][] dataSourceForPixelScreen,
+                      int[][] dataSourceForCharacterScreen_Color,
+                      int[][] dataSourceForCharacterScreen_Character,
+                      ArrayList<String> dataSourceForLabel2AddressTable,
+                      ArrayList<IExternalPeripheral> externalPeripherals) {
         this.presenter = presenter;
 
         setTitle("Intel 8080 Emulator");
