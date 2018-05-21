@@ -161,5 +161,8 @@ public interface IEmulator {
      */
     ArrayList<String> getLabel2AddressList();
 
+    /**
+     * @return список периферийных устройств подключенных к эмулятору
+     */
     ArrayList<IExternalPeripheral> getExternalPeripheral();
 }

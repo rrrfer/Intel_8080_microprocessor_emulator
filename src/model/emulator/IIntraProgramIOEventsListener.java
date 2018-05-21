@@ -9,6 +9,17 @@ package model.emulator;
  * @author Maxim Rozhkov
  */
 public interface IIntraProgramIOEventsListener {
+    /**
+     * Вызывается, когда исполняемая команда инициирует запись значения в порт
+     * @param port номер порта
+     * @param value записываемое значение
+     */
     void out(int port, int value);
+
+    /**
+     * Вызывается, когда исполняемая команда инициирует чтение из порта
+     * @param port номер порта
+     * @return
+     */
     int in(int port);
 }

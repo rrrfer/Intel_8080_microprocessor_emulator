@@ -35,5 +35,8 @@ public interface IIntraProgramIOUpdateEventsListener {
      */
     void characterScreenUpdate();
 
+    /**
+     * Метод вызывается, когда подключается/отключается новое периферийное устройство
+     */
     void externalPeripheralUpdate();
 }

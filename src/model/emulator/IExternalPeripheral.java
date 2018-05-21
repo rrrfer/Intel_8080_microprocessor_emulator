@@ -1,5 +1,9 @@
 package model.emulator;
 
+/**
+ * Интерфейс внешнего периферийного устройства.
+ * Внешнее периферийное устройство подключается к эмулятору посредством API
+ */
 public interface IExternalPeripheral {
     String getDescription();
     int getPort();

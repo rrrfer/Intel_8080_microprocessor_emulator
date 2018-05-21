@@ -105,5 +105,8 @@ public interface IExecutableCommandEventsListener {
      */
     void requestOnCheckByteForSetFlags(int value);
 
+    /**
+     * Вызывается, когда вызывается команда RET
+     */
     void returnFromInterrupt();
 }
