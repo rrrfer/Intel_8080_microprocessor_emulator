@@ -1,2 +1,2 @@
 #!/bin/bash
-jar cvf api.jar -C ./out/production/EMP/api .
+jar cvfM api.jar -C ./out/production/EMP/api .
