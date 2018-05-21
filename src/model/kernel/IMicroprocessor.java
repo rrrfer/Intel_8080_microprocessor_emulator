@@ -131,4 +131,12 @@ public interface IMicroprocessor {
      * @return размер памяти.
      */
     int getMemorySize();
+
+    void setExecutionLevel(int level);
+
+    int getExecutionLevel();
+
+    void returnFromInterrupt();
+
+    void interrupt(ICommand command);
 }

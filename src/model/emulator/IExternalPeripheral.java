@@ -6,7 +6,9 @@ public interface IExternalPeripheral {
     void setPort(int port);
     void write(int value);
     int read();
-    void _stop();
     boolean isActive();
     void _start();
+    boolean _isInterrupted();
+    void _setPriority(int priority);
+    int _getPriority();
 }

@@ -73,4 +73,9 @@ public class ExecutableCommandEventsListener implements IExecutableCommandEvents
     public void requestOnCheckByteForSetFlags(int value) {
         microprocessor.checkValueForSetFlags(value);
     }
+
+    @Override
+    public void returnFromInterrupt() {
+        microprocessor.returnFromInterrupt();
+    }
 }

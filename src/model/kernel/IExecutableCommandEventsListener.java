@@ -104,4 +104,6 @@ public interface IExecutableCommandEventsListener {
      * @param value итоговый результат операции.
      */
     void requestOnCheckByteForSetFlags(int value);
+
+    void returnFromInterrupt();
 }

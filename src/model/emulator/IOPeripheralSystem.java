@@ -58,10 +58,12 @@ public class IOPeripheralSystem implements IIntraProgramIOEventsListener {
             @Override
             public void run() {
                 for (int i = 0; i < externalPeripherals.size();) {
-                    if (!externalPeripherals.get(i).isActive()) {
-                        externalPeripherals.remove(externalPeripherals.get(i));
-                    } else {
-                        i++;
+                    if (externalPeripherals.get(i) != null) {
+                        if (!externalPeripherals.get(i).isActive()) {
+                            externalPeripherals.remove(externalPeripherals.get(i));
+                        } else {
+                            i++;
+                        }
                     }
                 }
                 intraProgramIOUpdateListener.externalPeripheralUpdate();

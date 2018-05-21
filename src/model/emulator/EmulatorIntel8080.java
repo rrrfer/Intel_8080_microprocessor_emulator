@@ -1,6 +1,7 @@
 package model.emulator;
 
 import model.kernel.*;
+import model.kernel.cmd.CMD_Intel8080_CALL;
 import model.kernel.cmd.ICommand;
 import presenter.IIntraProgramIOUpdateEventsListener;
 import model.translator.ComandsFactory;
@@ -70,9 +71,24 @@ public class EmulatorIntel8080 implements IEmulator {
         if (microprocessor.getValueFromMemoryByAddress(address) != Intel8080CommandsCodes.HLT) {
             ICommand command = ComandsFactory.createCommand(microprocessor, address);
             microprocessor.executeCommand(command);
+            interrupt();
             return false;
         }
         return true;
+    }
+
+    private void interrupt() {
+        for (int i = 0; i < externalPeripherals.size(); ++i) {
+            if (externalPeripherals.get(i)._isInterrupted()) {
+                if (externalPeripherals.get(i)._getPriority() < microprocessor.getExecutionLevel()) {
+                    int address = 0x08 * externalPeripherals.get(i)._getPriority();
+                    ICommand rst = new CMD_Intel8080_CALL();
+                    rst.setArgument(Integer.toString(address, 16));
+                    microprocessor.setExecutionLevel(externalPeripherals.get(i)._getPriority());
+                    microprocessor.interrupt(rst);
+                }
+            }
+        }
     }
 
     @Override

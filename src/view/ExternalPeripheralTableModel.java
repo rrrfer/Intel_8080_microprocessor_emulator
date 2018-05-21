@@ -16,7 +16,7 @@ public class ExternalPeripheralTableModel extends AbstractTableModel {
     @Override
     public String getColumnName(int column) {
         switch (column) {
-            case 0: return "№";
+            case 0: return "Interrupt";
             case 1: return "Description";
             case 2: return "Port";
             default: return "Name";
@@ -36,10 +36,19 @@ public class ExternalPeripheralTableModel extends AbstractTableModel {
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         switch (columnIndex) {
-            case 0: return rowIndex;
-            case 1: return externalPeripherals.get(rowIndex).getDescription();
-            case 2: return "0x" + Integer.toString(externalPeripherals.get(rowIndex).getPort(), 16).toUpperCase();
-            default: return 0;
+            case 0: {
+                if (rowIndex < 8 && externalPeripherals.get(rowIndex)._getPriority() < 8) {
+                    return "0x" + Integer.toString(externalPeripherals.get(rowIndex)._getPriority() * 0x08, 16);
+                } else {
+                    return "-";
+                }
+            }
+            case 1:
+                return externalPeripherals.get(rowIndex).getDescription();
+            case 2:
+                return "0x" + Integer.toString(externalPeripherals.get(rowIndex).getPort(), 16).toUpperCase();
+            default:
+                return 0;
         }
     }
 }

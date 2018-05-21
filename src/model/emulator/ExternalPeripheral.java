@@ -1,7 +1,5 @@
 package model.emulator;
 
-import model.kernel._Byte;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -12,18 +10,20 @@ public class ExternalPeripheral extends Thread implements IExternalPeripheral {
     private String description;
     private int port;
 
-    private Socket socket;
     private DataInputStream input;
     private DataOutputStream output;
 
     private int register;
+    private boolean interrupt;
+    private int priority;
 
     public ExternalPeripheral(Socket socket, int port) throws IOException {
-        this.socket = socket;
         this.port = port;
         input = new DataInputStream(socket.getInputStream());
         output = new DataOutputStream(socket.getOutputStream());
         description = input.readUTF();
+        interrupt = false;
+        priority = 8;
     }
 
     @Override
@@ -41,14 +41,6 @@ public class ExternalPeripheral extends Thread implements IExternalPeripheral {
     @Override
     public int read() {
         return register;
-    }
-
-    @Override
-    public void _stop() {
-        try {
-            socket.close();
-            this.stop();
-        } catch (IOException ignored) {}
     }
 
     @Override
@@ -72,14 +64,37 @@ public class ExternalPeripheral extends Thread implements IExternalPeripheral {
     }
 
     @Override
+    public boolean _isInterrupted() {
+        boolean state = interrupt;
+        interrupt = false;
+        return state;
+    }
+
+    @Override
+    public void _setPriority(int priority) {
+        this.priority = priority;
+    }
+
+    @Override
+    public int _getPriority() {
+        return priority;
+    }
+
+    @Override
     public void run() {
         while(true) {
             try {
                 int inputData = input.readInt();
-                synchronized (this) {
-                    register = _Byte.getRoundedValue(inputData);
+                if (inputData < 256) {
+                    synchronized (this) {
+                        register = inputData;
+                    }
+                } else {
+                    synchronized (this) {
+                        interrupt = true;
+                    }
                 }
-            } catch (IOException ignored) {
+            } catch (IOException e) {
                 currentThread().stop();
             }
         }

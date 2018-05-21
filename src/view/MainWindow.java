@@ -30,8 +30,10 @@ public class MainWindow extends JFrame implements IMainView {
     private IScreenView pixelScreenView;
     private IScreenView characterScreenView;
     private JFrame cellEditorFrame;
-    private JButton okButton;
+    private JTextField cellTextField;
+    private JComboBox<Integer> priorityComboBox;
     private int rowIndex;
+    private int oldValue;
 
     private JPanel rootPanel;
     private JTable memoryTable;
@@ -321,6 +323,10 @@ public class MainWindow extends JFrame implements IMainView {
                 if (e.getClickCount() == 2) {
                     if (openItem.isEnabled()) {
                         rowIndex = externalPeripheralTable.rowAtPoint(e.getPoint());
+                        cellTextField
+                                .setText(String.valueOf(externalPeripherals.get(rowIndex).getPort()));
+                        oldValue = Integer.valueOf(cellTextField.getText());
+                        priorityComboBox.setSelectedIndex(externalPeripherals.get(rowIndex)._getPriority());
                         cellEditorFrame.setVisible(true);
                     }
                 }
@@ -543,7 +549,7 @@ public class MainWindow extends JFrame implements IMainView {
                 new ExternalPeripheralTableCellRenderer());
         externalPeripheralTable.setFocusable(false);
         externalPeripheralTable.setEnabled(false);
-        externalPeripheralTable.getColumnModel().getColumn(0).setMaxWidth(50);
+        externalPeripheralTable.getColumnModel().getColumn(0).setMaxWidth(150);
         externalPeripheralTable.getColumnModel().getColumn(2).setMaxWidth(75);
     }
 
@@ -570,14 +576,21 @@ public class MainWindow extends JFrame implements IMainView {
     }
 
     private void createCellEditWindow() {
-        JTextField textField = new JTextField(5);
+        priorityComboBox = new JComboBox<>();
+        for (int i = 0; i <= 8; ++i) {
+            priorityComboBox.addItem(i);
+        }
+        cellTextField = new JTextField(5);
         JButton okButton = new JButton("Ok");
         cellEditorFrame = new JFrame();
-        cellEditorFrame.setTitle("Port setting");
+        cellEditorFrame.setTitle("Device Settings");
         cellEditorFrame.setLayout(new FlowLayout());
-        cellEditorFrame.setSize(250, 68);
+        cellEditorFrame.setSize(350, 68);
         cellEditorFrame.setResizable(false);
-        cellEditorFrame.add(textField);
+        cellEditorFrame.add(new JLabel("Port: "));
+        cellEditorFrame.add(cellTextField);
+        cellEditorFrame.add(new JLabel("Interrupt Priority: "));
+        cellEditorFrame.add(priorityComboBox);
         cellEditorFrame.add(okButton);
         cellEditorFrame.setAlwaysOnTop(true);
         cellEditorFrame.setLocationRelativeTo(MainWindow.this);
@@ -587,12 +600,21 @@ public class MainWindow extends JFrame implements IMainView {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    int value = Integer.valueOf(textField.getText());
+                    int value = Integer.valueOf(cellTextField.getText());
                         if (isValidCellValue(value)) {
                             externalPeripherals.get(rowIndex).setPort(value);
                             externalPeripheralTableModel.fireTableDataChanged();
                             cellEditorFrame.setVisible(false);
-                            textField.setText("");
+                            cellTextField.setText("");
+                            int priority = priorityComboBox.getSelectedIndex();
+                            if (priority != 8) {
+                                for (IExternalPeripheral externalPeripheral : externalPeripherals) {
+                                    if (externalPeripheral._getPriority() == priority) {
+                                        externalPeripheral._setPriority(8);
+                                    }
+                                }
+                            }
+                            externalPeripherals.get(rowIndex)._setPriority(priority);
                         }
                 } catch (NumberFormatException ignored) {}
             }
@@ -603,9 +625,11 @@ public class MainWindow extends JFrame implements IMainView {
         if (value >= 0 && value < 256) {
             if (value != 2 && value != 5 && value != 7 &&
                     value != 8 && value != 22) {
-                for (IExternalPeripheral externalPeripheral : externalPeripherals) {
-                    if (value == externalPeripheral.getPort()) {
-                        return false;
+                if (value != oldValue) {
+                    for (IExternalPeripheral externalPeripheral : externalPeripherals) {
+                        if (value == externalPeripheral.getPort()) {
+                            return false;
+                        }
                     }
                 }
                 return true;
