@@ -56,7 +56,14 @@ class Device extends Thread implements IDevice {
         }
     }
 
+    /**
+     * Метод вызывается, когда эмулятор выполняет считывание значения из порта устройства
+     */
     protected void readACK() {}
 
+    /**
+     * Метод вызывается, когда эмулятор выполняет запись значения в порт устройства
+     * @param value
+     */
     protected void receivingData(int value) {}
 }

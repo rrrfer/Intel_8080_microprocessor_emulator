@@ -38,7 +38,11 @@ public class ExternalPeripheralTableModel extends AbstractTableModel {
         switch (columnIndex) {
             case 0: {
                 if (rowIndex < 8 && externalPeripherals.get(rowIndex)._getPriority() < 8) {
-                    return "0x" + Integer.toString(externalPeripherals.get(rowIndex)._getPriority() * 0x08, 16);
+                    StringBuilder address = new StringBuilder("0x" + Integer.toString(externalPeripherals.get(rowIndex)._getPriority() * 0x08, 16));
+                    while (address.length() != 6) {
+                        address.insert(2, "0");
+                    }
+                    return address;
                 } else {
                     return "-";
                 }
@@ -46,7 +50,7 @@ public class ExternalPeripheralTableModel extends AbstractTableModel {
             case 1:
                 return externalPeripherals.get(rowIndex).getDescription();
             case 2:
-                return "0x" + Integer.toString(externalPeripherals.get(rowIndex).getPort(), 16).toUpperCase();
+                return "0x" + Integer.toString(externalPeripherals.get(rowIndex).getPort(), 16);
             default:
                 return 0;
         }

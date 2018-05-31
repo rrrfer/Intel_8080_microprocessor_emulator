@@ -14,8 +14,8 @@ public class AboutWindow extends JFrame {
         setTitle("About");
         setAlwaysOnTop(true);
         setUndecorated(true);
-        setSize(267, 165);
-        setResizable(false);
+        //setSize(267, 165);
+        //setResizable(false);
         setDefaultCloseOperation(HIDE_ON_CLOSE);
         setContentPane(rootPanel);
 
@@ -32,5 +32,7 @@ public class AboutWindow extends JFrame {
                 }
             }
         });
+
+        pack();
     }
 }

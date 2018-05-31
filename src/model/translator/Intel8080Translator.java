@@ -77,7 +77,11 @@ public class Intel8080Translator implements ITranslator {
                     if (!label2AddressMap.containsKey(labelName)) {
                         label2AddressMap.put(labelName, currentAddress);
                         label2AddressList.add(labelName);
-                        label2AddressList.add(Integer.toString(currentAddress, 16));
+                        StringBuilder address = new StringBuilder("0x" + Integer.toString(currentAddress, 16));
+                        while (address.length() != 6) {
+                            address.insert(2, "0");
+                        }
+                        label2AddressList.add(address.toString());
                         continue;
                     } else {
                         hasErrors = true;
