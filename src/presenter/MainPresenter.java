@@ -51,7 +51,8 @@ public class MainPresenter implements IMainPresenter, IIntraProgramIOUpdateEvent
         // Создание View
         mainView = new MainWindow(this, dataSourceForMemoryTable, dataSourceForRegistersTable,
                 dataSourceForPixelScreen, dataSourceForCharacterScreen_Color,
-                dataSourceForCharacterScreen_Character, emulator.getLabel2AddressList());
+                dataSourceForCharacterScreen_Character, emulator.getLabel2AddressList(),
+                emulator.getExternalPeripheral());
 
         // Установка режима работы эмулятора по умолчанию
         currentActionMode = DEFAULT_ACTION_MODE;
@@ -252,6 +253,11 @@ public class MainPresenter implements IMainPresenter, IIntraProgramIOUpdateEvent
         mainView.characterScreenUpdate();
     }
 
+    @Override
+    public void externalPeripheralUpdate() {
+        mainView.externalPeripheralUpdate();
+    }
+
     // Helps Methods
     private void getDataSourceForMemoryTable(IEmulator emulator, String[][] dataSourceForMemoryTable) {
         String[] commandsInMemory = emulator.getCommandsList();
@@ -263,9 +269,12 @@ public class MainPresenter implements IMainPresenter, IIntraProgramIOUpdateEvent
             }
             dataSourceForMemoryTable[i][0] = address.toString();
             dataSourceForMemoryTable[i][1] = commandsInMemory[i];
-            dataSourceForMemoryTable[i][2] =
-                    Integer.toString(emulator
-                            .getValueFromMemoryByAddress(i), 16);
+            StringBuilder code = new StringBuilder(Integer.toString(emulator
+                    .getValueFromMemoryByAddress(i), 16));
+            if (code.length() < 2) {
+                code.insert(0, '0');
+            }
+            dataSourceForMemoryTable[i][2] = code.toString();
         }
     }
 
@@ -351,7 +360,6 @@ public class MainPresenter implements IMainPresenter, IIntraProgramIOUpdateEvent
                 = String.valueOf(emulator.getValueFromFlag(Flags.P));
     }
 
-    // TODO Подумать над именем функции
     private String createString(int value, int radix) {
         StringBuilder outputString = new StringBuilder(Integer.toString(value, radix));
         switch (radix) {

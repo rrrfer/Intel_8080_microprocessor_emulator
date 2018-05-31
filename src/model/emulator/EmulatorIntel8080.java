@@ -1,6 +1,7 @@
 package model.emulator;
 
 import model.kernel.*;
+import model.kernel.cmd.CMD_Intel8080_CALL;
 import model.kernel.cmd.ICommand;
 import presenter.IIntraProgramIOUpdateEventsListener;
 import model.translator.ComandsFactory;
@@ -22,6 +23,8 @@ public class EmulatorIntel8080 implements IEmulator {
     private IScreen characterScreen;
 
     private int[] breakpoints;
+
+    private ArrayList<IExternalPeripheral> externalPeripherals;
 
     public EmulatorIntel8080() {
         this.microprocessor = new Microprocessor(65536);
@@ -68,9 +71,24 @@ public class EmulatorIntel8080 implements IEmulator {
         if (microprocessor.getValueFromMemoryByAddress(address) != Intel8080CommandsCodes.HLT) {
             ICommand command = ComandsFactory.createCommand(microprocessor, address);
             microprocessor.executeCommand(command);
+            interrupt();
             return false;
         }
         return true;
+    }
+
+    private void interrupt() {
+        for (int i = 0; i < externalPeripherals.size(); ++i) {
+            if (externalPeripherals.get(i)._isInterrupted()) {
+                if (externalPeripherals.get(i)._getPriority() < microprocessor.getExecutionLevel()) {
+                    int address = 0x08 * externalPeripherals.get(i)._getPriority();
+                    ICommand rst = new CMD_Intel8080_CALL();
+                    rst.setArgument(Integer.toString(address, 16));
+                    microprocessor.setExecutionLevel(externalPeripherals.get(i)._getPriority());
+                    microprocessor.interrupt(rst);
+                }
+            }
+        }
     }
 
     @Override
@@ -204,8 +222,10 @@ public class EmulatorIntel8080 implements IEmulator {
         characterScreen = new CharacterScreen(20, 20);
         pixelScreen = new PixelScreen(256, 256);
 
+        this.externalPeripherals = new ArrayList<>();
+
         IIntraProgramIOEventsListener actionsListener
-                = new IOPeripheralSystem(listener, pixelScreen, characterScreen);
+                = new IOPeripheralSystem(listener, pixelScreen, characterScreen, externalPeripherals);
 
         microprocessor.setIntraProgramIOEventsListener(actionsListener);
     }
@@ -218,6 +238,11 @@ public class EmulatorIntel8080 implements IEmulator {
     @Override
     public ArrayList<String> getLabel2AddressList() {
         return translator.getLabel2AddressList();
+    }
+
+    @Override
+    public ArrayList<IExternalPeripheral> getExternalPeripheral() {
+        return externalPeripherals;
     }
 
     private boolean isBreakpoint(int address) {

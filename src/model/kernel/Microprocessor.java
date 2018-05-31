@@ -3,6 +3,8 @@ package model.kernel;
 import model.emulator.IIntraProgramIOEventsListener;
 import model.kernel.cmd.ICommand;
 
+import java.util.ArrayList;
+
 /**
  * Класс микропроцессора Intel 8080.
  * Данный класс описывает внутреннюю реализацию микропроцессора Intel 8080.
@@ -14,6 +16,8 @@ public class Microprocessor implements IMicroprocessor {
     private int[] registers;
     private int flags;
 
+    private ArrayList<Integer> executionLevel;
+
     private IIntraProgramIOEventsListener ioSystem;
 
     private IExecutableCommandEventsListener commandsExecuteListener;
@@ -23,6 +27,7 @@ public class Microprocessor implements IMicroprocessor {
         this.flags = 0;
         this.registers = new int[Registers.SIZE.ordinal()];
         this.memory = new int[memorySize];
+        this.executionLevel = new ArrayList<>();
     }
 
     @Override
@@ -113,6 +118,11 @@ public class Microprocessor implements IMicroprocessor {
         int PC = getValueFromRegister(Registers.PC);
         PC = (PC + command.getSize()) % memory.length;
         setValueInRegister(Registers.PC, PC);
+        command.execute(commandsExecuteListener);
+    }
+
+    @Override
+    public void interrupt(ICommand command) {
         command.execute(commandsExecuteListener);
     }
 
@@ -239,5 +249,26 @@ public class Microprocessor implements IMicroprocessor {
     @Override
     public int getMemorySize() {
         return memory.length;
+    }
+
+    @Override
+    public void setExecutionLevel(int level) {
+        executionLevel.add(level);
+    }
+
+    @Override
+    public int getExecutionLevel() {
+        if (executionLevel.size() > 0) {
+            return executionLevel.get(executionLevel.size() - 1);
+        } else {
+            return 8;
+        }
+    }
+
+    @Override
+    public void returnFromInterrupt() {
+        if (executionLevel.size() != 0) {
+            executionLevel.remove(executionLevel.size() - 1);
+        }
     }
 }

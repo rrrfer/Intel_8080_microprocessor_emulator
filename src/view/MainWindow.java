@@ -1,6 +1,6 @@
 package view;
 
-import com.sun.istack.internal.NotNull;
+import model.emulator.IExternalPeripheral;
 import presenter.IMainPresenter;
 import presenter.MainPresenter;
 
@@ -28,6 +28,11 @@ public class MainWindow extends JFrame implements IMainView {
     private HelpWindow helpWindow;
     private IScreenView pixelScreenView;
     private IScreenView characterScreenView;
+    private JFrame cellEditorFrame;
+    private JTextField cellTextField;
+    private JComboBox<Integer> priorityComboBox;
+    private int rowIndex;
+    private int oldValue;
 
     private JPanel rootPanel;
     private JTable memoryTable;
@@ -39,6 +44,7 @@ public class MainWindow extends JFrame implements IMainView {
     private JScrollPane memoryTableScrollPanel;
     private JEditorPane consoleOutputTextPanel;
     private JTextField consoleInputTextPanel;
+    private JTable externalPeripheralTable;
 
     // JMenuBar
     private JMenuBar menuBar;
@@ -68,6 +74,7 @@ public class MainWindow extends JFrame implements IMainView {
     private MemoryTableModel memoryTableModel;
     private RegistersAndFlagsTableModel registersAndFlagsTableModel;
     private Label2AddressTableModel label2AddressTableModel;
+    private ExternalPeripheralTableModel externalPeripheralTableModel;
 
     // Input
     private String inputString;
@@ -83,11 +90,14 @@ public class MainWindow extends JFrame implements IMainView {
 
     private UndoManager undoManager;
 
-    public MainWindow(@NotNull IMainPresenter presenter, @NotNull String[][] dataSourceForMemoryTable,
-                      @NotNull String[][] dataSourceForRegisterTable, @NotNull int[][] dataSourceForPixelScreen,
-                      @NotNull int[][] dataSourceForCharacterScreen_Color,
-                      @NotNull int[][] dataSourceForCharacterScreen_Character,
-                      @NotNull ArrayList<String> dataSourceForLabel2AddressTable) {
+    private ArrayList<IExternalPeripheral> externalPeripherals;
+
+    public MainWindow(IMainPresenter presenter, String[][] dataSourceForMemoryTable,
+                      String[][] dataSourceForRegisterTable, int[][] dataSourceForPixelScreen,
+                      int[][] dataSourceForCharacterScreen_Color,
+                      int[][] dataSourceForCharacterScreen_Character,
+                      ArrayList<String> dataSourceForLabel2AddressTable,
+                      ArrayList<IExternalPeripheral> externalPeripherals) {
         this.presenter = presenter;
 
         setTitle("Intel 8080 Emulator");
@@ -95,7 +105,9 @@ public class MainWindow extends JFrame implements IMainView {
 
         createUI(dataSourceForMemoryTable, dataSourceForRegisterTable, dataSourceForPixelScreen,
                 dataSourceForCharacterScreen_Color, dataSourceForCharacterScreen_Character,
-                dataSourceForLabel2AddressTable);
+                dataSourceForLabel2AddressTable, externalPeripherals);
+
+        this.externalPeripherals = externalPeripherals;
 
         setContentPane(rootPanel);
 
@@ -112,11 +124,13 @@ public class MainWindow extends JFrame implements IMainView {
                           String[][] dataSourceForRegisterTable, int[][] dataSourceForPixelScreen,
                           int[][] dataSourceForCharacterScreen_Color,
                           int[][] dataSourceForCharacterScreen_Character,
-                          ArrayList<String> dataSourceForLabel2AddressTable) {
+                          ArrayList<String> dataSourceForLabel2AddressTable,
+                          ArrayList<IExternalPeripheral> externalPeripherals) {
 
         createMenuBar();
         createMemoryTable(dataSourceForMemoryTable);
         createRegistersAndFlagsTable(dataSourceForRegisterTable);
+        createExternalPeripheralTable(externalPeripherals);
 
         createLabel2AddressTable(dataSourceForLabel2AddressTable);
 
@@ -126,6 +140,8 @@ public class MainWindow extends JFrame implements IMainView {
 
         createAboutWindow();
         createHelpWindow();
+
+        createCellEditWindow();
 
         settingUI();
         setActionsListeners();
@@ -292,11 +308,25 @@ public class MainWindow extends JFrame implements IMainView {
                     if (e.getButton() == MouseEvent.BUTTON1) {
                         presenter.setProgramCounter(memoryTable.getSelectedRow());
                     } else if (e.getButton() == MouseEvent.BUTTON3) {
-                        //int oldRowSelection = memoryTable.getSelectedRow();
                         int row = memoryTable.rowAtPoint(e.getPoint());
                         memoryTable.setRowSelectionInterval(row, row);
                         presenter.setBreakpoint(memoryTable.getSelectedRow());
-                        //memoryTable.setRowSelectionInterval(oldRowSelection, oldRowSelection);
+                    }
+                }
+            }
+        });
+
+        externalPeripheralTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    if (openItem.isEnabled()) {
+                        rowIndex = externalPeripheralTable.rowAtPoint(e.getPoint());
+                        cellTextField
+                                .setText(String.valueOf(externalPeripherals.get(rowIndex).getPort()));
+                        oldValue = Integer.valueOf(cellTextField.getText());
+                        priorityComboBox.setSelectedIndex(externalPeripherals.get(rowIndex)._getPriority());
+                        cellEditorFrame.setVisible(true);
                     }
                 }
             }
@@ -461,7 +491,7 @@ public class MainWindow extends JFrame implements IMainView {
         emulatorMenu.addSeparator();
         emulatorMenu.add(deleteAllBreakpointsItem);
 
-         helpItem = new JMenuItem("Help      F1");
+        helpItem = new JMenuItem("Help      F1");
         helpItem.setFont(mainFont);
         aboutItem = new JMenuItem("About...");
         aboutItem.setFont(mainFont);
@@ -484,8 +514,6 @@ public class MainWindow extends JFrame implements IMainView {
         memoryTableModel = new MemoryTableModel(dataSourceForMemoryTable);
         memoryTable.setModel(memoryTableModel);
         memoryTable.setAutoResizeMode(JTable.AUTO_RESIZE_NEXT_COLUMN);
-        //memoryTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        //memoryTable.setRowSelectionInterval(0, 0);
         memoryTable.setEnabled(false);
         memoryTable.setFocusable(false);
         memoryTable.setDefaultRenderer(memoryTable.getColumnClass(1), new MemoryTableCellRenderer());
@@ -513,6 +541,17 @@ public class MainWindow extends JFrame implements IMainView {
         label2AddressTable.setEnabled(false);
     }
 
+    private void createExternalPeripheralTable(ArrayList<IExternalPeripheral> externalPeripherals) {
+        externalPeripheralTableModel = new ExternalPeripheralTableModel(externalPeripherals);
+        externalPeripheralTable.setModel(externalPeripheralTableModel);
+        externalPeripheralTable.setDefaultRenderer(externalPeripheralTable.getColumnClass(1),
+                new ExternalPeripheralTableCellRenderer());
+        externalPeripheralTable.setFocusable(false);
+        externalPeripheralTable.setEnabled(false);
+        externalPeripheralTable.getColumnModel().getColumn(0).setMaxWidth(150);
+        externalPeripheralTable.getColumnModel().getColumn(2).setMaxWidth(75);
+    }
+
     private void createScreens(int[][] dataSourceForPixelScreen, int[][] dataSourceForCharacterScreen_Color,
                                int[][] dataSourceForCharacterScreen_Character) {
 
@@ -533,6 +572,69 @@ public class MainWindow extends JFrame implements IMainView {
 
     private void createHelpWindow() {
         helpWindow = new HelpWindow();
+    }
+
+    private void createCellEditWindow() {
+        priorityComboBox = new JComboBox<>();
+        for (int i = 0; i <= 8; ++i) {
+            priorityComboBox.addItem(i);
+        }
+        cellTextField = new JTextField(5);
+        JButton okButton = new JButton("Ok");
+        cellEditorFrame = new JFrame();
+        cellEditorFrame.setTitle("Device Settings");
+        cellEditorFrame.setLayout(new FlowLayout());
+        cellEditorFrame.setSize(350, 68);
+        cellEditorFrame.setResizable(false);
+        cellEditorFrame.add(new JLabel("Port: "));
+        cellEditorFrame.add(cellTextField);
+        cellEditorFrame.add(new JLabel("Interrupt Priority: "));
+        cellEditorFrame.add(priorityComboBox);
+        cellEditorFrame.add(okButton);
+        cellEditorFrame.setAlwaysOnTop(true);
+        cellEditorFrame.setLocationRelativeTo(MainWindow.this);
+
+        okButton.setFocusable(false);
+        okButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    int value = Integer.valueOf(cellTextField.getText());
+                        if (isValidCellValue(value)) {
+                            externalPeripherals.get(rowIndex).setPort(value);
+                            externalPeripheralTableModel.fireTableDataChanged();
+                            cellEditorFrame.setVisible(false);
+                            cellTextField.setText("");
+                            int priority = priorityComboBox.getSelectedIndex();
+                            if (priority != 8) {
+                                for (IExternalPeripheral externalPeripheral : externalPeripherals) {
+                                    if (externalPeripheral._getPriority() == priority) {
+                                        externalPeripheral._setPriority(8);
+                                    }
+                                }
+                            }
+                            externalPeripherals.get(rowIndex)._setPriority(priority);
+                        }
+                } catch (NumberFormatException ignored) {}
+            }
+        });
+    }
+
+    private boolean isValidCellValue(int value) {
+        if (value >= 0 && value < 256) {
+            if (value != 2 && value != 5 && value != 7 &&
+                    value != 8 && value != 22) {
+                if (value != oldValue) {
+                    for (IExternalPeripheral externalPeripheral : externalPeripherals) {
+                        if (value == externalPeripheral.getPort()) {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+        }
+        return false;
     }
 
     private void settingUI() {
@@ -682,6 +784,7 @@ public class MainWindow extends JFrame implements IMainView {
     }
 
     private void about() {
+        aboutWindow.setLocationRelativeTo(this);
         aboutWindow.setVisible(!aboutWindow.isVisible());
     }
 
@@ -723,7 +826,6 @@ public class MainWindow extends JFrame implements IMainView {
     public void setTranslationResult(String translationResult, boolean hasTranslationErrors) {
         translationResultTextPanel.setText(translationResult);
 
-        // TODO Поковыряться тут
         if (hasTranslationErrors) {
             // Помощь в поиске ошибки в программе
             String rowNumberStr = translationResult
@@ -814,6 +916,11 @@ public class MainWindow extends JFrame implements IMainView {
     @Override
     public void label2AddressTableUpdate() {
         label2AddressTableModel.fireTableDataChanged();
+    }
+
+    @Override
+    public void externalPeripheralUpdate() {
+        externalPeripheralTableModel.fireTableDataChanged();
     }
 
     @Override
@@ -925,7 +1032,6 @@ public class MainWindow extends JFrame implements IMainView {
         aboutItem.setEnabled(false);
     }
 
-    // TODO Поковыряться тут
     private int otherRadix2Dec(String number) {
         int address;
         if (number.charAt(0) == '0' && number.length() > 1) {

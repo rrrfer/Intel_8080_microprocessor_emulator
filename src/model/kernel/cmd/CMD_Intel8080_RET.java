@@ -12,6 +12,7 @@ public class CMD_Intel8080_RET implements ICommand {
     public void execute(IExecutableCommandEventsListener executeListener) {
         int address = CMD_Intel8080_POP.pop(executeListener);
         executeListener.requestOnSetValueInRegister(Registers.PC, address);
+        executeListener.returnFromInterrupt();
     }
 
     @Override

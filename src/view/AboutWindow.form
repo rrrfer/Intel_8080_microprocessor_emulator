@@ -15,10 +15,10 @@
           </grid>
         </constraints>
         <properties>
-          <background color="-8781818"/>
+          <background color="-16115821"/>
           <editable value="false"/>
           <font/>
-          <text value="&#10;&#10;       Intel 8080 Emulator&#10;   Версия:              2.1.61 &#10;   Дата релиза:     11.04.2018 &#10;   Автор:        Рожков Максим &#10;   Почта: rozhkovm96@yandex.ru &#10;   GitHub: github.com/mozgolom &#10;"/>
+          <text value="     Intel 8080 Emulator &#10; Версия:              3.0.77 &#10; Дата релиза:     31.05.2018 &#10; Автор:        Рожков Максим &#10; Почта: rozhkovm96@yandex.ru &#10; GitHub: github.com/mozgolom "/>
         </properties>
       </component>
     </children>

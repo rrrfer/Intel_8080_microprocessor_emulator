@@ -1,7 +1,5 @@
 package view;
 
-import java.util.ArrayList;
-
 /**
  * Интерфейс view-компонента. Класс, осуществляющий отображение состояния эмулятора, реализует
  * этот интерфейс.
@@ -65,6 +63,8 @@ public interface IMainView {
      * Метод для уведомления view-компонента об изменении данных модели символьного экрана.
      */
     void characterScreenUpdate();
+
+    void externalPeripheralUpdate();
 
     /**
      * Метод для установки данных в консоль вывода.

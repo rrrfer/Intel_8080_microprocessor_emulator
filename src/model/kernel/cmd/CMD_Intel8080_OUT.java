@@ -23,24 +23,7 @@ public class CMD_Intel8080_OUT implements ICommand {
         if (ioSystem != null) {
             int outputValue = executeListener.requestOnGetValueFromRegister(Registers.A);
             int portNumber = Integer.valueOf(arg, 16);
-            switch (portNumber) {
-                case 2: {
-                    ioSystem.out_0x02(outputValue);
-                    break;
-                }
-                case 5: {
-                    ioSystem.out_0x05(outputValue);
-                    break;
-                }
-                case 7: {
-                    ioSystem.out_0x07(outputValue);
-                    break;
-                }
-                case 22: {
-                    ioSystem.out_0x16(outputValue);
-                    break;
-                }
-            }
+            ioSystem.out(portNumber, outputValue);
         }
     }
 
