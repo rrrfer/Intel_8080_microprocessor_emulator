@@ -19,8 +19,6 @@ public class AboutWindow extends JFrame {
         setDefaultCloseOperation(HIDE_ON_CLOSE);
         setContentPane(rootPanel);
 
-        setLocationRelativeTo(null);
-
         aboutTextArea.setForeground(Color.WHITE);
         aboutTextArea.setFont(new Font(Font.MONOSPACED, Font.BOLD, 14));
         aboutTextArea.requestFocus();

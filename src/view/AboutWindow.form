@@ -18,7 +18,7 @@
           <background color="-16115821"/>
           <editable value="false"/>
           <font/>
-          <text value="     Intel 8080 Emulator &#10; Версия:              3.0.71 &#10; Дата релиза:     17.05.2018 &#10; Автор:        Рожков Максим &#10; Почта: rozhkovm96@yandex.ru &#10; GitHub: github.com/mozgolom "/>
+          <text value="     Intel 8080 Emulator &#10; Версия:              3.0.77 &#10; Дата релиза:     31.05.2018 &#10; Автор:        Рожков Максим &#10; Почта: rozhkovm96@yandex.ru &#10; GitHub: github.com/mozgolom "/>
         </properties>
       </component>
     </children>

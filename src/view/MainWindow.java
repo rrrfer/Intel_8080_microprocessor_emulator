@@ -784,6 +784,7 @@ public class MainWindow extends JFrame implements IMainView {
     }
 
     private void about() {
+        aboutWindow.setLocationRelativeTo(this);
         aboutWindow.setVisible(!aboutWindow.isVisible());
     }
 

@@ -269,9 +269,12 @@ public class MainPresenter implements IMainPresenter, IIntraProgramIOUpdateEvent
             }
             dataSourceForMemoryTable[i][0] = address.toString();
             dataSourceForMemoryTable[i][1] = commandsInMemory[i];
-            dataSourceForMemoryTable[i][2] =
-                    Integer.toString(emulator
-                            .getValueFromMemoryByAddress(i), 16);
+            StringBuilder code = new StringBuilder(Integer.toString(emulator
+                    .getValueFromMemoryByAddress(i), 16));
+            if (code.length() < 2) {
+                code.insert(0, '0');
+            }
+            dataSourceForMemoryTable[i][2] = code.toString();
         }
     }
 
