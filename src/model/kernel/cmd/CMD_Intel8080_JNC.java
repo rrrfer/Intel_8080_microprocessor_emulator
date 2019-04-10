@@ -18,6 +18,6 @@ public class CMD_Intel8080_JNC extends CMD_Intel8080_JMP {
 
     @Override
     public String getName() {
-        return "JNZ " + arg;
+        return "JNC " + arg;
     }
 }
